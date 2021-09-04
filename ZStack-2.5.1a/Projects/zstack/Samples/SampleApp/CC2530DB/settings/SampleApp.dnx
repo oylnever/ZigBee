@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <settings>
     <DebugChecksum>
-        <Checksum>1025569029</Checksum>
+        <Checksum>2825871242</Checksum>
     </DebugChecksum>
     <DisAssemblyWindow>
         <NumStates>_ 1</NumStates>
@@ -46,6 +46,13 @@
     <Disassembly>
         <MixedMode>1</MixedMode>
     </Disassembly>
+    <Breakpoints>
+        <Count>0</Count>
+    </Breakpoints>
+    <ChipconEmu>
+        <StopTimersOnHalt>0</StopTimersOnHalt>
+        <LeaveTargetRunning>1</LeaveTargetRunning>
+    </ChipconEmu>
     <TermIOLog>
         <LoggingEnabled>_ 0</LoggingEnabled>
         <LogFile>_ ""</LogFile>
@@ -55,13 +62,6 @@
         <LogFile>_ ""</LogFile>
         <Category>_ 0</Category>
     </LogFile>
-    <Breakpoints>
-        <Count>0</Count>
-    </Breakpoints>
-    <ChipconEmu>
-        <StopTimersOnHalt>0</StopTimersOnHalt>
-        <LeaveTargetRunning>1</LeaveTargetRunning>
-    </ChipconEmu>
     <Aliases>
         <A0>_ "F:\dongle例程\dongle usb交互\ZStack-2.5.1a\Projects\zstack\ZMain\TI2530DB\ZMain.c" ""</A0>
         <A1>_ "I:\zigbee\资料\淘宝所用资料-V4.4\学习例程以及开发环境安装\第七章.综合实验\实验7.阿里云IOT(MQTT协议)\ZStack-2.5.1a\Components\zmac\f8w\zmac.c" ""</A1>

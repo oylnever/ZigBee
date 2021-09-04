@@ -23,9 +23,9 @@
 
 if ($debugfile -eq "")
 {
-& "D:\Application\IAR10301\common\bin\cspybat" -f "C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.general.xcl" --backend -f "C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.driver.xcl" 
+& "D:\Application\IAR10301\common\bin\cspybat" -f "C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.general.xcl" --backend -f "C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.driver.xcl" 
 }
 else
 {
-& "D:\Application\IAR10301\common\bin\cspybat" -f "C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.driver.xcl" 
+& "D:\Application\IAR10301\common\bin\cspybat" -f "C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.driver.xcl" 
 }

@@ -63,11 +63,11 @@ extern "C"
 #define SAMPLEAPP_DEVICE_VERSION     0
 #define SAMPLEAPP_FLAGS              0
 
-#define SAMPLE_MAX_CLUSTERS       3
+#define SAMPLE_MAX_CLUSTERS       4
 #define SAMPLEAPP_P2P_CLUSTERID         1
-#define SAMPLEAPP_PERIODIC_CLUSTERID         2
-#define SERIALAPP_CONNECTREQ_CLUSTER         3
-  
+#define SAMPLEAPP_PERIODIC_CLUSTERID         2 //??
+#define SERIALAPP_CONNECTREQ_CLUSTER         3 //??
+#define SAMPLEAPP_CTE_CLUSTERID         4       //coor to end
 
 // Send Message Timeout
 #define SAMPLEAPP_SEND_PERIODIC_MSG_TIMEOUT   3000     // Every 3 seconds

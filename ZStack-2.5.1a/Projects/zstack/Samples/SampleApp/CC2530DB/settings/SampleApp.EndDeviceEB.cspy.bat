@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"D:\Application\IAR10301\common\bin\cspybat" -f "C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.general.xcl" --backend -f "C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.driver.xcl" 
+"D:\Application\IAR10301\common\bin\cspybat" -f "C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.general.xcl" --backend -f "C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"D:\Application\IAR10301\common\bin\cspybat" -f "C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.driver.xcl" 
+"D:\Application\IAR10301\common\bin\cspybat" -f "C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\settings\SampleApp.EndDeviceEB.driver.xcl" 
 
 @echo off 
 :end
