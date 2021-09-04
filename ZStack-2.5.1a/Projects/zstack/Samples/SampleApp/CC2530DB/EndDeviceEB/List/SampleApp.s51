@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// IAR C/C++ Compiler V10.30.1.6000 for 8051              04/Sep/2021  12:32:42
+// IAR C/C++ Compiler V10.30.1.6000 for 8051              04/Sep/2021  20:35:00
 // Copyright 2004-2018 IAR Systems AB.
 // PC-locked license - IAR Embedded Workbench for 8051
 //
@@ -14,7 +14,7 @@
 //    Source file        =  
 //        C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c
 //    Command line       =  
-//        -f C:\Users\OY\AppData\Local\Temp\EW6A9F.tmp
+//        -f C:\Users\OY\AppData\Local\Temp\EWEFDD.tmp
 //        (C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c
 //        -D NWK_AUTO_POLL -D ZTOOL_P1 -D MT_TASK -D MT_SYS_FUNC -D MT_ZDO_FUNC
 //        -D LCD_SUPPORTED=DEBUG -lC
@@ -178,7 +178,7 @@
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         LOCFRAME ISTACK, 1, STACK
-        LOCFRAME XSTACK, 45, STACK
+        LOCFRAME XSTACK, 51, STACK
         PUBLIC SampleApp_SimpleDesc
         PUBLIC SampleApp_TaskID
         PUBLIC SampleApp_epDesc
@@ -193,6 +193,7 @@
         PUBLIC end_led2
         PUBLIC end_light
         PUBLIC end_obstacles
+        PUBLIC end_smoke
         PUBLIC end_temp
         PUBLIC onenet_login_ok
         
@@ -433,35 +434,35 @@ debug               SYMBOL "debug"
         FUNCTION AF_DataRequest,0202H
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 45, STACK
+        ARGFRAME XSTACK, 51, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         EXTERN DHT11
         FUNCTION DHT11,0202H
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         EXTERN HalAdcInit
         FUNCTION HalAdcInit,0202H
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         EXTERN HalAdcRead
         FUNCTION HalAdcRead,0202H
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         EXTERN HalLcdWriteString
         FUNCTION HalLcdWriteString,0202H
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         EXTERN HalLedSet
@@ -567,7 +568,7 @@ debug               SYMBOL "debug"
         FUNCTION sprintf,0202H
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 40, STACK
+        ARGFRAME XSTACK, 46, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         EXTERN strstr
@@ -831,40 +832,47 @@ end_obstacles:
 end_buzzer:
         DS 1
         REQUIRE __INIT_XDATA_Z
-//  117 #ifdef ZDO_COORDINATOR
-//  118 signed char *g_mqtt_topics_set[5] = {NULL};
-//  119 u8 topics_buff[60] = {0};
-//  120 u8 topics_post[100] = {0};  //发布的主题
-//  121 u8 mqtt_message[200] = {0}; //发布的消息
-//  122 #endif
-//  123 
-//  124 /*********************************************************************
-//  125  * LOCAL FUNCTIONS
-//  126  */
-//  127 
-//  128 static void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt);
-//  129 void SampleApp_CallBack(uint8 port, uint8 event);
-//  130 static void SampleApp_Send_P2P_Message(void);
-//  131 static void OneNet_publish_topic();
-//  132 void debug(uint8 *msg, ...);
-//  133 
-//  134 /*********************************************************************
-//  135  * @fn      SampleApp_Init
-//  136  *
-//  137  * @brief   This is called during OSAL tasks' initialization.
-//  138  *
-//  139  * @param   task_id - the Task ID assigned by OSAL.
-//  140  *
-//  141  * @return  none
-//  142  */
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+        DATA8
+//  117 uint8 end_smoke = 0;     //烟雾浓度0-127 浓度越高电压越高5V
+end_smoke:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+//  118 #ifdef ZDO_COORDINATOR
+//  119 signed char *g_mqtt_topics_set[5] = {NULL};
+//  120 u8 topics_buff[60] = {0};
+//  121 u8 topics_post[100] = {0};  //发布的主题
+//  122 u8 mqtt_message[200] = {0}; //发布的消息
+//  123 #endif
+//  124 
+//  125 /*********************************************************************
+//  126  * LOCAL FUNCTIONS
+//  127  */
+//  128 
+//  129 static void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt);
+//  130 void SampleApp_CallBack(uint8 port, uint8 event);
+//  131 static void SampleApp_Send_P2P_Message(void);
+//  132 static void OneNet_publish_topic();
+//  133 void debug(uint8 *msg, ...);
+//  134 
+//  135 /*********************************************************************
+//  136  * @fn      SampleApp_Init
+//  137  *
+//  138  * @brief   This is called during OSAL tasks' initialization.
+//  139  *
+//  140  * @param   task_id - the Task ID assigned by OSAL.
+//  141  *
+//  142  * @return  none
+//  143  */
 
         RSEG BANKED_CODE:HUGECODE:NOROOT(0)
-//  143 void SampleApp_Init(uint8 task_id)
+//  144 void SampleApp_Init(uint8 task_id)
 SampleApp_Init:
           CFI Block cfiBlock0 Using cfiCommon0
           CFI Function SampleApp_Init
         CODE
-//  144 {
+//  145 {
         FUNCALL SampleApp_Init, MT_UartInit
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
@@ -926,41 +934,40 @@ SampleApp_Init:
         ; Auto size: 0
         MOV       A,R1
         MOV       R6,A
-//  145   halUARTCfg_t uartConfig;
-//  146 
-//  147   SampleApp_TaskID = task_id;
+//  146   halUARTCfg_t uartConfig;
+//  147 
+//  148   SampleApp_TaskID = task_id;
         MOV       DPTR,#SampleApp_TaskID
         MOVX      @DPTR,A
-//  148   SampleApp_NwkState = DEV_INIT;
+//  149   SampleApp_NwkState = DEV_INIT;
         MOV       DPTR,#SampleApp_NwkState
         MOV       A,#0x1
         MOVX      @DPTR,A
-//  149 
-//  150   MT_UartInit();                  //串口初始化
+//  150 
+//  151   MT_UartInit();                  //串口初始化
         ; Setup parameters for call to function MT_UartInit
         LCALL     `??MT_UartInit::?relay`; Banked call to: MT_UartInit
-//  151   MT_UartRegisterTaskID(task_id); //注册串口任务
+//  152   MT_UartRegisterTaskID(task_id); //注册串口任务
         ; Setup parameters for call to function MT_UartRegisterTaskID
         MOV       A,R6
         MOV       R2,A
         MOV       R3,#0x0
         LCALL     `??MT_UartRegisterTaskID::?relay`; Banked call to: MT_UartRegisterTaskID
-//  152   afRegister((endPointDesc_t *)&SampleApp_epDesc);
+//  153   afRegister((endPointDesc_t *)&SampleApp_epDesc);
         ; Setup parameters for call to function afRegister
         MOV       R2,#SampleApp_epDesc & 0xff
         MOV       R3,#(SampleApp_epDesc >> 8) & 0xff
         LCALL     `??afRegister::?relay`; Banked call to: afRegister
-//  153   RegisterForKeys(task_id);
+//  154   RegisterForKeys(task_id);
         ; Setup parameters for call to function RegisterForKeys
         MOV       A,R6
         MOV       R1,A
         LCALL     `??RegisterForKeys::?relay`; Banked call to: RegisterForKeys
-//  154 
-//  155 #ifdef ZDO_COORDINATOR
-//  156   //协调器初始化
-//  157 
-//  158   //逢蜂鸣器初始化
-//  159 
+//  155 
+//  156 #ifdef ZDO_COORDINATOR
+//  157   //协调器初始化
+//  158 
+//  159   //逢蜂鸣器初始化
 //  160   //  P0SEL &= ~0x80;                 //设置P07为普通IO口
 //  161   //  P0DIR |= 0x80;                 //P07定义为输出口
 //  162   //
@@ -1281,44 +1288,46 @@ SampleApp_ProcessEvent:
 //  338             \"hum\":%d,\ 
 //  339                \"end_light\":%d,\ 
 //  340               \"end_led2\":%d,\ 
-//  341 			  \"end_obstacles\":%d }\ 
-//  342         }",
-//  343               end_temp,
-//  344               end_hum,
-//  345               end_light,
-//  346               end_led2,
-//  347               end_obstacles);
-//  348 
-//  349       //发布主题
-//  350       mqtt_publish_topic(topics_post, mqtt_message);
-//  351 
-//  352       //  OneNet_publish_topic();
-//  353     }
-//  354 
-//  355     // 启动发送数据定时器，5秒一次
-//  356     osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_ONENET_SEND_DATA_EVT, 5000);
-//  357 
-//  358     // return unprocessed events
-//  359     return (events ^ SAMPLEAPP_ONENET_SEND_DATA_EVT);
-//  360   }
-//  361 
-//  362 #else
+//  341 			  \"end_obstacles\":%d,\ 
+//  342           \"end_smoke\":%d }\ 
+//  343         }",
+//  344               end_temp,
+//  345               end_hum,
+//  346               end_light,
+//  347               end_led2,
+//  348               end_obstacles,
+//  349               end_smoke);
+//  350 
+//  351       //发布主题
+//  352       mqtt_publish_topic(topics_post, mqtt_message);
+//  353 
+//  354       //  OneNet_publish_topic();
+//  355     }
+//  356 
+//  357     // 启动发送数据定时器，5秒一次
+//  358     osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_ONENET_SEND_DATA_EVT, 5000);
+//  359 
+//  360     // return unprocessed events
+//  361     return (events ^ SAMPLEAPP_ONENET_SEND_DATA_EVT);
+//  362   }
 //  363 
-//  364   //定时器时间到
-//  365   if (events & SAMPLEAPP_SEND_PERIODIC_MSG_EVT)
+//  364 #else
+//  365 
+//  366   //定时器时间到
+//  367   if (events & SAMPLEAPP_SEND_PERIODIC_MSG_EVT)
         MOV       A,R2
         MOV       C,0xE0 /* A   */.0
         JNC       ??SampleApp_ProcessEvent_1
-//  366   {
-//  367 
-//  368     // DHT11采集
-//  369     SampleApp_Send_P2P_Message();
+//  368   {
+//  369 
+//  370     // DHT11采集
+//  371     SampleApp_Send_P2P_Message();
         ; Setup parameters for call to function SampleApp_Send_P2P_Message
         LCALL     `??SampleApp_Send_P2P_Message::?relay`; Banked call to: SampleApp_Send_P2P_Message
-//  370 
-//  371     // Setup to send message again in normal period (+ a little jitter)
-//  372     osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_SEND_PERIODIC_MSG_EVT,
-//  373                        (SAMPLEAPP_SEND_PERIODIC_MSG_TIMEOUT + (osal_rand() & 0x00FF)));
+//  372 
+//  373     // Setup to send message again in normal period (+ a little jitter)
+//  374     osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_SEND_PERIODIC_MSG_EVT,
+//  375                        (SAMPLEAPP_SEND_PERIODIC_MSG_TIMEOUT + (osal_rand() & 0x00FF)));
         ; Setup parameters for call to function osal_rand
         LCALL     `??osal_rand::?relay`; Banked call to: osal_rand
         ; Setup parameters for call to function osal_start_timerEx
@@ -1334,15 +1343,15 @@ SampleApp_ProcessEvent:
         MOVX      A,@DPTR
         MOV       R1,A
         LCALL     `??osal_start_timerEx::?relay`; Banked call to: osal_start_timerEx
-//  374 
-//  375     // return unprocessed events
-//  376     return (events ^ SAMPLEAPP_SEND_PERIODIC_MSG_EVT);
+//  376 
+//  377     // return unprocessed events
+//  378     return (events ^ SAMPLEAPP_SEND_PERIODIC_MSG_EVT);
         MOV       A,R6
         XRL       A,#0x1
         MOV       R2,A
         MOV       A,R7
         SJMP      ??SampleApp_ProcessEvent_2
-//  377   }
+//  379   }
 ??SampleApp_ProcessEvent_3:
         INC       DPTR
         MOVX      A,@DPTR
@@ -1402,39 +1411,61 @@ SampleApp_ProcessEvent:
 ??SampleApp_ProcessEvent_2:
         MOV       R3,A
         SJMP      ??SampleApp_ProcessEvent_8
-//  378 
-//  379 #endif
 //  380 
-//  381   return (0); // Discard unknown events.
+//  381 #endif
+//  382 
+//  383   return (0); // Discard unknown events.
 ??SampleApp_ProcessEvent_1:
         MOV       R2,#0x0
         MOV       R3,#0x0
 ??SampleApp_ProcessEvent_8:
-        MOV       R7,#0x4
-        LJMP      ?BANKED_LEAVE_XDATA
-//  382 }
           CFI EndBlock cfiBlock2
-//  383 
-//  384 /*********************************************************************
-//  385  * @fn      SerialApp_ProcessMSGCmd
-//  386  *
-//  387  * @brief   Data message processor callback. This function processes
-//  388  *          any incoming data - probably from other devices. Based
-//  389  *          on the cluster ID, perform the intended action.
-//  390  *
-//  391  * @param   pkt - pointer to the incoming message packet
-//  392  *
-//  393  * @return  TRUE if the 'pkt' parameter is being used and will be freed later,
-//  394  *          FALSE otherwise.
-//  395  */
+        REQUIRE ?Subroutine0
+        ; // Fall through to label ?Subroutine0
+//  384 }
 
         RSEG BANKED_CODE:HUGECODE:NOROOT(0)
-//  396 void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
-SampleApp_ProcessMSGCmd:
+?Subroutine0:
           CFI Block cfiBlock3 Using cfiCommon0
+          CFI NoFunction
+          CFI CFA_SP SP+0
+          CFI CFA_XSP16 add(XSP16, 12)
+          CFI VB load(1, XDATA, add(CFA_XSP16, literal(-11)))
+          CFI DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
+          CFI DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
+          CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-12)))
+          CFI R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
+          CFI V0 load(1, XDATA, add(CFA_XSP16, literal(-10)))
+          CFI V1 load(1, XDATA, add(CFA_XSP16, literal(-9)))
+          CFI V2 load(1, XDATA, add(CFA_XSP16, literal(-8)))
+          CFI V3 load(1, XDATA, add(CFA_XSP16, literal(-7)))
+          CFI ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
+          CFI ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
+          CFI ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
+        MOV       R7,#0x4
+        LJMP      ?BANKED_LEAVE_XDATA
+          CFI EndBlock cfiBlock3
+//  385 
+//  386 /*********************************************************************
+//  387  * @fn      SerialApp_ProcessMSGCmd
+//  388  *
+//  389  * @brief   Data message processor callback. This function processes
+//  390  *          any incoming data - probably from other devices. Based
+//  391  *          on the cluster ID, perform the intended action.
+//  392  *
+//  393  * @param   pkt - pointer to the incoming message packet
+//  394  *
+//  395  * @return  TRUE if the 'pkt' parameter is being used and will be freed later,
+//  396  *          FALSE otherwise.
+//  397  */
+
+        RSEG BANKED_CODE:HUGECODE:NOROOT(0)
+//  398 void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
+SampleApp_ProcessMSGCmd:
+          CFI Block cfiBlock4 Using cfiCommon0
           CFI Function SampleApp_ProcessMSGCmd
         CODE
-//  397 {
+//  399 {
         FUNCALL SampleApp_ProcessMSGCmd, osal_memset
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
@@ -1534,28 +1565,6 @@ SampleApp_ProcessMSGCmd:
         ARGFRAME XSTACK, 139, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
-        FUNCALL SampleApp_ProcessMSGCmd, strstr
-        LOCFRAME ISTACK, 0, STACK
-        LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 139, STACK
-        LOCFRAME IOVERLAY, 0, STATIC
-        LOCFRAME DOVERLAY, 0, STATIC
-        ARGFRAME ISTACK, 0, STACK
-        ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 139, STACK
-        ARGFRAME IOVERLAY, 0, STATIC
-        ARGFRAME DOVERLAY, 0, STATIC
-        FUNCALL SampleApp_ProcessMSGCmd, strstr
-        LOCFRAME ISTACK, 0, STACK
-        LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 139, STACK
-        LOCFRAME IOVERLAY, 0, STATIC
-        LOCFRAME DOVERLAY, 0, STATIC
-        ARGFRAME ISTACK, 0, STACK
-        ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 139, STACK
-        ARGFRAME IOVERLAY, 0, STATIC
-        ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_ProcessMSGCmd, osal_memset
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
@@ -1594,9 +1603,9 @@ SampleApp_ProcessMSGCmd:
         MOV       R6,A
         MOV       A,R3
         MOV       R7,A
-//  398   uint8 buff[20] = {0};
-//  399 
-//  400   switch (pkt->clusterId)
+//  400   uint8 buff[20] = {0};
+//  401 
+//  402   switch (pkt->clusterId)
         MOV       DPL,R2
         MOV       DPH,A
         INC       DPTR
@@ -1611,34 +1620,35 @@ SampleApp_ProcessMSGCmd:
 ??SampleApp_ProcessMSGCmd_0:
         JZ        $+5
         LJMP      ??SampleApp_ProcessMSGCmd_1 & 0xFFFF
-//  401   {
-//  402   // 接收终端上传的温度数据
-//  403   case SAMPLEAPP_P2P_CLUSTERID:
-//  404 #ifdef ZDO_COORDINATOR
-//  405   {
-//  406     end_temp = pkt->cmd.Data[0]; //终端温度
-//  407     end_hum = pkt->cmd.Data[1];  //终端湿度
-//  408 
-//  409     end_light = pkt->cmd.Data[2]; //终端亮度
-//  410     end_led2 = pkt->cmd.Data[3];
-//  411     end_obstacles = pkt->cmd.Data[4];
-//  412 
-//  413     //cor_led3 = !cor_led3;
-//  414     sprintf(buff, "T:%d", end_temp);
-//  415     HalLcdWriteString(buff, HAL_LCD_LINE_3); //LCD显示
-//  416 
-//  417     sprintf(buff, "H:%d", end_hum);
-//  418     HalLcdWriteString(buff, HAL_LCD_LINE_4); //LCD显示
-//  419   }
-//  420 #endif
-//  421   break;
-//  422 
-//  423   case SAMPLEAPP_PERIODIC_CLUSTERID:
-//  424 
-//  425     break;
-//  426   case SAMPLEAPP_CTE_CLUSTERID: //coor to end 终端进行命令解析和处理
-//  427     char buf[128];
-//  428     osal_memset(buf, '\0', 128);
+//  403   {
+//  404   // 接收终端上传的温度数据
+//  405   case SAMPLEAPP_P2P_CLUSTERID:
+//  406 #ifdef ZDO_COORDINATOR
+//  407   {
+//  408     end_temp = pkt->cmd.Data[0]; //终端温度
+//  409     end_hum = pkt->cmd.Data[1];  //终端湿度
+//  410 
+//  411     end_light = pkt->cmd.Data[2];     //终端亮度
+//  412     end_led2 = pkt->cmd.Data[3];      //led2
+//  413     end_obstacles = pkt->cmd.Data[4]; //障碍物
+//  414     end_smoke = pkt->cmd.Data[5];     //烟雾
+//  415 
+//  416     //cor_led3 = !cor_led3;
+//  417     sprintf(buff, "T:%d", end_temp);
+//  418     HalLcdWriteString(buff, HAL_LCD_LINE_3); //LCD显示
+//  419 
+//  420     sprintf(buff, "H:%d", end_hum);
+//  421     HalLcdWriteString(buff, HAL_LCD_LINE_4); //LCD显示
+//  422   }
+//  423 #endif
+//  424   break;
+//  425 
+//  426   case SAMPLEAPP_PERIODIC_CLUSTERID:
+//  427 
+//  428     break;
+//  429   case SAMPLEAPP_CTE_CLUSTERID: //coor to end 终端进行命令解析和处理
+//  430     char buf[128];
+//  431     osal_memset(buf, '\0', 128);
         ; Setup parameters for call to function osal_memset
         MOV       R4,#-0x80
         MOV       R5,#0x0
@@ -1646,7 +1656,7 @@ SampleApp_ProcessMSGCmd:
         MOV       R2,?XSP + 0
         MOV       R3,?XSP + 1
         LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
-//  429     osal_memcpy(buf, pkt->cmd.Data, pkt->cmd.DataLength); //复制到缓冲区
+//  432     osal_memcpy(buf, pkt->cmd.Data, pkt->cmd.DataLength); //复制到缓冲区
         ; Setup parameters for call to function osal_memcpy
         MOV       A,R6
         ADD       A,#0x22
@@ -1680,69 +1690,59 @@ SampleApp_ProcessMSGCmd:
         MOV       A,#0x3
         LCALL     ?DEALLOC_XSTACK8
           CFI CFA_XSP16 add(XSP16, 139)
-//  430     HalUARTWrite(0, buf, osal_strlen(buf));               //串口输出提示信息
+//  433     HalUARTWrite(0, buf, osal_strlen(buf));               //串口输出提示信息
         ; Setup parameters for call to function osal_strlen
         MOV       R2,?XSP + 0
         MOV       R3,?XSP + 1
-        LCALL     ?Subroutine1 & 0xFFFF
+        LCALL     ?Subroutine2 & 0xFFFF
 ??CrossCallReturnLabel_2:
         ; Setup parameters for call to function HalUARTWrite
         MOV       R2,?XSP + 0
         MOV       R3,?XSP + 1
-        LCALL     ?Subroutine0 & 0xFFFF
-//  431     HalUARTWrite(0, "\r\n", 2);                           //串口输出提示信息
-//  432 
-//  433     if (strstr(buf, "D2:0"))
+        LCALL     ?Subroutine1 & 0xFFFF
+//  434     HalUARTWrite(0, "\r\n", 2);                           //串口输出提示信息
+//  435 
+//  436     if (strstr(buf, "D2:0"))
 ??CrossCallReturnLabel_0:
         ; Setup parameters for call to function strstr
         MOV       R4,#`?<Constant "D2:0">` & 0xff
         MOV       R5,#(`?<Constant "D2:0">` >> 8) & 0xff
-        LCALL     ?Subroutine2 & 0xFFFF
-??CrossCallReturnLabel_4:
+        MOV       R2,?XSP + 0
+        MOV       R3,?XSP + 1
+        LCALL     `??strstr::?relay`; Banked call to: strstr
+        MOV       A,R2
+        ORL       A,R3
         JZ        ??SampleApp_ProcessMSGCmd_2
-//  434       HalLedSet(HAL_LED_2, HAL_LED_MODE_OFF); //LED2
+//  437       HalLedSet(HAL_LED_2, HAL_LED_MODE_OFF); //LED2
         ; Setup parameters for call to function HalLedSet
         MOV       R2,#0x0
         SJMP      ??SampleApp_ProcessMSGCmd_3
-//  435     else if (strstr(buf, "D2:1"))
+//  438     else if (strstr(buf, "D2:1"))
 ??SampleApp_ProcessMSGCmd_2:
         ; Setup parameters for call to function strstr
         MOV       R4,#`?<Constant "D2:1">` & 0xff
         MOV       R5,#(`?<Constant "D2:1">` >> 8) & 0xff
-        LCALL     ?Subroutine2 & 0xFFFF
-??CrossCallReturnLabel_5:
+        MOV       R2,?XSP + 0
+        MOV       R3,?XSP + 1
+        LCALL     `??strstr::?relay`; Banked call to: strstr
+        MOV       A,R2
+        ORL       A,R3
         JZ        ??SampleApp_ProcessMSGCmd_4
-//  436       HalLedSet(HAL_LED_2, HAL_LED_MODE_ON); //LED2
+//  439       HalLedSet(HAL_LED_2, HAL_LED_MODE_ON); //LED2
         ; Setup parameters for call to function HalLedSet
         MOV       R2,#0x1
 ??SampleApp_ProcessMSGCmd_3:
         MOV       R1,#0x2
         LCALL     `??HalLedSet::?relay`; Banked call to: HalLedSet
-//  437 
-//  438     if (strstr(buf, "B:1"))
+//  440 
+//  441     // 蜂鸣器改为烟雾检测 P0_4
+//  442     // if (strstr(buf, "B:1"))
+//  443     //   P0_4 = 0;
+//  444     // else if (strstr(buf, "B:0"))
+//  445     //   P0_4 = 1;
+//  446 
+//  447     osal_memset(buf, '\0', 128);
 ??SampleApp_ProcessMSGCmd_4:
-        ; Setup parameters for call to function strstr
-        MOV       R4,#`?<Constant "B:1">` & 0xff
-        MOV       R5,#(`?<Constant "B:1">` >> 8) & 0xff
-        LCALL     ?Subroutine2 & 0xFFFF
-??CrossCallReturnLabel_6:
-        JZ        ??SampleApp_ProcessMSGCmd_5
-//  439       P0_4 = 0;
-        CLR       0x80.4
-        SJMP      ??SampleApp_ProcessMSGCmd_6
-//  440     else if (strstr(buf, "B:0"))
-??SampleApp_ProcessMSGCmd_5:
-        ; Setup parameters for call to function strstr
-        MOV       R4,#`?<Constant "B:0">` & 0xff
-        MOV       R5,#(`?<Constant "B:0">` >> 8) & 0xff
-        LCALL     ?Subroutine2 & 0xFFFF
-??CrossCallReturnLabel_7:
-        JZ        ??SampleApp_ProcessMSGCmd_6
-//  441       P0_4 = 1;
-        SETB      0x80.4
-//  442 
-//  443     osal_memset(buf, '\0', 128);
-??SampleApp_ProcessMSGCmd_6:
         ; Setup parameters for call to function osal_memset
         MOV       R4,#-0x80
         MOV       R5,#0x0
@@ -1750,401 +1750,343 @@ SampleApp_ProcessMSGCmd:
         MOV       R2,?XSP + 0
         MOV       R3,?XSP + 1
         LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
-//  444     break;
-//  445   default:
-//  446     break;
-//  447   }
-//  448 }
+//  448     break;
+//  449   default:
+//  450     break;
+//  451   }
+//  452 }
 ??SampleApp_ProcessMSGCmd_1:
         MOV       A,#-0x80
         LCALL     ?DEALLOC_XSTACK8
           CFI CFA_XSP16 add(XSP16, 11)
         MOV       R7,#0x3
         LJMP      ?BANKED_LEAVE_XDATA
-          CFI EndBlock cfiBlock3
-        REQUIRE _A_P0
-
-        RSEG BANKED_CODE:HUGECODE:NOROOT(0)
-?Subroutine2:
-          CFI Block cfiCond4 Using cfiCommon0
-          CFI Function SampleApp_ProcessMSGCmd
-          CFI Conditional ??CrossCallReturnLabel_4
-          CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-11)))
-          CFI VB load(1, XDATA, add(CFA_XSP16, literal(-10)))
-          CFI V0 load(1, XDATA, add(CFA_XSP16, literal(-9)))
-          CFI V1 load(1, XDATA, add(CFA_XSP16, literal(-8)))
-          CFI V2 load(1, XDATA, add(CFA_XSP16, literal(-7)))
-          CFI R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
-          CFI ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
-          CFI ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
-          CFI ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
-          CFI DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
-          CFI DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
-          CFI CFA_SP SP+-2
-          CFI CFA_XSP16 add(XSP16, 139)
-          CFI Block cfiCond5 Using cfiCommon0
-          CFI (cfiCond5) Function SampleApp_ProcessMSGCmd
-          CFI (cfiCond5) Conditional ??CrossCallReturnLabel_5
-          CFI (cfiCond5) R6 load(1, XDATA, add(CFA_XSP16, literal(-11)))
-          CFI (cfiCond5) VB load(1, XDATA, add(CFA_XSP16, literal(-10)))
-          CFI (cfiCond5) V0 load(1, XDATA, add(CFA_XSP16, literal(-9)))
-          CFI (cfiCond5) V1 load(1, XDATA, add(CFA_XSP16, literal(-8)))
-          CFI (cfiCond5) V2 load(1, XDATA, add(CFA_XSP16, literal(-7)))
-          CFI (cfiCond5) R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
-          CFI (cfiCond5) ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
-          CFI (cfiCond5) ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
-          CFI (cfiCond5) ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
-          CFI (cfiCond5) DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
-          CFI (cfiCond5) DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
-          CFI (cfiCond5) CFA_SP SP+-2
-          CFI (cfiCond5) CFA_XSP16 add(XSP16, 139)
-          CFI Block cfiCond6 Using cfiCommon0
-          CFI (cfiCond6) Function SampleApp_ProcessMSGCmd
-          CFI (cfiCond6) Conditional ??CrossCallReturnLabel_6
-          CFI (cfiCond6) R6 load(1, XDATA, add(CFA_XSP16, literal(-11)))
-          CFI (cfiCond6) VB load(1, XDATA, add(CFA_XSP16, literal(-10)))
-          CFI (cfiCond6) V0 load(1, XDATA, add(CFA_XSP16, literal(-9)))
-          CFI (cfiCond6) V1 load(1, XDATA, add(CFA_XSP16, literal(-8)))
-          CFI (cfiCond6) V2 load(1, XDATA, add(CFA_XSP16, literal(-7)))
-          CFI (cfiCond6) R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
-          CFI (cfiCond6) ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
-          CFI (cfiCond6) ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
-          CFI (cfiCond6) ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
-          CFI (cfiCond6) DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
-          CFI (cfiCond6) DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
-          CFI (cfiCond6) CFA_SP SP+-2
-          CFI (cfiCond6) CFA_XSP16 add(XSP16, 139)
-          CFI Block cfiCond7 Using cfiCommon0
-          CFI (cfiCond7) Function SampleApp_ProcessMSGCmd
-          CFI (cfiCond7) Conditional ??CrossCallReturnLabel_7
-          CFI (cfiCond7) R6 load(1, XDATA, add(CFA_XSP16, literal(-11)))
-          CFI (cfiCond7) VB load(1, XDATA, add(CFA_XSP16, literal(-10)))
-          CFI (cfiCond7) V0 load(1, XDATA, add(CFA_XSP16, literal(-9)))
-          CFI (cfiCond7) V1 load(1, XDATA, add(CFA_XSP16, literal(-8)))
-          CFI (cfiCond7) V2 load(1, XDATA, add(CFA_XSP16, literal(-7)))
-          CFI (cfiCond7) R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
-          CFI (cfiCond7) ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
-          CFI (cfiCond7) ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
-          CFI (cfiCond7) ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
-          CFI (cfiCond7) DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
-          CFI (cfiCond7) DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
-          CFI (cfiCond7) CFA_SP SP+-2
-          CFI (cfiCond7) CFA_XSP16 add(XSP16, 139)
-          CFI Block cfiPicker8 Using cfiCommon1
-          CFI (cfiPicker8) NoFunction
-          CFI (cfiPicker8) Picker
-        MOV       R2,?XSP + 0
-        MOV       R3,?XSP + 1
-        LCALL     `??strstr::?relay`; Banked call to: strstr
-        MOV       A,R2
-        ORL       A,R3
-        RET
-          CFI EndBlock cfiCond4
-          CFI EndBlock cfiCond5
-          CFI EndBlock cfiCond6
-          CFI EndBlock cfiCond7
-          CFI EndBlock cfiPicker8
-//  449 
-//  450 #ifdef ZDO_COORDINATOR
-//  451 
-//  452 //发送MQTT数据
-//  453 void ESP8266_SendData(char *buff, int len)
-//  454 {
-//  455   if (len == 0)
-//  456     return;
-//  457 
-//  458   HalUARTWrite(0, buff, len);
-//  459 }
-//  460 
-//  461 //接收到下发命令，或者接收到订阅的消息
-//  462 //topic:收到的主题
-//  463 //cmd::主题对应的内容
-//  464 void mqtt_rx(uint8 *topic, uint8 *cmd)
-//  465 {
-//  466   char *ptr_led3_on = NULL;
-//  467   char *ptr_led3_off = NULL;
-//  468 
-//  469   char *this_topic = NULL;
-//  470   //控制命令格式
-//  471   char uartbuf[] = {'D', '2', ':', ' ',
-//  472                     'B', ':', ' ','\0'};
-//  473   //协调器收到数据后
-//  474   //根据设计决定数据如何处理
-//  475 
-//  476   if (topic == NULL || cmd == NULL)
-//  477     return;
-//  478 
-//  479   //我们只关心内容，即只关心CMD，不处理主题
-//  480 
-//  481   ptr_led3_on = strstr((char *)cmd, "\"led\":1");
-//  482   ptr_led3_off = strstr((char *)cmd, "\"led\":0");
-//  483 
-//  484   if (ptr_led3_on != NULL)
-//  485   {
-//  486     // coor led3
-//  487     //P1_4 = 0; //D3亮
-//  488     //cor_led3 = 1;
-//  489     uartbuf[3] = '1';
-//  490     uartbuf[6] = '1';
-//  491   }
-//  492   else if (ptr_led3_off != NULL)
-//  493   {
-//  494     // coor led3
-//  495     //P1_4 = 1; //D3灭
-//  496     //cor_led3 = 0;
-//  497     uartbuf[3] = '0';
-//  498     uartbuf[6] = '0';
-//  499   }
-//  500   HalLedBlink(HAL_LED_1, 5, 50, 500);
-//  501 
-//  502   AF_DataRequest(&SampleApp_P2P_DstAddr,  //&Endevice_Add,  //目的节点网络地址和发送格式
-//  503                  &SampleApp_epDesc,       //目的地址端口号
-//  504                  SAMPLEAPP_CTE_CLUSTERID, //命令号，用于区别命令 coor to end
-//  505                  7,//osal_strlen(uartbuf),    //发送数据的长度
-//  506                  uartbuf,                 //发送数据的缓冲区
-//  507                  &SampleApp_MsgID,        //发送序号,发完+1
-//  508                  AF_DISCV_ROUTE,
-//  509                  AF_DEFAULT_RADIUS);
-//  510 }
-//  511 
-//  512 void OneNet_publish_topic()
-//  513 {
-//  514   uint8 buff[20] = {0};
+          CFI EndBlock cfiBlock4
+//  453 
+//  454 #ifdef ZDO_COORDINATOR
+//  455 
+//  456 //发送MQTT数据
+//  457 void ESP8266_SendData(char *buff, int len)
+//  458 {
+//  459   if (len == 0)
+//  460     return;
+//  461 
+//  462   HalUARTWrite(0, buff, len);
+//  463 }
+//  464 
+//  465 //接收到下发命令，或者接收到订阅的消息
+//  466 //topic:收到的主题
+//  467 //cmd::主题对应的内容
+//  468 void mqtt_rx(uint8 *topic, uint8 *cmd)
+//  469 {
+//  470   char *ptr_led3_on = NULL;
+//  471   char *ptr_led3_off = NULL;
+//  472 
+//  473   char *this_topic = NULL;
+//  474   //控制命令格式
+//  475   char uartbuf[] = {'D', '2', ':', ' ',
+//  476                     'B', ':', ' ', '\0'};
+//  477   //协调器收到数据后
+//  478   //根据设计决定数据如何处理
+//  479 
+//  480   if (topic == NULL || cmd == NULL)
+//  481     return;
+//  482 
+//  483   //我们只关心内容，即只关心CMD，不处理主题
+//  484 
+//  485   ptr_led3_on = strstr((char *)cmd, "\"led\":1");
+//  486   ptr_led3_off = strstr((char *)cmd, "\"led\":0");
+//  487 
+//  488   if (ptr_led3_on != NULL)
+//  489   {
+//  490     // coor led3
+//  491     //P1_4 = 0; //D3亮
+//  492     //cor_led3 = 1;
+//  493     uartbuf[3] = '1';
+//  494     uartbuf[6] = '1';
+//  495   }
+//  496   else if (ptr_led3_off != NULL)
+//  497   {
+//  498     // coor led3
+//  499     //P1_4 = 1; //D3灭
+//  500     //cor_led3 = 0;
+//  501     uartbuf[3] = '0';
+//  502     uartbuf[6] = '0';
+//  503   }
+//  504   HalLedBlink(HAL_LED_1, 5, 50, 500);
+//  505 
+//  506   AF_DataRequest(&SampleApp_P2P_DstAddr,  //&Endevice_Add,  //目的节点网络地址和发送格式
+//  507                  &SampleApp_epDesc,       //目的地址端口号
+//  508                  SAMPLEAPP_CTE_CLUSTERID, //命令号，用于区别命令 coor to end
+//  509                  7,                       //osal_strlen(uartbuf),    //发送数据的长度
+//  510                  uartbuf,                 //发送数据的缓冲区
+//  511                  &SampleApp_MsgID,        //发送序号,发完+1
+//  512                  AF_DISCV_ROUTE,
+//  513                  AF_DEFAULT_RADIUS);
+//  514 }
 //  515 
-//  516   sprintf(buff, "t:%d,h:%d", end_temp, end_hum);
-//  517 
-//  518   /*  发布主题为"hello_topic_public"，消息为温度和湿度 */
-//  519   if (0 == mqtt_publish_topic("hello_topic_public", buff))
-//  520   {
-//  521     ;
-//  522   }
-//  523 }
-//  524 
-//  525 /*********************************************************************
-//  526  * @fn      SampleApp_CallBack
-//  527  *
-//  528  * @brief   Send data OTA.
-//  529  *
-//  530  * @param   port - UART port.
-//  531  * @param   event - the UART port event flag.
-//  532  *
-//  533  * @return  none
-//  534  */
-//  535 uint32 lastReadMs = 0;
-//  536 void SampleApp_CallBack(uint8 port, uint8 event)
-//  537 {
-//  538   (void)port;
-//  539 
-//  540   if (0 == onenet_login_ok)
-//  541   {
-//  542     HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX);
-//  543     SampleApp_RxLen = 0;
-//  544     osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX);
-//  545   }
-//  546   else if (1 == onenet_login_ok) //onenet注册成功 0:未注册，1：注册中　2：注册成功
-//  547   {
-//  548     //一个一个字节读
-//  549     SampleApp_RxLen += HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf + SampleApp_RxLen, 4);
-//  550 
-//  551     //判断是否是注册成功
-//  552     if (SampleApp_RxLen >= 4)
-//  553     {
-//  554       //        debug("rx len=%d(%x,%x,%x,%x)\r\n", SampleApp_RxLen,SampleApp_RxBuf[0],SampleApp_RxBuf[1],SampleApp_RxBuf[2],SampleApp_RxBuf[3]);
-//  555 
-//  556       //等待接入响应
-//  557       if (MQTT_UnPacketRecv(SampleApp_RxBuf) == MQTT_PKT_CONNACK)
-//  558       {
-//  559         if (0 == MQTT_UnPacketConnectAck(SampleApp_RxBuf))
-//  560         {
-//  561           onenet_login_ok = 2; //注册成功
-//  562           SampleApp_RxLen = 0;
-//  563 
-//  564           //请求订阅主题
-//  565           if (mqtt_subscribe_topic(g_mqtt_topics_set, 1) == 0)
-//  566           {
-//  567             //订阅成功P1_4  D3变为亮
-//  568             P1_4 = 0;
-//  569           }
-//  570         }
-//  571       }
-//  572     }
-//  573 
-//  574     //数组满，清0
-//  575     if (SampleApp_RxLen >= SAMPLE_APP_RX_MAX)
-//  576     {
-//  577       SampleApp_RxLen = 0;
-//  578     }
-//  579   }
-//  580   else if (2 == onenet_login_ok)
-//  581   {
-//  582     //如果是注册成功，读服务器的控制命令
-//  583 
-//  584     uint32 curMs = osal_GetSystemClock();
-//  585 
-//  586     if ((curMs - lastReadMs) < 1000)
-//  587       return;
-//  588 
-//  589     lastReadMs = curMs;
-//  590     SampleApp_RxLen = 0;
-//  591     osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX + 1);
-//  592     SampleApp_RxLen = HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX); //读长200的数据
-//  593 
-//  594     if (SampleApp_RxLen > 0)
-//  595     {
-//  596       debug("rx len=%d.\r\n", SampleApp_RxLen);
-//  597       //接收消息
-//  598       OneNet_RevPro(SampleApp_RxBuf);
-//  599       //debug LED3
-//  600       //        HalLedBlink (HAL_LED_3, 5, 50, 500); //HalLedSet
-//  601       SampleApp_RxLen = 0;
-//  602       osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX + 1);
-//  603     }
-//  604   }
-//  605 }
-//  606 
-//  607 #else
-//  608 #include "hal_ADC.h"
-//  609 /*********************************************************************
-//  610  * @fn      SampleApp_Send_P2P_Message
-//  611  *
-//  612  * @brief   point to point.
-//  613  *
-//  614  * @param   none
+//  516 void OneNet_publish_topic()
+//  517 {
+//  518   uint8 buff[20] = {0};
+//  519 
+//  520   sprintf(buff, "t:%d,h:%d", end_temp, end_hum);
+//  521 
+//  522   /*  发布主题为"hello_topic_public"，消息为温度和湿度 */
+//  523   if (0 == mqtt_publish_topic("hello_topic_public", buff))
+//  524   {
+//  525     ;
+//  526   }
+//  527 }
+//  528 
+//  529 /*********************************************************************
+//  530  * @fn      SampleApp_CallBack
+//  531  *
+//  532  * @brief   Send data OTA.
+//  533  *
+//  534  * @param   port - UART port.
+//  535  * @param   event - the UART port event flag.
+//  536  *
+//  537  * @return  none
+//  538  */
+//  539 uint32 lastReadMs = 0;
+//  540 void SampleApp_CallBack(uint8 port, uint8 event)
+//  541 {
+//  542   (void)port;
+//  543 
+//  544   if (0 == onenet_login_ok)
+//  545   {
+//  546     HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX);
+//  547     SampleApp_RxLen = 0;
+//  548     osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX);
+//  549   }
+//  550   else if (1 == onenet_login_ok) //onenet注册成功 0:未注册，1：注册中　2：注册成功
+//  551   {
+//  552     //一个一个字节读
+//  553     SampleApp_RxLen += HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf + SampleApp_RxLen, 4);
+//  554 
+//  555     //判断是否是注册成功
+//  556     if (SampleApp_RxLen >= 4)
+//  557     {
+//  558       //        debug("rx len=%d(%x,%x,%x,%x)\r\n", SampleApp_RxLen,SampleApp_RxBuf[0],SampleApp_RxBuf[1],SampleApp_RxBuf[2],SampleApp_RxBuf[3]);
+//  559 
+//  560       //等待接入响应
+//  561       if (MQTT_UnPacketRecv(SampleApp_RxBuf) == MQTT_PKT_CONNACK)
+//  562       {
+//  563         if (0 == MQTT_UnPacketConnectAck(SampleApp_RxBuf))
+//  564         {
+//  565           onenet_login_ok = 2; //注册成功
+//  566           SampleApp_RxLen = 0;
+//  567 
+//  568           //请求订阅主题
+//  569           if (mqtt_subscribe_topic(g_mqtt_topics_set, 1) == 0)
+//  570           {
+//  571             //订阅成功P1_4  D3变为亮
+//  572             P1_4 = 0;
+//  573           }
+//  574         }
+//  575       }
+//  576     }
+//  577 
+//  578     //数组满，清0
+//  579     if (SampleApp_RxLen >= SAMPLE_APP_RX_MAX)
+//  580     {
+//  581       SampleApp_RxLen = 0;
+//  582     }
+//  583   }
+//  584   else if (2 == onenet_login_ok)
+//  585   {
+//  586     //如果是注册成功，读服务器的控制命令
+//  587 
+//  588     uint32 curMs = osal_GetSystemClock();
+//  589 
+//  590     if ((curMs - lastReadMs) < 1000)
+//  591       return;
+//  592 
+//  593     lastReadMs = curMs;
+//  594     SampleApp_RxLen = 0;
+//  595     osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX + 1);
+//  596     SampleApp_RxLen = HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX); //读长200的数据
+//  597 
+//  598     if (SampleApp_RxLen > 0)
+//  599     {
+//  600       debug("rx len=%d.\r\n", SampleApp_RxLen);
+//  601       //接收消息
+//  602       OneNet_RevPro(SampleApp_RxBuf);
+//  603       //debug LED3
+//  604       //        HalLedBlink (HAL_LED_3, 5, 50, 500); //HalLedSet
+//  605       SampleApp_RxLen = 0;
+//  606       osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX + 1);
+//  607     }
+//  608   }
+//  609 }
+//  610 
+//  611 #else
+//  612 #include "hal_ADC.h"
+//  613 /*********************************************************************
+//  614  * @fn      SampleApp_Send_P2P_Message
 //  615  *
-//  616  * @return  none
-//  617  */
+//  616  * @brief   point to point.
+//  617  *
+//  618  * @param   none
+//  619  *
+//  620  * @return  none
+//  621  */
 
         RSEG BANKED_CODE:HUGECODE:NOROOT(0)
-//  618 void SampleApp_Send_P2P_Message(void)
+//  622 void SampleApp_Send_P2P_Message(void)
 SampleApp_Send_P2P_Message:
-          CFI Block cfiBlock9 Using cfiCommon0
+          CFI Block cfiBlock5 Using cfiCommon0
           CFI Function SampleApp_Send_P2P_Message
         CODE
-//  619 {
+//  623 {
         FUNCALL SampleApp_Send_P2P_Message, osal_memset
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 36, STACK
+        LOCFRAME XSTACK, 42, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, osal_memset
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 36, STACK
+        LOCFRAME XSTACK, 42, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, DHT11
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 36, STACK
+        LOCFRAME XSTACK, 42, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, HalAdcInit
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 36, STACK
+        LOCFRAME XSTACK, 42, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, HalAdcRead
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 36, STACK
+        LOCFRAME XSTACK, 42, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Send_P2P_Message, HalAdcRead
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 42, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, sprintf
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 40, STACK
+        LOCFRAME XSTACK, 46, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 40, STACK
+        ARGFRAME XSTACK, 46, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, HalLcdWriteString
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 36, STACK
+        LOCFRAME XSTACK, 42, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, osal_strlen
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 36, STACK
+        LOCFRAME XSTACK, 42, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, HalUARTWrite
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 36, STACK
+        LOCFRAME XSTACK, 42, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, HalUARTWrite
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 36, STACK
+        LOCFRAME XSTACK, 42, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 36, STACK
+        ARGFRAME XSTACK, 42, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Send_P2P_Message, osal_strlen
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 42, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 42, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         FUNCALL SampleApp_Send_P2P_Message, AF_DataRequest
         LOCFRAME ISTACK, 0, STACK
         LOCFRAME PSTACK, 0, STACK
-        LOCFRAME XSTACK, 45, STACK
+        LOCFRAME XSTACK, 51, STACK
         LOCFRAME IOVERLAY, 0, STATIC
         LOCFRAME DOVERLAY, 0, STATIC
         ARGFRAME ISTACK, 0, STACK
         ARGFRAME PSTACK, 0, STACK
-        ARGFRAME XSTACK, 45, STACK
+        ARGFRAME XSTACK, 51, STACK
         ARGFRAME IOVERLAY, 0, STATIC
         ARGFRAME DOVERLAY, 0, STATIC
         REQUIRE ?V0
         REQUIRE ?V1
-        MOV       A,#-0xa
+        REQUIRE ?V2
+        REQUIRE ?V3
+        MOV       A,#-0xc
         LCALL     ?BANKED_ENTER_XDATA
           CFI DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
           CFI DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
@@ -2152,86 +2094,95 @@ SampleApp_Send_P2P_Message:
           CFI ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
           CFI ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
           CFI R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
-          CFI V1 load(1, XDATA, add(CFA_XSP16, literal(-7)))
-          CFI V0 load(1, XDATA, add(CFA_XSP16, literal(-8)))
-          CFI VB load(1, XDATA, add(CFA_XSP16, literal(-9)))
-          CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-10)))
+          CFI V3 load(1, XDATA, add(CFA_XSP16, literal(-7)))
+          CFI V2 load(1, XDATA, add(CFA_XSP16, literal(-8)))
+          CFI V1 load(1, XDATA, add(CFA_XSP16, literal(-9)))
+          CFI V0 load(1, XDATA, add(CFA_XSP16, literal(-10)))
+          CFI VB load(1, XDATA, add(CFA_XSP16, literal(-11)))
+          CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-12)))
           CFI CFA_SP SP+0
-          CFI CFA_XSP16 add(XSP16, 10)
-        ; Saved register size: 10
-        ; Auto size: 26
-        MOV       A,#-0x1a
+          CFI CFA_XSP16 add(XSP16, 12)
+        ; Saved register size: 12
+        ; Auto size: 30
+        MOV       A,#-0x1e
         LCALL     ?ALLOC_XSTACK8
-          CFI CFA_XSP16 add(XSP16, 36)
-//  620   uint8 str[6] = {0};
-        MOV       DPTR,#`?<Constant {0, 0, 0, 0, 0, 0}>`
+          CFI CFA_XSP16 add(XSP16, 42)
+//  624   uint8 str[10] = {0};
+        MOV       DPTR,#`?<Constant {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}>`
         MOV       R4,?XSP + 0
         MOV       R5,?XSP + 1
-        MOV       A,#0x6
+        MOV       A,#0xa
         LCALL     ?MOVE_LONG8_XDATA_XDATA
-//  621   uint8 strTemp[20] = {0};
+//  625   uint8 strTemp[20] = {0};
         MOV       DPTR,#`?<Constant {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0`
-        MOV       A,#0x6
+        MOV       A,#0xa
         LCALL     ?XSTACK_DISP102_8
         MOV       A,#0x14
         LCALL     ?MOVE_LONG8_XDATA_XDATA
-//  622   uint8 end_obstacles_temp = 0;
-//  623   uint8 end_buzzer_temp = 0;
-//  624   int len = 0;
-//  625 
-//  626   osal_memset(str, '\0', 5);
+//  626   uint8 end_obstacles_temp = 0;
+//  627   uint8 end_buzzer_temp = 0;
+//  628   int len = 0;
+//  629 
+//  630   osal_memset(str, '\0', 10);
         ; Setup parameters for call to function osal_memset
-        MOV       R4,#0x5
+        MOV       R4,#0xa
         MOV       R5,A
         MOV       R1,A
         MOV       R2,?XSP + 0
         MOV       R3,?XSP + 1
         LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
-//  627   osal_memset(strTemp, '\0', 20);
+//  631   osal_memset(strTemp, '\0', 20);
         ; Setup parameters for call to function osal_memset
         MOV       R4,#0x14
         MOV       R5,#0x0
         MOV       R1,#0x0
-        MOV       A,#0x6
+        MOV       A,#0xa
         LCALL     ?XSTACK_DISP101_8
         LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
-//  628 
-//  629   DHT11(); //获取温湿度
+//  632 
+//  633   DHT11(); //获取温湿度
         ; Setup parameters for call to function DHT11
         LCALL     `??DHT11::?relay`; Banked call to: DHT11
-//  630 
-//  631   HalAdcInit();
+//  634 
+//  635   HalAdcInit();
         ; Setup parameters for call to function HalAdcInit
         LCALL     `??HalAdcInit::?relay`; Banked call to: HalAdcInit
-//  632   uint8 end_light_temp = HalAdcRead(HAL_ADC_CHANNEL_6, HAL_ADC_RESOLUTION_8);
+//  636   uint8 end_light_temp = HalAdcRead(HAL_ADC_CHANNEL_6, HAL_ADC_RESOLUTION_8); //P0_6
         ; Setup parameters for call to function HalAdcRead
         MOV       R2,#0x1
         MOV       R1,#0x6
         LCALL     `??HalAdcRead::?relay`; Banked call to: HalAdcRead
         MOV       ?V0,R2
-//  633   uint8 end_led2_temp = 0;
-//  634 
-//  635   if (P1_1 == 1)
-        MOV       R3,0x90+0x0
-//  636     end_led2_temp = 0;
-//  637   else
-//  638     end_led2_temp = 1;
+        MOV       R6,?V0
+//  637   uint8 end_smoke_temp = HalAdcRead(HAL_ADC_CHANNEL_4, HAL_ADC_RESOLUTION_8); //P0_4
+        ; Setup parameters for call to function HalAdcRead
+        MOV       R2,#0x1
+        MOV       R1,#0x4
+        LCALL     `??HalAdcRead::?relay`; Banked call to: HalAdcRead
+        MOV       ?V0,R2
+//  638   uint8 end_led2_temp = 0;
 //  639 
-//  640   //障碍物检查
-//  641   if (P0_5 == 1) //拉高
+//  640   if (P1_1 == 1)
+        MOV       R3,0x90+0x0
+//  641     end_led2_temp = 0;
+//  642   else
+//  643     end_led2_temp = 1;
+//  644 
+//  645   //障碍物检查
+//  646   if (P0_5 == 1) //拉高
         MOV       R2,0x80+0x0
-//  642   {
-//  643     end_obstacles_temp = 0;
-//  644   }
-//  645   else   
-//  646     end_obstacles_temp = 1;
-//  647   str[0] = wendu; //温度
+//  647   {
+//  648     end_obstacles_temp = 0;
+//  649   }
+//  650   else
+//  651     end_obstacles_temp = 1;
+//  652   str[0] = wendu; //温度
         MOV       DPTR,#wendu
         MOVX      A,@DPTR
         MOV       DPL,?XSP + 0
         MOV       DPH,?XSP + 1
         MOVX      @DPTR,A
-//  648   str[1] = shidu; //湿度
+//  653   str[1] = shidu; //湿度
         MOV       DPTR,#shidu
         MOVX      A,@DPTR
         PUSH      A
@@ -2241,13 +2192,13 @@ SampleApp_Send_P2P_Message:
         POP       A
           CFI CFA_SP SP+0
         MOVX      @DPTR,A
-//  649 
-//  650   str[2] = end_light_temp;     //亮度
+//  654 
+//  655   str[2] = end_light_temp;     //亮度
         MOV       A,#0x2
         LCALL     ?XSTACK_DISP0_8
-        MOV       A,?V0
+        MOV       A,R6
         MOVX      @DPTR,A
-//  651   str[3] = end_led2_temp;      //led3状态
+//  656   str[3] = end_led2_temp;      //led3状态
         MOV       A,R3
         MOV       C,0xE0 /* A   */.1
         JC        ??SampleApp_Send_P2P_Message_0
@@ -2266,7 +2217,7 @@ SampleApp_Send_P2P_Message:
         POP       A
           CFI CFA_SP SP+0
         MOVX      @DPTR,A
-//  652   str[4] = end_obstacles_temp; //障碍物情况
+//  657   str[4] = end_obstacles_temp; //障碍物情况
         MOV       A,R2
         MOV       C,0xE0 /* A   */.5
         JC        ??SampleApp_Send_P2P_Message_2
@@ -2285,92 +2236,97 @@ SampleApp_Send_P2P_Message:
         POP       A
           CFI CFA_SP SP+0
         MOVX      @DPTR,A
-//  653   //str[5] = end_buzzer_temp;    //buzzer情况
-//  654   len = 5;
-//  655   str[5] = '\0';
+//  658   str[5] = end_smoke_temp;     //烟雾数值
         MOV       A,#0x5
         LCALL     ?XSTACK_DISP0_8
-        CLR       A
+        MOV       A,?V0
         MOVX      @DPTR,A
-//  656   sprintf(strTemp, "T&H:%d %d", str[0], str[1]);
+//  659   //str[5] = end_buzzer_temp;    //buzzer情况
+//  660   len = 6;
+//  661   sprintf(strTemp, "T&H:%d %d", str[0], str[1]);
         ; Setup parameters for call to function sprintf
-        INC       A
+        MOV       A,#0x1
         LCALL     ?XSTACK_DISP0_8
         MOVX      A,@DPTR
         MOV       ?V0,A
         MOV       ?V1,#0x0
         MOV       R0,#?V0
         LCALL     ?PUSH_XSTACK_I_TWO
-          CFI CFA_XSP16 add(XSP16, 38)
+          CFI CFA_XSP16 add(XSP16, 44)
         MOV       A,#0x2
         LCALL     ?XSTACK_DISP0_8
         MOVX      A,@DPTR
         MOV       ?V0,A
         MOV       R0,#?V0
         LCALL     ?PUSH_XSTACK_I_TWO
-          CFI CFA_XSP16 add(XSP16, 40)
+          CFI CFA_XSP16 add(XSP16, 46)
         MOV       R4,#`?<Constant "T&H:%d %d">` & 0xff
         MOV       R5,#(`?<Constant "T&H:%d %d">` >> 8) & 0xff
-        MOV       A,#0xa
+        MOV       A,#0xe
         LCALL     ?XSTACK_DISP101_8
         LCALL     `??sprintf::?relay`; Banked call to: sprintf
         MOV       A,#0x4
         LCALL     ?DEALLOC_XSTACK8
-          CFI CFA_XSP16 add(XSP16, 36)
-//  657   HalLcdWriteString(strTemp, HAL_LCD_LINE_3); //LCD显示
+          CFI CFA_XSP16 add(XSP16, 42)
+//  662   HalLcdWriteString(strTemp, HAL_LCD_LINE_3); //LCD显示
         ; Setup parameters for call to function HalLcdWriteString
         MOV       R1,#0x3
-        MOV       A,#0x6
+        MOV       A,#0xa
         LCALL     ?XSTACK_DISP101_8
         LCALL     `??HalLcdWriteString::?relay`; Banked call to: HalLcdWriteString
-//  658 
-//  659   HalUARTWrite(0, strTemp, osal_strlen(strTemp)); //串口输出提示信息
+//  663 
+//  664   HalUARTWrite(0, strTemp, osal_strlen(strTemp)); //串口输出提示信息
         ; Setup parameters for call to function osal_strlen
-        MOV       A,#0x6
+        MOV       A,#0xa
         LCALL     ?XSTACK_DISP101_8
-        LCALL     ?Subroutine1 & 0xFFFF
+        LCALL     ?Subroutine2 & 0xFFFF
 ??CrossCallReturnLabel_3:
         ; Setup parameters for call to function HalUARTWrite
-        MOV       A,#0x6
+        MOV       A,#0xa
         LCALL     ?XSTACK_DISP101_8
-        LCALL     ?Subroutine0 & 0xFFFF
-//  660   HalUARTWrite(0, "\r\n", 2);
-//  661 
-//  662   //无线发送到协调器
-//  663   if (AF_DataRequest(&SampleApp_P2P_DstAddr, &SampleApp_epDesc,
-//  664                      SAMPLEAPP_P2P_CLUSTERID,
-//  665                      6,//osal_strlen(str),//这个有bugosal得出33
-//  666                      str,
-//  667                      &SampleApp_MsgID,
-//  668                      AF_DISCV_ROUTE,
-//  669                      AF_DEFAULT_RADIUS) == afStatus_SUCCESS)
+        LCALL     ?Subroutine1 & 0xFFFF
+//  665   HalUARTWrite(0, "\r\n", 2);
+//  666 
+//  667   //无线发送到协调器
+//  668   if (AF_DataRequest(&SampleApp_P2P_DstAddr, &SampleApp_epDesc,
+//  669                      SAMPLEAPP_P2P_CLUSTERID,
+//  670                      osal_strlen(str), //这个有bugosal得出33
+//  671                      str,
+//  672                      &SampleApp_MsgID,
+//  673                      AF_DISCV_ROUTE,
+//  674                      AF_DEFAULT_RADIUS) == afStatus_SUCCESS)
 ??CrossCallReturnLabel_1:
+        ; Setup parameters for call to function osal_strlen
+        MOV       R2,?XSP + 0
+        MOV       R3,?XSP + 1
+        LCALL     `??osal_strlen::?relay`; Banked call to: osal_strlen
+        MOV       ?V0,R2
+        MOV       ?V1,R3
         ; Setup parameters for call to function AF_DataRequest
-        MOV       ?V0,#0x1e
-        MOV       R0,#?V0
+        MOV       ?V2,#0x1e
+        MOV       R0,#?V2
         LCALL     ?PUSH_XSTACK_I_ONE
-          CFI CFA_XSP16 add(XSP16, 37)
-        MOV       ?V0,#SampleApp_MsgID & 0xff
-        MOV       ?V1,#(SampleApp_MsgID >> 8) & 0xff
-        MOV       R0,#?V0
+          CFI CFA_XSP16 add(XSP16, 43)
+        MOV       ?V2,#SampleApp_MsgID & 0xff
+        MOV       ?V3,#(SampleApp_MsgID >> 8) & 0xff
+        MOV       R0,#?V2
         LCALL     ?PUSH_XSTACK_I_TWO
-          CFI CFA_XSP16 add(XSP16, 39)
+          CFI CFA_XSP16 add(XSP16, 45)
         MOV       A,#0x3
         LCALL     ?XSTACK_DISP100_8
-        MOV       ?V0,R0
-        MOV       ?V1,R1
+        MOV       ?V2,R0
+        MOV       ?V3,R1
+        MOV       R0,#?V2
+        LCALL     ?PUSH_XSTACK_I_TWO
+          CFI CFA_XSP16 add(XSP16, 47)
         MOV       R0,#?V0
         LCALL     ?PUSH_XSTACK_I_TWO
-          CFI CFA_XSP16 add(XSP16, 41)
-        MOV       ?V0,#0x6
+          CFI CFA_XSP16 add(XSP16, 49)
+        MOV       ?V0,#0x1
         MOV       ?V1,#0x0
         MOV       R0,#?V0
         LCALL     ?PUSH_XSTACK_I_TWO
-          CFI CFA_XSP16 add(XSP16, 43)
-        MOV       ?V0,#0x1
-        MOV       R0,#?V0
-        LCALL     ?PUSH_XSTACK_I_TWO
-          CFI CFA_XSP16 add(XSP16, 45)
+          CFI CFA_XSP16 add(XSP16, 51)
         MOV       R1,#0x20
         MOV       R4,#SampleApp_epDesc & 0xff
         MOV       R5,#(SampleApp_epDesc >> 8) & 0xff
@@ -2379,26 +2335,25 @@ SampleApp_Send_P2P_Message:
         LCALL     `??AF_DataRequest::?relay`; Banked call to: AF_DataRequest
         MOV       A,#0x9
         LCALL     ?DEALLOC_XSTACK8
-          CFI CFA_XSP16 add(XSP16, 36)
-//  670   {
-//  671   }
-//  672   else
-//  673   {
-//  674     // Error occurred in request to send.
-//  675   }
-//  676 }
-        MOV       A,#0x1a
+          CFI CFA_XSP16 add(XSP16, 42)
+//  675   {
+//  676   }
+//  677   else
+//  678   {
+//  679     // Error occurred in request to send.
+//  680   }
+//  681 }
+        MOV       A,#0x1e
         LCALL     ?DEALLOC_XSTACK8
-          CFI CFA_XSP16 add(XSP16, 10)
-        MOV       R7,#0x2
-        LJMP      ?BANKED_LEAVE_XDATA
-          CFI EndBlock cfiBlock9
+          CFI CFA_XSP16 add(XSP16, 12)
+        LJMP      ?Subroutine0 & 0xFFFF
+          CFI EndBlock cfiBlock5
         REQUIRE _A_P1
         REQUIRE _A_P0
 
         RSEG BANKED_CODE:HUGECODE:NOROOT(0)
-?Subroutine1:
-          CFI Block cfiCond10 Using cfiCommon0
+?Subroutine2:
+          CFI Block cfiCond6 Using cfiCommon0
           CFI Function SampleApp_ProcessMSGCmd
           CFI Conditional ??CrossCallReturnLabel_2
           CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-11)))
@@ -2414,37 +2369,39 @@ SampleApp_Send_P2P_Message:
           CFI DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
           CFI CFA_SP SP+-2
           CFI CFA_XSP16 add(XSP16, 139)
-          CFI Block cfiCond11 Using cfiCommon0
-          CFI (cfiCond11) Function SampleApp_Send_P2P_Message
-          CFI (cfiCond11) Conditional ??CrossCallReturnLabel_3
-          CFI (cfiCond11) R6 load(1, XDATA, add(CFA_XSP16, literal(-10)))
-          CFI (cfiCond11) VB load(1, XDATA, add(CFA_XSP16, literal(-9)))
-          CFI (cfiCond11) V0 load(1, XDATA, add(CFA_XSP16, literal(-8)))
-          CFI (cfiCond11) V1 load(1, XDATA, add(CFA_XSP16, literal(-7)))
-          CFI (cfiCond11) R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
-          CFI (cfiCond11) ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
-          CFI (cfiCond11) ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
-          CFI (cfiCond11) ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
-          CFI (cfiCond11) DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
-          CFI (cfiCond11) DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
-          CFI (cfiCond11) CFA_SP SP+-2
-          CFI (cfiCond11) CFA_XSP16 add(XSP16, 36)
-          CFI Block cfiPicker12 Using cfiCommon1
-          CFI (cfiPicker12) NoFunction
-          CFI (cfiPicker12) Picker
+          CFI Block cfiCond7 Using cfiCommon0
+          CFI (cfiCond7) Function SampleApp_Send_P2P_Message
+          CFI (cfiCond7) Conditional ??CrossCallReturnLabel_3
+          CFI (cfiCond7) R6 load(1, XDATA, add(CFA_XSP16, literal(-12)))
+          CFI (cfiCond7) VB load(1, XDATA, add(CFA_XSP16, literal(-11)))
+          CFI (cfiCond7) V0 load(1, XDATA, add(CFA_XSP16, literal(-10)))
+          CFI (cfiCond7) V1 load(1, XDATA, add(CFA_XSP16, literal(-9)))
+          CFI (cfiCond7) V2 load(1, XDATA, add(CFA_XSP16, literal(-8)))
+          CFI (cfiCond7) V3 load(1, XDATA, add(CFA_XSP16, literal(-7)))
+          CFI (cfiCond7) R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
+          CFI (cfiCond7) ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
+          CFI (cfiCond7) ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
+          CFI (cfiCond7) ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
+          CFI (cfiCond7) DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
+          CFI (cfiCond7) DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
+          CFI (cfiCond7) CFA_SP SP+-2
+          CFI (cfiCond7) CFA_XSP16 add(XSP16, 42)
+          CFI Block cfiPicker8 Using cfiCommon1
+          CFI (cfiPicker8) NoFunction
+          CFI (cfiPicker8) Picker
         LCALL     `??osal_strlen::?relay`; Banked call to: osal_strlen
         MOV       ?V0,R2
         MOV       ?V1,R3
         MOV       R4,?V0
         MOV       R5,?V1
         RET
-          CFI EndBlock cfiCond10
-          CFI EndBlock cfiCond11
-          CFI EndBlock cfiPicker12
+          CFI EndBlock cfiCond6
+          CFI EndBlock cfiCond7
+          CFI EndBlock cfiPicker8
 
         RSEG BANKED_CODE:HUGECODE:NOROOT(0)
-?Subroutine0:
-          CFI Block cfiCond13 Using cfiCommon0
+?Subroutine1:
+          CFI Block cfiCond9 Using cfiCommon0
           CFI Function SampleApp_ProcessMSGCmd
           CFI Conditional ??CrossCallReturnLabel_0
           CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-11)))
@@ -2460,24 +2417,26 @@ SampleApp_Send_P2P_Message:
           CFI DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
           CFI CFA_SP SP+-2
           CFI CFA_XSP16 add(XSP16, 139)
-          CFI Block cfiCond14 Using cfiCommon0
-          CFI (cfiCond14) Function SampleApp_Send_P2P_Message
-          CFI (cfiCond14) Conditional ??CrossCallReturnLabel_1
-          CFI (cfiCond14) R6 load(1, XDATA, add(CFA_XSP16, literal(-10)))
-          CFI (cfiCond14) VB load(1, XDATA, add(CFA_XSP16, literal(-9)))
-          CFI (cfiCond14) V0 load(1, XDATA, add(CFA_XSP16, literal(-8)))
-          CFI (cfiCond14) V1 load(1, XDATA, add(CFA_XSP16, literal(-7)))
-          CFI (cfiCond14) R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
-          CFI (cfiCond14) ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
-          CFI (cfiCond14) ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
-          CFI (cfiCond14) ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
-          CFI (cfiCond14) DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
-          CFI (cfiCond14) DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
-          CFI (cfiCond14) CFA_SP SP+-2
-          CFI (cfiCond14) CFA_XSP16 add(XSP16, 36)
-          CFI Block cfiPicker15 Using cfiCommon1
-          CFI (cfiPicker15) NoFunction
-          CFI (cfiPicker15) Picker
+          CFI Block cfiCond10 Using cfiCommon0
+          CFI (cfiCond10) Function SampleApp_Send_P2P_Message
+          CFI (cfiCond10) Conditional ??CrossCallReturnLabel_1
+          CFI (cfiCond10) R6 load(1, XDATA, add(CFA_XSP16, literal(-12)))
+          CFI (cfiCond10) VB load(1, XDATA, add(CFA_XSP16, literal(-11)))
+          CFI (cfiCond10) V0 load(1, XDATA, add(CFA_XSP16, literal(-10)))
+          CFI (cfiCond10) V1 load(1, XDATA, add(CFA_XSP16, literal(-9)))
+          CFI (cfiCond10) V2 load(1, XDATA, add(CFA_XSP16, literal(-8)))
+          CFI (cfiCond10) V3 load(1, XDATA, add(CFA_XSP16, literal(-7)))
+          CFI (cfiCond10) R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
+          CFI (cfiCond10) ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
+          CFI (cfiCond10) ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
+          CFI (cfiCond10) ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
+          CFI (cfiCond10) DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
+          CFI (cfiCond10) DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
+          CFI (cfiCond10) CFA_SP SP+-2
+          CFI (cfiCond10) CFA_XSP16 add(XSP16, 42)
+          CFI Block cfiPicker11 Using cfiCommon1
+          CFI (cfiPicker11) NoFunction
+          CFI (cfiPicker11) Picker
         MOV       R1,#0x0
         LCALL     `??HalUARTWrite::?relay`; Banked call to: HalUARTWrite
         ; Setup parameters for call to function HalUARTWrite
@@ -2489,18 +2448,18 @@ SampleApp_Send_P2P_Message:
         MOV       R1,#0x0
         LCALL     `??HalUARTWrite::?relay`; Banked call to: HalUARTWrite
         RET
-          CFI EndBlock cfiCond13
-          CFI EndBlock cfiCond14
-          CFI EndBlock cfiPicker15
-//  677 
+          CFI EndBlock cfiCond9
+          CFI EndBlock cfiCond10
+          CFI EndBlock cfiPicker11
+//  682 
 
         RSEG BANKED_CODE:HUGECODE:NOROOT(0)
-//  678 void SampleApp_CallBack(uint8 port, uint8 event)
+//  683 void SampleApp_CallBack(uint8 port, uint8 event)
 SampleApp_CallBack:
-          CFI Block cfiBlock16 Using cfiCommon0
+          CFI Block cfiBlock12 Using cfiCommon0
           CFI Function SampleApp_CallBack
         CODE
-//  679 {
+//  684 {
         FUNCALL SampleApp_CallBack, HalUARTRead
         LOCFRAME ISTACK, 2, STACK
         LOCFRAME PSTACK, 0, STACK
@@ -2520,9 +2479,9 @@ SampleApp_CallBack:
           CFI CFA_SP SP+-5
         ; Saved register size: 2
         ; Auto size: 0
-//  680   (void)port;
-//  681 
-//  682   HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, 1);
+//  685   (void)port;
+//  686 
+//  687   HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, 1);
         ; Setup parameters for call to function HalUARTRead
         MOV       R4,#0x1
         MOV       R5,#0x0
@@ -2530,7 +2489,7 @@ SampleApp_CallBack:
         MOV       R3,#(SampleApp_RxBuf >> 8) & 0xff
         MOV       R1,#0x0
         LCALL     `??HalUARTRead::?relay`; Banked call to: HalUARTRead
-//  683 }
+//  688 }
         POP       DPH
           CFI DPH0 SameValue
           CFI CFA_SP SP+-4
@@ -2538,45 +2497,45 @@ SampleApp_CallBack:
           CFI DPL0 SameValue
           CFI CFA_SP SP+-3
         LJMP      ?BRET
-          CFI EndBlock cfiBlock16
-//  684 
-//  685 #endif
-//  686 
-//  687 //调试信息输出
+          CFI EndBlock cfiBlock12
+//  689 
+//  690 #endif
+//  691 
+//  692 //调试信息输出
 
         RSEG BANKED_CODE:HUGECODE:NOROOT(0)
-//  688 void debug(uint8 *msg, ...)
+//  693 void debug(uint8 *msg, ...)
 debug:
-          CFI Block cfiBlock17 Using cfiCommon0
+          CFI Block cfiBlock13 Using cfiCommon0
           CFI Function debug
         CODE
-//  689 {
+//  694 {
         ; Saved register size: 0
         ; Auto size: 0
-//  690 #if 0
-//  691     uint8 len=0;
-//  692     char info[200] = {0};
-//  693     va_list args;
-//  694 
-//  695     if(msg==NULL) return;
-//  696 
-//  697     va_start(args, msg);
-//  698     vsprintf(info, (const char*)msg, args);//从头插入到info中
-//  699     va_end(args);
-//  700     
-//  701     
-//  702     len=osal_strlen((char *)info);
-//  703     if(len==0) return;
-//  704     
+//  695 #if 0
+//  696     uint8 len=0;
+//  697     char info[200] = {0};
+//  698     va_list args;
+//  699 
+//  700     if(msg==NULL) return;
+//  701 
+//  702     va_start(args, msg);
+//  703     vsprintf(info, (const char*)msg, args);//从头插入到info中
+//  704     va_end(args);
 //  705     
-//  706 
-//  707     HalUARTWrite(1,info, len);//串口1发送
-//  708     osal_memset(info,'\0',200);
-//  709 //    HAL_UART_PORT_0
-//  710 #endif
-//  711 }
+//  706     
+//  707     len=osal_strlen((char *)info);
+//  708     if(len==0) return;
+//  709     
+//  710     
+//  711 
+//  712     HalUARTWrite(1,info, len);//串口1发送
+//  713     osal_memset(info,'\0',200);
+//  714 //    HAL_UART_PORT_0
+//  715 #endif
+//  716 }
         LJMP      ?BRET
-          CFI EndBlock cfiBlock17
+          CFI EndBlock cfiBlock13
 
         RSEG XDATA_ID:CODE:NOROOT(0)
 `?<Initializer for SampleApp_epDesc>`:
@@ -2653,18 +2612,12 @@ debug:
         DB "D2:1"
 
         RSEG XDATA_ROM_C:CONST:REORDER:NOROOT(0)
-        DATA32
-`?<Constant "B:1">`:
-        DB "B:1"
-
-        RSEG XDATA_ROM_C:CONST:REORDER:NOROOT(0)
-        DATA32
-`?<Constant "B:0">`:
-        DB "B:0"
-
-        RSEG XDATA_ROM_C:CONST:REORDER:NOROOT(0)
         DATA8
-`?<Constant {0, 0, 0, 0, 0, 0}>`:
+`?<Constant {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}>`:
+        DB 0
+        DB 0
+        DB 0
+        DB 0
         DB 0
         DB 0
         DB 0
@@ -2703,19 +2656,19 @@ debug:
 
         END
 // 
-// 793 bytes in segment BANKED_CODE
+// 789 bytes in segment BANKED_CODE
 //  42 bytes in segment BANK_RELAYS
 //   4 bytes in segment SFR_AN
 //   6 bytes in segment XDATA_I
 //   6 bytes in segment XDATA_ID
-//  77 bytes in segment XDATA_ROM_C
-// 224 bytes in segment XDATA_Z
+//  73 bytes in segment XDATA_ROM_C
+// 225 bytes in segment XDATA_Z
 // 
 //  48 bytes of CODE     memory
-//  77 bytes of CONST    memory
+//  73 bytes of CONST    memory
 //   0 bytes of DATA     memory (+ 4 bytes shared)
-// 793 bytes of HUGECODE memory
-// 230 bytes of XDATA    memory
+// 789 bytes of HUGECODE memory
+// 231 bytes of XDATA    memory
 //
 //Errors: none
-//Warnings: 12
+//Warnings: 13

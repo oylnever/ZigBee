@@ -114,6 +114,7 @@ uint8 end_led2 = 0;      //终端节点开发板led3状态     0灭 1亮
 uint8 cor_led3 = 0;      //协调器led3 0灭 1亮
 uint8 end_obstacles = 0; //终端障碍物 0无障碍(输出高电平） 1有障碍(低电平)
 uint8 end_buzzer = 0;    //buzzer 0不响 1响起
+uint8 end_smoke = 0;     //烟雾浓度0-127 浓度越高电压越高5V
 #ifdef ZDO_COORDINATOR
 signed char *g_mqtt_topics_set[5] = {NULL};
 u8 topics_buff[60] = {0};
@@ -156,7 +157,6 @@ void SampleApp_Init(uint8 task_id)
   //协调器初始化
 
   //逢蜂鸣器初始化
-
   //  P0SEL &= ~0x80;                 //设置P07为普通IO口
   //  P0DIR |= 0x80;                 //P07定义为输出口
   //
@@ -338,13 +338,15 @@ UINT16 SampleApp_ProcessEvent(uint8 task_id, UINT16 events)
             \"hum\":%d,\
                \"end_light\":%d,\
               \"end_led2\":%d,\
-			  \"end_obstacles\":%d }\
+			  \"end_obstacles\":%d,\
+          \"end_smoke\":%d }\
         }",
               end_temp,
               end_hum,
               end_light,
               end_led2,
-              end_obstacles);
+              end_obstacles,
+              end_smoke);
 
       //发布主题
       mqtt_publish_topic(topics_post, mqtt_message);
@@ -406,9 +408,10 @@ void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
     end_temp = pkt->cmd.Data[0]; //终端温度
     end_hum = pkt->cmd.Data[1];  //终端湿度
 
-    end_light = pkt->cmd.Data[2]; //终端亮度
-    end_led2 = pkt->cmd.Data[3];
-    end_obstacles = pkt->cmd.Data[4];
+    end_light = pkt->cmd.Data[2];     //终端亮度
+    end_led2 = pkt->cmd.Data[3];      //led2
+    end_obstacles = pkt->cmd.Data[4]; //障碍物
+    end_smoke = pkt->cmd.Data[5];     //烟雾
 
     //cor_led3 = !cor_led3;
     sprintf(buff, "T:%d", end_temp);
@@ -435,10 +438,11 @@ void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
     else if (strstr(buf, "D2:1"))
       HalLedSet(HAL_LED_2, HAL_LED_MODE_ON); //LED2
 
-    if (strstr(buf, "B:1"))
-      P0_4 = 0;
-    else if (strstr(buf, "B:0"))
-      P0_4 = 1;
+    // 蜂鸣器改为烟雾检测 P0_4
+    // if (strstr(buf, "B:1"))
+    //   P0_4 = 0;
+    // else if (strstr(buf, "B:0"))
+    //   P0_4 = 1;
 
     osal_memset(buf, '\0', 128);
     break;
@@ -469,7 +473,7 @@ void mqtt_rx(uint8 *topic, uint8 *cmd)
   char *this_topic = NULL;
   //控制命令格式
   char uartbuf[] = {'D', '2', ':', ' ',
-                    'B', ':', ' ','\0'};
+                    'B', ':', ' ', '\0'};
   //协调器收到数据后
   //根据设计决定数据如何处理
 
@@ -502,7 +506,7 @@ void mqtt_rx(uint8 *topic, uint8 *cmd)
   AF_DataRequest(&SampleApp_P2P_DstAddr,  //&Endevice_Add,  //目的节点网络地址和发送格式
                  &SampleApp_epDesc,       //目的地址端口号
                  SAMPLEAPP_CTE_CLUSTERID, //命令号，用于区别命令 coor to end
-                 7,//osal_strlen(uartbuf),    //发送数据的长度
+                 7,                       //osal_strlen(uartbuf),    //发送数据的长度
                  uartbuf,                 //发送数据的缓冲区
                  &SampleApp_MsgID,        //发送序号,发完+1
                  AF_DISCV_ROUTE,
@@ -617,19 +621,20 @@ void SampleApp_CallBack(uint8 port, uint8 event)
  */
 void SampleApp_Send_P2P_Message(void)
 {
-  uint8 str[6] = {0};
+  uint8 str[10] = {0};
   uint8 strTemp[20] = {0};
   uint8 end_obstacles_temp = 0;
   uint8 end_buzzer_temp = 0;
   int len = 0;
 
-  osal_memset(str, '\0', 5);
+  osal_memset(str, '\0', 10);
   osal_memset(strTemp, '\0', 20);
 
   DHT11(); //获取温湿度
 
   HalAdcInit();
-  uint8 end_light_temp = HalAdcRead(HAL_ADC_CHANNEL_6, HAL_ADC_RESOLUTION_8);
+  uint8 end_light_temp = HalAdcRead(HAL_ADC_CHANNEL_6, HAL_ADC_RESOLUTION_8); //P0_6
+  uint8 end_smoke_temp = HalAdcRead(HAL_ADC_CHANNEL_4, HAL_ADC_RESOLUTION_8); //P0_4
   uint8 end_led2_temp = 0;
 
   if (P1_1 == 1)
@@ -642,7 +647,7 @@ void SampleApp_Send_P2P_Message(void)
   {
     end_obstacles_temp = 0;
   }
-  else   
+  else
     end_obstacles_temp = 1;
   str[0] = wendu; //温度
   str[1] = shidu; //湿度
@@ -650,9 +655,9 @@ void SampleApp_Send_P2P_Message(void)
   str[2] = end_light_temp;     //亮度
   str[3] = end_led2_temp;      //led3状态
   str[4] = end_obstacles_temp; //障碍物情况
+  str[5] = end_smoke_temp;     //烟雾数值
   //str[5] = end_buzzer_temp;    //buzzer情况
-  len = 5;
-  str[5] = '\0';
+  len = 6;
   sprintf(strTemp, "T&H:%d %d", str[0], str[1]);
   HalLcdWriteString(strTemp, HAL_LCD_LINE_3); //LCD显示
 
@@ -662,7 +667,7 @@ void SampleApp_Send_P2P_Message(void)
   //无线发送到协调器
   if (AF_DataRequest(&SampleApp_P2P_DstAddr, &SampleApp_epDesc,
                      SAMPLEAPP_P2P_CLUSTERID,
-                     6,//osal_strlen(str),//这个有bugosal得出33
+                     osal_strlen(str), //这个有bugosal得出33
                      str,
                      &SampleApp_MsgID,
                      AF_DISCV_ROUTE,

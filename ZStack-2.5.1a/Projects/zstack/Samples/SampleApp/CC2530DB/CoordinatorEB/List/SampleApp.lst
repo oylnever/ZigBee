@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR C/C++ Compiler V10.30.1.6000 for 8051               04/Sep/2021  12:32:03
+# IAR C/C++ Compiler V10.30.1.6000 for 8051               04/Sep/2021  20:35:10
 # Copyright 2004-2018 IAR Systems AB.
 # PC-locked license - IAR Embedded Workbench for 8051
 #
@@ -14,7 +14,7 @@
 #    Source file        =  
 #        C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c
 #    Command line       =  
-#        -f C:\Users\OY\AppData\Local\Temp\EWD05D.tmp
+#        -f C:\Users\OY\AppData\Local\Temp\EW1663.tmp
 #        (C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c
 #        -D ZTOOL_P1 -D xMT_TASK -D xMT_SYS_FUNC -D xMT_ZDO_FUNC -D
 #        LCD_SUPPORTED=DEBUG -lC
@@ -105,11 +105,6 @@ C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Sour
       6          #include <string.h>
       7          #include "AF.h"
       8          #include "OnBoard.h"
-
-   \                                 In  segment SFR_AN, at 0x80
-   \   union <unnamed> volatile __sfr _A_P0
-   \                     _A_P0:
-   \   000000                DS 1
 
    \                                 In  segment SFR_AN, at 0x90
    \   union <unnamed> volatile __sfr _A_P1
@@ -317,57 +312,63 @@ C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Sour
    \                     end_buzzer:
    \   000000                DS 1
    \   000001                REQUIRE __INIT_XDATA_Z
-    117          #ifdef ZDO_COORDINATOR
 
    \                                 In  segment XDATA_Z, align 1, keep-with-next
-    118          signed char *g_mqtt_topics_set[5] = {NULL};
+    117          uint8 end_smoke = 0;     //烟雾浓度0-127 浓度越高电压越高5V
+   \                     end_smoke:
+   \   000000                DS 1
+   \   000001                REQUIRE __INIT_XDATA_Z
+    118          #ifdef ZDO_COORDINATOR
+
+   \                                 In  segment XDATA_Z, align 1, keep-with-next
+    119          signed char *g_mqtt_topics_set[5] = {NULL};
    \                     g_mqtt_topics_set:
    \   000000                DS 10
    \   00000A                REQUIRE __INIT_XDATA_Z
 
    \                                 In  segment XDATA_Z, align 1, keep-with-next
-    119          u8 topics_buff[60] = {0};
+    120          u8 topics_buff[60] = {0};
    \                     topics_buff:
    \   000000                DS 60
    \   00003C                REQUIRE __INIT_XDATA_Z
 
    \                                 In  segment XDATA_Z, align 1, keep-with-next
-    120          u8 topics_post[100] = {0};  //发布的主题
+    121          u8 topics_post[100] = {0};  //发布的主题
    \                     topics_post:
    \   000000                DS 100
    \   000064                REQUIRE __INIT_XDATA_Z
 
    \                                 In  segment XDATA_Z, align 1, keep-with-next
-    121          u8 mqtt_message[200] = {0}; //发布的消息
+    122          u8 mqtt_message[200] = {0}; //发布的消息
    \                     mqtt_message:
    \   000000                DS 200
    \   0000C8                REQUIRE __INIT_XDATA_Z
-    122          #endif
-    123          
-    124          /*********************************************************************
-    125           * LOCAL FUNCTIONS
-    126           */
-    127          
-    128          static void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt);
-    129          void SampleApp_CallBack(uint8 port, uint8 event);
-    130          static void SampleApp_Send_P2P_Message(void);
-    131          static void OneNet_publish_topic();
-    132          void debug(uint8 *msg, ...);
-    133          
-    134          /*********************************************************************
-    135           * @fn      SampleApp_Init
-    136           *
-    137           * @brief   This is called during OSAL tasks' initialization.
-    138           *
-    139           * @param   task_id - the Task ID assigned by OSAL.
-    140           *
-    141           * @return  none
-    142           */
+    123          #endif
+    124          
+    125          /*********************************************************************
+    126           * LOCAL FUNCTIONS
+    127           */
+    128          
+    129          static void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt);
+    130          void SampleApp_CallBack(uint8 port, uint8 event);
+    131          static void SampleApp_Send_P2P_Message(void);
+    132          static void OneNet_publish_topic();
+    133          void debug(uint8 *msg, ...);
+    134          
+    135          /*********************************************************************
+    136           * @fn      SampleApp_Init
+    137           *
+    138           * @brief   This is called during OSAL tasks' initialization.
+    139           *
+    140           * @param   task_id - the Task ID assigned by OSAL.
+    141           *
+    142           * @return  none
+    143           */
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-    143          void SampleApp_Init(uint8 task_id)
+    144          void SampleApp_Init(uint8 task_id)
    \                     SampleApp_Init:
-    144          {
+    145          {
    \   000000   74F7         MOV       A,#-0x9
    \   000002   12....       LCALL     ?BANKED_ENTER_XDATA
    \   000005                ; Saved register size: 9
@@ -376,22 +377,22 @@ C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Sour
    \   000007   12....       LCALL     ?ALLOC_XSTACK8
    \   00000A   E9           MOV       A,R1
    \   00000B   FE           MOV       R6,A
-    145            halUARTCfg_t uartConfig;
-    146          
-    147            SampleApp_TaskID = task_id;
+    146            halUARTCfg_t uartConfig;
+    147          
+    148            SampleApp_TaskID = task_id;
    \   00000C   90....       MOV       DPTR,#SampleApp_TaskID
    \   00000F   F0           MOVX      @DPTR,A
-    148            SampleApp_NwkState = DEV_INIT;
+    149            SampleApp_NwkState = DEV_INIT;
    \   000010   90....       MOV       DPTR,#SampleApp_NwkState
    \   000013   7401         MOV       A,#0x1
    \   000015   F0           MOVX      @DPTR,A
-    149          
-    150            MT_UartInit();                  //串口初始化
+    150          
+    151            MT_UartInit();                  //串口初始化
                    ^
 Warning[Pe223]: function "MT_UartInit" declared implicitly
    \   000016                ; Setup parameters for call to function MT_UartInit
    \   000016   12....       LCALL     `??MT_UartInit::?relay`; Banked call to: MT_UartInit
-    151            MT_UartRegisterTaskID(task_id); //注册串口任务
+    152            MT_UartRegisterTaskID(task_id); //注册串口任务
                    ^
 Warning[Pe223]: function "MT_UartRegisterTaskID" declared implicitly
    \   000019                ; Setup parameters for call to function MT_UartRegisterTaskID
@@ -399,22 +400,21 @@ Warning[Pe223]: function "MT_UartRegisterTaskID" declared implicitly
    \   00001A   FA           MOV       R2,A
    \   00001B   7B00         MOV       R3,#0x0
    \   00001D   12....       LCALL     `??MT_UartRegisterTaskID::?relay`; Banked call to: MT_UartRegisterTaskID
-    152            afRegister((endPointDesc_t *)&SampleApp_epDesc);
+    153            afRegister((endPointDesc_t *)&SampleApp_epDesc);
    \   000020                ; Setup parameters for call to function afRegister
    \   000020   7A..         MOV       R2,#SampleApp_epDesc & 0xff
    \   000022   7B..         MOV       R3,#(SampleApp_epDesc >> 8) & 0xff
    \   000024   12....       LCALL     `??afRegister::?relay`; Banked call to: afRegister
-    153            RegisterForKeys(task_id);
+    154            RegisterForKeys(task_id);
    \   000027                ; Setup parameters for call to function RegisterForKeys
    \   000027   EE           MOV       A,R6
    \   000028   F9           MOV       R1,A
    \   000029   12....       LCALL     `??RegisterForKeys::?relay`; Banked call to: RegisterForKeys
-    154          
-    155          #ifdef ZDO_COORDINATOR
-    156            //协调器初始化
-    157          
-    158            //逢蜂鸣器初始化
-    159          
+    155          
+    156          #ifdef ZDO_COORDINATOR
+    157            //协调器初始化
+    158          
+    159            //逢蜂鸣器初始化
     160            //  P0SEL &= ~0x80;                 //设置P07为普通IO口
     161            //  P0DIR |= 0x80;                 //P07定义为输出口
     162            //
@@ -679,7 +679,7 @@ Warning[Pe513]: a value of type "unsigned char *" cannot be assigned to an
     288          
     289                // 启动发送数据定时器，5秒一次
     290                osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_ONENET_SEND_DATA_EVT, 5000);
-   \                     ??CrossCallReturnLabel_15:
+   \                     ??CrossCallReturnLabel_13:
    \   000028                ; Setup parameters for call to function osal_start_timerEx
    \   000028   7C88         MOV       R4,#-0x78
    \   00002A   7D13         MOV       R5,#0x13
@@ -698,14 +698,14 @@ Warning[Pe513]: a value of type "unsigned char *" cannot be assigned to an
    \   00003E   6005         JZ        ??SampleApp_ProcessEvent_5
    \   000040   E0           MOVX      A,@DPTR
    \   000041   6406         XRL       A,#0x6
-   \   000043   7009         JNZ       ??CrossCallReturnLabel_16
+   \   000043   7009         JNZ       ??CrossCallReturnLabel_14
    \                     ??SampleApp_ProcessEvent_5:
    \   000045                ; Setup parameters for call to function osal_start_timerEx
    \   000045   7CB8         MOV       R4,#-0x48
    \   000047   7D0B         MOV       R5,#0xb
    \   000049   7A01         MOV       R2,#0x1
    \   00004B   12....       LCALL     ?Subroutine9 & 0xFFFF
-   \                     ??CrossCallReturnLabel_16:
+   \                     ??CrossCallReturnLabel_14:
    \   00004E                ; Setup parameters for call to function osal_msg_deallocate
    \   00004E   AA..         MOV       R2,?V0
    \   000050   AB..         MOV       R3,?V1
@@ -730,7 +730,7 @@ Warning[Pe513]: a value of type "unsigned char *" cannot be assigned to an
    \   000070   6006         JZ        ??SampleApp_ProcessEvent_8
    \   000072   24EF         ADD       A,#-0x11
    \   000074   60BB         JZ        ??SampleApp_ProcessEvent_4
-   \   000076   80D6         SJMP      ??CrossCallReturnLabel_16
+   \   000076   80D6         SJMP      ??CrossCallReturnLabel_14
    \                     ??SampleApp_ProcessEvent_8:
    \   000078                ; Setup parameters for call to function SampleApp_HandleKeys
    \   000078   A3           INC       DPTR
@@ -745,11 +745,11 @@ Warning[Pe513]: a value of type "unsigned char *" cannot be assigned to an
    \   000084   E0           MOVX      A,@DPTR
    \   000085   F9           MOV       R1,A
    \   000086   12....       LCALL     `??SampleApp_HandleKeys::?relay`; Banked call to: SampleApp_HandleKeys
-   \   000089   80C3         SJMP      ??CrossCallReturnLabel_16
+   \   000089   80C3         SJMP      ??CrossCallReturnLabel_14
    \                     ??SampleApp_ProcessEvent_7:
    \   00008B                ; Setup parameters for call to function SampleApp_ProcessMSGCmd
    \   00008B   12....       LCALL     `??SampleApp_ProcessMSGCmd::?relay`; Banked call to: SampleApp_ProcessMSGCmd
-   \   00008E   80BE         SJMP      ??CrossCallReturnLabel_16
+   \   00008E   80BE         SJMP      ??CrossCallReturnLabel_14
    \                     ??SampleApp_ProcessEvent_6:
    \   000090   EE           MOV       A,R6
    \   000091   FA           MOV       R2,A
@@ -761,12 +761,12 @@ Warning[Pe513]: a value of type "unsigned char *" cannot be assigned to an
     294                onenet_login_ok = 1; //onenet注册成功 0:未注册，1：注册中　2：注册成功
    \                     ??SampleApp_ProcessEvent_2:
    \   000098   7401         MOV       A,#0x1
-   \   00009A   12....       LCALL     ?Subroutine3 & 0xFFFF
+   \   00009A   12....       LCALL     ?Subroutine4 & 0xFFFF
     295                SampleApp_RxLen = 0;
     296          
     297                //如果没有接入onenet成功，重新发起接入
     298                OneNet_DevLink(); //接入onenet服务器
-   \                     ??CrossCallReturnLabel_2:
+   \                     ??CrossCallReturnLabel_4:
    \   00009D                ; Setup parameters for call to function OneNet_DevLink
    \   00009D   12....       LCALL     `??OneNet_DevLink::?relay`; Banked call to: OneNet_DevLink
     299          
@@ -792,57 +792,57 @@ Warning[Pe513]: a value of type "unsigned char *" cannot be assigned to an
     308              return (events ^ SAMPLEAPP_SEND_PERIODIC_MSG_EVT);
     309            }
    \                     ??SampleApp_ProcessEvent_3:
-   \   0000B3   12....       LCALL     ?Subroutine5 & 0xFFFF
-   \                     ??CrossCallReturnLabel_4:
+   \   0000B3   12....       LCALL     ?Subroutine6 & 0xFFFF
+   \                     ??CrossCallReturnLabel_6:
    \   0000B6   6401         XRL       A,#0x1
-   \   0000B8   8079         SJMP      ??SampleApp_ProcessEvent_10
+   \   0000B8   02....       LJMP      ??SampleApp_ProcessEvent_10 & 0xFFFF
     310          
     311            //心跳定时器时间到
     312            if (events & SAMPLEAPP_ONENET_HEART_BEAT_EVT)
    \                     ??SampleApp_ProcessEvent_1:
-   \   0000BA   5402         ANL       A,#0x2
-   \   0000BC   6018         JZ        ??SampleApp_ProcessEvent_11
+   \   0000BB   5402         ANL       A,#0x2
+   \   0000BD   6018         JZ        ??SampleApp_ProcessEvent_11
     313            {
     314              if (onenet_login_ok == 2)
-   \   0000BE   90....       MOV       DPTR,#onenet_login_ok
-   \   0000C1   E0           MOVX      A,@DPTR
-   \   0000C2   6402         XRL       A,#0x2
-   \   0000C4   7003         JNZ       ??SampleApp_ProcessEvent_12
+   \   0000BF   90....       MOV       DPTR,#onenet_login_ok
+   \   0000C2   E0           MOVX      A,@DPTR
+   \   0000C3   6402         XRL       A,#0x2
+   \   0000C5   7003         JNZ       ??SampleApp_ProcessEvent_12
     315              {
     316                //发送心跳
     317                onenet_mqtt_send_heart();
-   \   0000C6                ; Setup parameters for call to function onenet_mqtt_send_heart
-   \   0000C6   12....       LCALL     `??onenet_mqtt_send_heart::?relay`; Banked call to: onenet_mqtt_send_heart
+   \   0000C7                ; Setup parameters for call to function onenet_mqtt_send_heart
+   \   0000C7   12....       LCALL     `??onenet_mqtt_send_heart::?relay`; Banked call to: onenet_mqtt_send_heart
     318              }
     319          
     320              // 启动心跳定时器，15秒一次
     321              osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_ONENET_HEART_BEAT_EVT, 15000);
    \                     ??SampleApp_ProcessEvent_12:
-   \   0000C9                ; Setup parameters for call to function osal_start_timerEx
-   \   0000C9   7C98         MOV       R4,#-0x68
-   \   0000CB   7D3A         MOV       R5,#0x3a
-   \   0000CD   7A02         MOV       R2,#0x2
-   \   0000CF   12....       LCALL     ?Subroutine5 & 0xFFFF
+   \   0000CA                ; Setup parameters for call to function osal_start_timerEx
+   \   0000CA   7C98         MOV       R4,#-0x68
+   \   0000CC   7D3A         MOV       R5,#0x3a
+   \   0000CE   7A02         MOV       R2,#0x2
+   \   0000D0   12....       LCALL     ?Subroutine6 & 0xFFFF
     322          
     323              // return unprocessed events
     324              return (events ^ SAMPLEAPP_ONENET_HEART_BEAT_EVT);
     325            }
-   \                     ??CrossCallReturnLabel_5:
-   \   0000D2   6402         XRL       A,#0x2
-   \   0000D4   805D         SJMP      ??SampleApp_ProcessEvent_10
+   \                     ??CrossCallReturnLabel_7:
+   \   0000D3   6402         XRL       A,#0x2
+   \   0000D5   8066         SJMP      ??SampleApp_ProcessEvent_10
     326          
     327            //发送数据定时器时间到
     328            if (events & SAMPLEAPP_ONENET_SEND_DATA_EVT)
    \                     ??SampleApp_ProcessEvent_11:
-   \   0000D6   EA           MOV       A,R2
-   \   0000D7   5404         ANL       A,#0x4
-   \   0000D9   605D         JZ        ??SampleApp_ProcessEvent_13
+   \   0000D7   EA           MOV       A,R2
+   \   0000D8   5404         ANL       A,#0x4
+   \   0000DA   6066         JZ        ??SampleApp_ProcessEvent_13
     329            {
     330              if (onenet_login_ok == 2)
-   \   0000DB   90....       MOV       DPTR,#onenet_login_ok
-   \   0000DE   E0           MOVX      A,@DPTR
-   \   0000DF   6402         XRL       A,#0x2
-   \   0000E1   7045         JNZ       ??SampleApp_ProcessEvent_14
+   \   0000DC   90....       MOV       DPTR,#onenet_login_ok
+   \   0000DF   E0           MOVX      A,@DPTR
+   \   0000E0   6402         XRL       A,#0x2
+   \   0000E2   704E         JNZ       ??SampleApp_ProcessEvent_14
     331              {
     332                //发送温湿度数据到onenet
     333                //    OneNet_SendData(end_temp, end_hum);
@@ -856,111 +856,117 @@ Warning[Pe167]: argument of type "unsigned char *" is incompatible with
     338                      \"hum\":%d,\
     339                         \"end_light\":%d,\
     340                        \"end_led2\":%d,\
-    341          			  \"end_obstacles\":%d }\
-    342                  }",
-    343                        end_temp,
-    344                        end_hum,
-    345                        end_light,
-    346                        end_led2,
-    347                        end_obstacles);
-   \   0000E3                ; Setup parameters for call to function sprintf
-   \   0000E3   90....       MOV       DPTR,#end_obstacles
-   \   0000E6   12....       LCALL     ?Subroutine8 & 0xFFFF
-   \                     ??CrossCallReturnLabel_13:
-   \   0000E9   12....       LCALL     ?PUSH_XSTACK_I_TWO
-   \   0000EC   90....       MOV       DPTR,#end_led2
-   \   0000EF   12....       LCALL     ??Subroutine11_0 & 0xFFFF
+    341          			  \"end_obstacles\":%d,\
+    342                    \"end_smoke\":%d }\
+    343                  }",
+    344                        end_temp,
+    345                        end_hum,
+    346                        end_light,
+    347                        end_led2,
+    348                        end_obstacles,
+    349                        end_smoke);
+   \   0000E4                ; Setup parameters for call to function sprintf
+   \   0000E4   90....       MOV       DPTR,#end_smoke
+   \   0000E7   12....       LCALL     ?Subroutine7 & 0xFFFF
+   \                     ??CrossCallReturnLabel_9:
+   \   0000EA   12....       LCALL     ?PUSH_XSTACK_I_TWO
+   \   0000ED   90....       MOV       DPTR,#end_obstacles
+   \   0000F0   12....       LCALL     ??Subroutine11_0 & 0xFFFF
+   \                     ??CrossCallReturnLabel_18:
+   \   0000F3   12....       LCALL     ?PUSH_XSTACK_I_TWO
+   \   0000F6   90....       MOV       DPTR,#end_led2
+   \   0000F9   12....       LCALL     ??Subroutine11_0 & 0xFFFF
+   \                     ??CrossCallReturnLabel_19:
+   \   0000FC   12....       LCALL     ?PUSH_XSTACK_I_TWO
+   \   0000FF   90....       MOV       DPTR,#end_light
+   \   000102   12....       LCALL     ??Subroutine11_0 & 0xFFFF
    \                     ??CrossCallReturnLabel_20:
-   \   0000F2   12....       LCALL     ?PUSH_XSTACK_I_TWO
-   \   0000F5   90....       MOV       DPTR,#end_light
-   \   0000F8   12....       LCALL     ??Subroutine11_0 & 0xFFFF
-   \                     ??CrossCallReturnLabel_21:
-   \   0000FB   12....       LCALL     ?PUSH_XSTACK_I_TWO
-   \   0000FE   12....       LCALL     ?Subroutine4 & 0xFFFF
-   \                     ??CrossCallReturnLabel_23:
-   \   000101   12....       LCALL     ?PUSH_XSTACK_I_TWO
-   \   000104   90....       MOV       DPTR,#end_temp
-   \   000107   12....       LCALL     ??Subroutine11_0 & 0xFFFF
+   \   000105   12....       LCALL     ?PUSH_XSTACK_I_TWO
+   \   000108   12....       LCALL     ?Subroutine5 & 0xFFFF
    \                     ??CrossCallReturnLabel_22:
-   \   00010A   12....       LCALL     ?PUSH_XSTACK_I_TWO
-   \   00010D   7C..         MOV       R4,#`?<Constant "{\\"method\\":\\"thing.serv...">` & 0xff
-   \   00010F   7D..         MOV       R5,#(`?<Constant "{\\"method\\":\\"thing.serv...">` >> 8) & 0xff
-   \   000111   7A..         MOV       R2,#mqtt_message & 0xff
-   \   000113   7B..         MOV       R3,#(mqtt_message >> 8) & 0xff
-   \   000115   12....       LCALL     `??sprintf::?relay`; Banked call to: sprintf
-   \   000118   740A         MOV       A,#0xa
-   \   00011A   12....       LCALL     ?DEALLOC_XSTACK8
-    348          
-    349                //发布主题
-    350                mqtt_publish_topic(topics_post, mqtt_message);
+   \   00010B   12....       LCALL     ?PUSH_XSTACK_I_TWO
+   \   00010E   90....       MOV       DPTR,#end_temp
+   \   000111   12....       LCALL     ??Subroutine11_0 & 0xFFFF
+   \                     ??CrossCallReturnLabel_21:
+   \   000114   12....       LCALL     ?PUSH_XSTACK_I_TWO
+   \   000117   7C..         MOV       R4,#`?<Constant "{\\"method\\":\\"thing.serv...">` & 0xff
+   \   000119   7D..         MOV       R5,#(`?<Constant "{\\"method\\":\\"thing.serv...">` >> 8) & 0xff
+   \   00011B   7A..         MOV       R2,#mqtt_message & 0xff
+   \   00011D   7B..         MOV       R3,#(mqtt_message >> 8) & 0xff
+   \   00011F   12....       LCALL     `??sprintf::?relay`; Banked call to: sprintf
+   \   000122   740C         MOV       A,#0xc
+   \   000124   12....       LCALL     ?DEALLOC_XSTACK8
+    350          
+    351                //发布主题
+    352                mqtt_publish_topic(topics_post, mqtt_message);
                                           ^
 Warning[Pe167]: argument of type "unsigned char *" is incompatible with
           parameter of type "char const *"
 
         mqtt_publish_topic(topics_post, mqtt_message);
                                         ^
-"C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c",350  Warning[Pe167]: 
+"C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c",352  Warning[Pe167]: 
           argument of type "unsigned char *" is incompatible with parameter of
           type "char const *"
-   \   00011D                ; Setup parameters for call to function mqtt_publish_topic
-   \   00011D   7C..         MOV       R4,#mqtt_message & 0xff
-   \   00011F   7D..         MOV       R5,#(mqtt_message >> 8) & 0xff
-   \   000121   7A..         MOV       R2,#topics_post & 0xff
-   \   000123   7B..         MOV       R3,#(topics_post >> 8) & 0xff
-   \   000125   12....       LCALL     `??mqtt_publish_topic::?relay`; Banked call to: mqtt_publish_topic
-    351          
-    352                //  OneNet_publish_topic();
-    353              }
-    354          
-    355              // 启动发送数据定时器，5秒一次
-    356              osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_ONENET_SEND_DATA_EVT, 5000);
+   \   000127                ; Setup parameters for call to function mqtt_publish_topic
+   \   000127   7C..         MOV       R4,#mqtt_message & 0xff
+   \   000129   7D..         MOV       R5,#(mqtt_message >> 8) & 0xff
+   \   00012B   7A..         MOV       R2,#topics_post & 0xff
+   \   00012D   7B..         MOV       R3,#(topics_post >> 8) & 0xff
+   \   00012F   12....       LCALL     `??mqtt_publish_topic::?relay`; Banked call to: mqtt_publish_topic
+    353          
+    354                //  OneNet_publish_topic();
+    355              }
+    356          
+    357              // 启动发送数据定时器，5秒一次
+    358              osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_ONENET_SEND_DATA_EVT, 5000);
    \                     ??SampleApp_ProcessEvent_14:
-   \   000128                ; Setup parameters for call to function osal_start_timerEx
-   \   000128   7C88         MOV       R4,#-0x78
-   \   00012A   7D13         MOV       R5,#0x13
-   \   00012C   7A04         MOV       R2,#0x4
-   \   00012E   12....       LCALL     ?Subroutine5 & 0xFFFF
-    357          
-    358              // return unprocessed events
-    359              return (events ^ SAMPLEAPP_ONENET_SEND_DATA_EVT);
-    360            }
-   \                     ??CrossCallReturnLabel_6:
-   \   000131   6404         XRL       A,#0x4
+   \   000132                ; Setup parameters for call to function osal_start_timerEx
+   \   000132   7C88         MOV       R4,#-0x78
+   \   000134   7D13         MOV       R5,#0x13
+   \   000136   7A04         MOV       R2,#0x4
+   \   000138   12....       LCALL     ?Subroutine6 & 0xFFFF
+    359          
+    360              // return unprocessed events
+    361              return (events ^ SAMPLEAPP_ONENET_SEND_DATA_EVT);
+    362            }
+   \                     ??CrossCallReturnLabel_8:
+   \   00013B   6404         XRL       A,#0x4
    \                     ??SampleApp_ProcessEvent_10:
-   \   000133   FA           MOV       R2,A
-   \   000134   EF           MOV       A,R7
+   \   00013D   FA           MOV       R2,A
+   \   00013E   EF           MOV       A,R7
    \                     ??SampleApp_ProcessEvent_9:
-   \   000135   FB           MOV       R3,A
-   \   000136   8004         SJMP      ??SampleApp_ProcessEvent_15
-    361          
-    362          #else
+   \   00013F   FB           MOV       R3,A
+   \   000140   8004         SJMP      ??SampleApp_ProcessEvent_15
     363          
-    364            //定时器时间到
-    365            if (events & SAMPLEAPP_SEND_PERIODIC_MSG_EVT)
-    366            {
-    367          
-    368              // DHT11采集
-    369              SampleApp_Send_P2P_Message();
-    370          
-    371              // Setup to send message again in normal period (+ a little jitter)
-    372              osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_SEND_PERIODIC_MSG_EVT,
-    373                                 (SAMPLEAPP_SEND_PERIODIC_MSG_TIMEOUT + (osal_rand() & 0x00FF)));
-    374          
-    375              // return unprocessed events
-    376              return (events ^ SAMPLEAPP_SEND_PERIODIC_MSG_EVT);
-    377            }
-    378          
-    379          #endif
+    364          #else
+    365          
+    366            //定时器时间到
+    367            if (events & SAMPLEAPP_SEND_PERIODIC_MSG_EVT)
+    368            {
+    369          
+    370              // DHT11采集
+    371              SampleApp_Send_P2P_Message();
+    372          
+    373              // Setup to send message again in normal period (+ a little jitter)
+    374              osal_start_timerEx(SampleApp_TaskID, SAMPLEAPP_SEND_PERIODIC_MSG_EVT,
+    375                                 (SAMPLEAPP_SEND_PERIODIC_MSG_TIMEOUT + (osal_rand() & 0x00FF)));
+    376          
+    377              // return unprocessed events
+    378              return (events ^ SAMPLEAPP_SEND_PERIODIC_MSG_EVT);
+    379            }
     380          
-    381            return (0); // Discard unknown events.
+    381          #endif
+    382          
+    383            return (0); // Discard unknown events.
    \                     ??SampleApp_ProcessEvent_13:
-   \   000138   7A00         MOV       R2,#0x0
-   \   00013A   7B00         MOV       R3,#0x0
+   \   000142   7A00         MOV       R2,#0x0
+   \   000144   7B00         MOV       R3,#0x0
    \                     ??SampleApp_ProcessEvent_15:
-   \   00013C                REQUIRE ?Subroutine1
-   \   00013C                REQUIRE _A_P1
-   \   00013C                ; // Fall through to label ?Subroutine1
-    382          }
+   \   000146                REQUIRE ?Subroutine1
+   \   000146                REQUIRE _A_P1
+   \   000146                ; // Fall through to label ?Subroutine1
+    384          }
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
    \                     ?Subroutine1:
@@ -968,9 +974,9 @@ Warning[Pe167]: argument of type "unsigned char *" is incompatible with
    \   000002   02....       LJMP      ?BANKED_LEAVE_XDATA
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-   \                     ?Subroutine5:
+   \                     ?Subroutine6:
    \   000000   12....       LCALL     ?Subroutine9 & 0xFFFF
-   \                     ??CrossCallReturnLabel_17:
+   \                     ??CrossCallReturnLabel_15:
    \   000003   EE           MOV       A,R6
    \   000004   22           RET
 
@@ -984,7 +990,7 @@ Warning[Pe167]: argument of type "unsigned char *" is incompatible with
    \   00000A   22           RET
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-   \                     ?Subroutine8:
+   \                     ?Subroutine7:
    \   000000   E0           MOVX      A,@DPTR
    \   000001   F5..         MOV       ?V0,A
    \   000003   75..00       MOV       ?V1,#0x0
@@ -992,7 +998,7 @@ Warning[Pe167]: argument of type "unsigned char *" is incompatible with
    \   000008   22           RET
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-   \                     ?Subroutine4:
+   \                     ?Subroutine5:
    \   000000   90....       MOV       DPTR,#end_hum
    \   000003                REQUIRE ??Subroutine11_0
    \   000003                ; // Fall through to label ??Subroutine11_0
@@ -1005,7 +1011,7 @@ Warning[Pe167]: argument of type "unsigned char *" is incompatible with
    \   000005   22           RET
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-   \                     ?Subroutine3:
+   \                     ?Subroutine4:
    \   000000   F0           MOVX      @DPTR,A
    \   000001   90....       MOV       DPTR,#SampleApp_RxLen
    \   000004   E4           CLR       A
@@ -1013,24 +1019,24 @@ Warning[Pe167]: argument of type "unsigned char *" is incompatible with
    \   000006   A3           INC       DPTR
    \   000007   F0           MOVX      @DPTR,A
    \   000008   22           RET
-    383          
-    384          /*********************************************************************
-    385           * @fn      SerialApp_ProcessMSGCmd
-    386           *
-    387           * @brief   Data message processor callback. This function processes
-    388           *          any incoming data - probably from other devices. Based
-    389           *          on the cluster ID, perform the intended action.
-    390           *
-    391           * @param   pkt - pointer to the incoming message packet
+    385          
+    386          /*********************************************************************
+    387           * @fn      SerialApp_ProcessMSGCmd
+    388           *
+    389           * @brief   Data message processor callback. This function processes
+    390           *          any incoming data - probably from other devices. Based
+    391           *          on the cluster ID, perform the intended action.
     392           *
-    393           * @return  TRUE if the 'pkt' parameter is being used and will be freed later,
-    394           *          FALSE otherwise.
-    395           */
+    393           * @param   pkt - pointer to the incoming message packet
+    394           *
+    395           * @return  TRUE if the 'pkt' parameter is being used and will be freed later,
+    396           *          FALSE otherwise.
+    397           */
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-    396          void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
+    398          void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
    \                     SampleApp_ProcessMSGCmd:
-    397          {
+    399          {
    \   000000                REQUIRE ?V0
    \   000000                REQUIRE ?V1
    \   000000                REQUIRE ?V2
@@ -1044,14 +1050,14 @@ Warning[Pe167]: argument of type "unsigned char *" is incompatible with
    \   00000B   FE           MOV       R6,A
    \   00000C   EB           MOV       A,R3
    \   00000D   FF           MOV       R7,A
-    398            uint8 buff[20] = {0};
+    400            uint8 buff[20] = {0};
    \   00000E   90....       MOV       DPTR,#`?<Constant {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0`
    \   000011   AC..         MOV       R4,?XSP + 0
    \   000013   AD..         MOV       R5,?XSP + 1
    \   000015   7414         MOV       A,#0x14
    \   000017   12....       LCALL     ?MOVE_LONG8_XDATA_XDATA
-    399          
-    400            switch (pkt->clusterId)
+    401          
+    402            switch (pkt->clusterId)
    \   00001A   8A82         MOV       DPL,R2
    \   00001C   8B83         MOV       DPH,R3
    \   00001E   A3           INC       DPTR
@@ -1073,12 +1079,12 @@ Warning[Pe167]: argument of type "unsigned char *" is incompatible with
    \   000035   ....         DW        ??SampleApp_ProcessMSGCmd_0
    \   000037   ....         DW        ??SampleApp_ProcessMSGCmd_0
    \   000039   ....         DW        ??SampleApp_ProcessMSGCmd_2
-    401            {
-    402            // 接收终端上传的温度数据
-    403            case SAMPLEAPP_P2P_CLUSTERID:
-    404          #ifdef ZDO_COORDINATOR
-    405            {
-    406              end_temp = pkt->cmd.Data[0]; //终端温度
+    403            {
+    404            // 接收终端上传的温度数据
+    405            case SAMPLEAPP_P2P_CLUSTERID:
+    406          #ifdef ZDO_COORDINATOR
+    407            {
+    408              end_temp = pkt->cmd.Data[0]; //终端温度
    \                     ??SampleApp_ProcessMSGCmd_1:
    \   00003B   EA           MOV       A,R2
    \   00003C   2422         ADD       A,#0x22
@@ -1088,261 +1094,255 @@ Warning[Pe167]: argument of type "unsigned char *" is incompatible with
    \   000041   F9           MOV       R1,A
    \   000042   8882         MOV       DPL,R0
    \   000044   F583         MOV       DPH,A
-   \   000046   12....       LCALL     ?Subroutine7 & 0xFFFF
-   \                     ??CrossCallReturnLabel_11:
+   \   000046   12....       LCALL     ?Subroutine10 & 0xFFFF
+   \                     ??CrossCallReturnLabel_16:
    \   000049   E0           MOVX      A,@DPTR
    \   00004A   90....       MOV       DPTR,#end_temp
-   \   00004D   F0           MOVX      @DPTR,A
-    407              end_hum = pkt->cmd.Data[1];  //终端湿度
-   \   00004E   8882         MOV       DPL,R0
-   \   000050   8983         MOV       DPH,R1
-   \   000052   12....       LCALL     ?Subroutine7 & 0xFFFF
-   \                     ??CrossCallReturnLabel_12:
-   \   000055   A3           INC       DPTR
-   \   000056   E0           MOVX      A,@DPTR
-   \   000057   90....       MOV       DPTR,#end_hum
-   \   00005A   12....       LCALL     ?Subroutine2 & 0xFFFF
-    408          
-    409              end_light = pkt->cmd.Data[2]; //终端亮度
+   \   00004D   12....       LCALL     ?Subroutine3 & 0xFFFF
+    409              end_hum = pkt->cmd.Data[1];  //终端湿度
+   \                     ??CrossCallReturnLabel_2:
+   \   000050   E0           MOVX      A,@DPTR
+   \   000051   90....       MOV       DPTR,#end_hum
+   \   000054   12....       LCALL     ?Subroutine3 & 0xFFFF
+    410          
+    411              end_light = pkt->cmd.Data[2];     //终端亮度
+   \                     ??CrossCallReturnLabel_3:
+   \   000057   A3           INC       DPTR
+   \   000058   E0           MOVX      A,@DPTR
+   \   000059   90....       MOV       DPTR,#end_light
+   \   00005C   12....       LCALL     ?Subroutine2 & 0xFFFF
+    412              end_led2 = pkt->cmd.Data[3];      //led2
    \                     ??CrossCallReturnLabel_0:
-   \   00005D   E0           MOVX      A,@DPTR
-   \   00005E   90....       MOV       DPTR,#end_light
-   \   000061   12....       LCALL     ?Subroutine2 & 0xFFFF
-    410              end_led2 = pkt->cmd.Data[3];
+   \   00005F   E0           MOVX      A,@DPTR
+   \   000060   90....       MOV       DPTR,#end_led2
+   \   000063   12....       LCALL     ?Subroutine2 & 0xFFFF
+    413              end_obstacles = pkt->cmd.Data[4]; //障碍物
    \                     ??CrossCallReturnLabel_1:
-   \   000064   A3           INC       DPTR
-   \   000065   E0           MOVX      A,@DPTR
-   \   000066   90....       MOV       DPTR,#end_led2
-   \   000069   F0           MOVX      @DPTR,A
-    411              end_obstacles = pkt->cmd.Data[4];
-   \   00006A   8882         MOV       DPL,R0
-   \   00006C   8983         MOV       DPH,R1
-   \   00006E   E0           MOVX      A,@DPTR
-   \   00006F   F8           MOV       R0,A
-   \   000070   A3           INC       DPTR
-   \   000071   E0           MOVX      A,@DPTR
-   \   000072   F583         MOV       DPH,A
-   \   000074   8882         MOV       DPL,R0
-   \   000076   A3           INC       DPTR
-   \   000077   A3           INC       DPTR
+   \   000066   A3           INC       DPTR
+   \   000067   E0           MOVX      A,@DPTR
+   \   000068   90....       MOV       DPTR,#end_obstacles
+   \   00006B   F0           MOVX      @DPTR,A
+    414              end_smoke = pkt->cmd.Data[5];     //烟雾
+   \   00006C   8882         MOV       DPL,R0
+   \   00006E   8983         MOV       DPH,R1
+   \   000070   E0           MOVX      A,@DPTR
+   \   000071   F8           MOV       R0,A
+   \   000072   A3           INC       DPTR
+   \   000073   E0           MOVX      A,@DPTR
+   \   000074   F583         MOV       DPH,A
+   \   000076   8882         MOV       DPL,R0
    \   000078   A3           INC       DPTR
    \   000079   A3           INC       DPTR
-   \   00007A   E0           MOVX      A,@DPTR
-   \   00007B   90....       MOV       DPTR,#end_obstacles
-   \   00007E   F0           MOVX      @DPTR,A
-    412          
-    413              //cor_led3 = !cor_led3;
-    414              sprintf(buff, "T:%d", end_temp);
+   \   00007A   A3           INC       DPTR
+   \   00007B   A3           INC       DPTR
+   \   00007C   A3           INC       DPTR
+   \   00007D   E0           MOVX      A,@DPTR
+   \   00007E   90....       MOV       DPTR,#end_smoke
+   \   000081   F0           MOVX      @DPTR,A
+    415          
+    416              //cor_led3 = !cor_led3;
+    417              sprintf(buff, "T:%d", end_temp);
                              ^
 Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
           type "char *"
-   \   00007F                ; Setup parameters for call to function sprintf
-   \   00007F   90....       MOV       DPTR,#end_temp
-   \   000082   12....       LCALL     ?Subroutine8 & 0xFFFF
-   \                     ??CrossCallReturnLabel_14:
-   \   000085   12....       LCALL     ?PUSH_XSTACK_I_TWO
-   \   000088   7C..         MOV       R4,#`?<Constant "T:%d">` & 0xff
-   \   00008A   7D..         MOV       R5,#(`?<Constant "T:%d">` >> 8) & 0xff
-   \   00008C   7402         MOV       A,#0x2
-   \   00008E   12....       LCALL     ?XSTACK_DISP101_8
-   \   000091   12....       LCALL     `??sprintf::?relay`; Banked call to: sprintf
-   \   000094   7402         MOV       A,#0x2
-   \   000096   12....       LCALL     ?DEALLOC_XSTACK8
-    415              HalLcdWriteString(buff, HAL_LCD_LINE_3); //LCD显示
+   \   000082                ; Setup parameters for call to function sprintf
+   \   000082   90....       MOV       DPTR,#end_temp
+   \   000085   12....       LCALL     ?Subroutine7 & 0xFFFF
+   \                     ??CrossCallReturnLabel_10:
+   \   000088   12....       LCALL     ?PUSH_XSTACK_I_TWO
+   \   00008B   7C..         MOV       R4,#`?<Constant "T:%d">` & 0xff
+   \   00008D   7D..         MOV       R5,#(`?<Constant "T:%d">` >> 8) & 0xff
+   \   00008F   7402         MOV       A,#0x2
+   \   000091   12....       LCALL     ?XSTACK_DISP101_8
+   \   000094   12....       LCALL     `??sprintf::?relay`; Banked call to: sprintf
+   \   000097   7402         MOV       A,#0x2
+   \   000099   12....       LCALL     ?DEALLOC_XSTACK8
+    418              HalLcdWriteString(buff, HAL_LCD_LINE_3); //LCD显示
                                        ^
 Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
           type "char *"
-   \   000099                ; Setup parameters for call to function HalLcdWriteString
-   \   000099   7903         MOV       R1,#0x3
-   \   00009B   AA..         MOV       R2,?XSP + 0
-   \   00009D   AB..         MOV       R3,?XSP + 1
-   \   00009F   12....       LCALL     `??HalLcdWriteString::?relay`; Banked call to: HalLcdWriteString
-    416          
-    417              sprintf(buff, "H:%d", end_hum);
+   \   00009C                ; Setup parameters for call to function HalLcdWriteString
+   \   00009C   7903         MOV       R1,#0x3
+   \   00009E   AA..         MOV       R2,?XSP + 0
+   \   0000A0   AB..         MOV       R3,?XSP + 1
+   \   0000A2   12....       LCALL     `??HalLcdWriteString::?relay`; Banked call to: HalLcdWriteString
+    419          
+    420              sprintf(buff, "H:%d", end_hum);
                              ^
 Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
           type "char *"
-   \   0000A2                ; Setup parameters for call to function sprintf
-   \   0000A2   12....       LCALL     ?Subroutine4 & 0xFFFF
-   \                     ??CrossCallReturnLabel_24:
-   \   0000A5   12....       LCALL     ?PUSH_XSTACK_I_TWO
-   \   0000A8   7C..         MOV       R4,#`?<Constant "H:%d">` & 0xff
-   \   0000AA   7D..         MOV       R5,#(`?<Constant "H:%d">` >> 8) & 0xff
-   \   0000AC   7402         MOV       A,#0x2
-   \   0000AE   12....       LCALL     ?XSTACK_DISP101_8
-   \   0000B1   12....       LCALL     `??sprintf::?relay`; Banked call to: sprintf
-   \   0000B4   7402         MOV       A,#0x2
-   \   0000B6   12....       LCALL     ?DEALLOC_XSTACK8
-    418              HalLcdWriteString(buff, HAL_LCD_LINE_4); //LCD显示
+   \   0000A5                ; Setup parameters for call to function sprintf
+   \   0000A5   12....       LCALL     ?Subroutine5 & 0xFFFF
+   \                     ??CrossCallReturnLabel_23:
+   \   0000A8   12....       LCALL     ?PUSH_XSTACK_I_TWO
+   \   0000AB   7C..         MOV       R4,#`?<Constant "H:%d">` & 0xff
+   \   0000AD   7D..         MOV       R5,#(`?<Constant "H:%d">` >> 8) & 0xff
+   \   0000AF   7402         MOV       A,#0x2
+   \   0000B1   12....       LCALL     ?XSTACK_DISP101_8
+   \   0000B4   12....       LCALL     `??sprintf::?relay`; Banked call to: sprintf
+   \   0000B7   7402         MOV       A,#0x2
+   \   0000B9   12....       LCALL     ?DEALLOC_XSTACK8
+    421              HalLcdWriteString(buff, HAL_LCD_LINE_4); //LCD显示
                                        ^
 Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
           type "char *"
-   \   0000B9                ; Setup parameters for call to function HalLcdWriteString
-   \   0000B9   7904         MOV       R1,#0x4
-   \   0000BB   AA..         MOV       R2,?XSP + 0
-   \   0000BD   AB..         MOV       R3,?XSP + 1
-   \   0000BF   12....       LCALL     `??HalLcdWriteString::?relay`; Banked call to: HalLcdWriteString
-    419            }
-    420          #endif
-    421            break;
-   \   0000C2   02....       LJMP      ??SampleApp_ProcessMSGCmd_0 & 0xFFFF
-    422          
-    423            case SAMPLEAPP_PERIODIC_CLUSTERID:
-    424          
-    425              break;
-    426            case SAMPLEAPP_CTE_CLUSTERID: //coor to end 终端进行命令解析和处理
-    427              char buf[128];
+   \   0000BC                ; Setup parameters for call to function HalLcdWriteString
+   \   0000BC   7904         MOV       R1,#0x4
+   \   0000BE   AA..         MOV       R2,?XSP + 0
+   \   0000C0   AB..         MOV       R3,?XSP + 1
+   \   0000C2   12....       LCALL     `??HalLcdWriteString::?relay`; Banked call to: HalLcdWriteString
+    422            }
+    423          #endif
+    424            break;
+   \   0000C5   02....       LJMP      ??SampleApp_ProcessMSGCmd_0 & 0xFFFF
+    425          
+    426            case SAMPLEAPP_PERIODIC_CLUSTERID:
+    427          
+    428              break;
+    429            case SAMPLEAPP_CTE_CLUSTERID: //coor to end 终端进行命令解析和处理
+    430              char buf[128];
                      ^
 Warning[Pe1072]: a declaration cannot have a label
-    428              osal_memset(buf, '\0', 128);
+    431              osal_memset(buf, '\0', 128);
    \                     ??SampleApp_ProcessMSGCmd_2:
-   \   0000C5                ; Setup parameters for call to function osal_memset
-   \   0000C5   7C80         MOV       R4,#-0x80
-   \   0000C7   7D00         MOV       R5,#0x0
-   \   0000C9   7900         MOV       R1,#0x0
-   \   0000CB   7414         MOV       A,#0x14
-   \   0000CD   12....       LCALL     ?XSTACK_DISP101_8
-   \   0000D0   12....       LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
-    429              osal_memcpy(buf, pkt->cmd.Data, pkt->cmd.DataLength); //复制到缓冲区
-   \   0000D3                ; Setup parameters for call to function osal_memcpy
-   \   0000D3   EE           MOV       A,R6
-   \   0000D4   2422         ADD       A,#0x22
-   \   0000D6   F582         MOV       DPL,A
-   \   0000D8   E4           CLR       A
-   \   0000D9   3F           ADDC      A,R7
-   \   0000DA   F583         MOV       DPH,A
-   \   0000DC   E0           MOVX      A,@DPTR
-   \   0000DD   F5..         MOV       ?V0,A
-   \   0000DF   A3           INC       DPTR
-   \   0000E0   E0           MOVX      A,@DPTR
-   \   0000E1   F5..         MOV       ?V1,A
-   \   0000E3   75..00       MOV       ?V2,#0x0
-   \   0000E6   78..         MOV       R0,#?V0
-   \   0000E8   12....       LCALL     ?PUSH_XSTACK_I_THREE
-   \   0000EB   EE           MOV       A,R6
-   \   0000EC   2420         ADD       A,#0x20
-   \   0000EE   F582         MOV       DPL,A
-   \   0000F0   E4           CLR       A
-   \   0000F1   3F           ADDC      A,R7
-   \   0000F2   F583         MOV       DPH,A
-   \   0000F4   E0           MOVX      A,@DPTR
-   \   0000F5   FC           MOV       R4,A
-   \   0000F6   A3           INC       DPTR
+   \   0000C8                ; Setup parameters for call to function osal_memset
+   \   0000C8   7C80         MOV       R4,#-0x80
+   \   0000CA   7D00         MOV       R5,#0x0
+   \   0000CC   7900         MOV       R1,#0x0
+   \   0000CE   7414         MOV       A,#0x14
+   \   0000D0   12....       LCALL     ?XSTACK_DISP101_8
+   \   0000D3   12....       LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
+    432              osal_memcpy(buf, pkt->cmd.Data, pkt->cmd.DataLength); //复制到缓冲区
+   \   0000D6                ; Setup parameters for call to function osal_memcpy
+   \   0000D6   EE           MOV       A,R6
+   \   0000D7   2422         ADD       A,#0x22
+   \   0000D9   F582         MOV       DPL,A
+   \   0000DB   E4           CLR       A
+   \   0000DC   3F           ADDC      A,R7
+   \   0000DD   F583         MOV       DPH,A
+   \   0000DF   E0           MOVX      A,@DPTR
+   \   0000E0   F5..         MOV       ?V0,A
+   \   0000E2   A3           INC       DPTR
+   \   0000E3   E0           MOVX      A,@DPTR
+   \   0000E4   F5..         MOV       ?V1,A
+   \   0000E6   75..00       MOV       ?V2,#0x0
+   \   0000E9   78..         MOV       R0,#?V0
+   \   0000EB   12....       LCALL     ?PUSH_XSTACK_I_THREE
+   \   0000EE   EE           MOV       A,R6
+   \   0000EF   2420         ADD       A,#0x20
+   \   0000F1   F582         MOV       DPL,A
+   \   0000F3   E4           CLR       A
+   \   0000F4   3F           ADDC      A,R7
+   \   0000F5   F583         MOV       DPH,A
    \   0000F7   E0           MOVX      A,@DPTR
-   \   0000F8   FD           MOV       R5,A
-   \   0000F9   7417         MOV       A,#0x17
-   \   0000FB   12....       LCALL     ?XSTACK_DISP101_8
-   \   0000FE   12....       LCALL     `??osal_memcpy::?relay`; Banked call to: osal_memcpy
-   \   000101   7403         MOV       A,#0x3
-   \   000103   12....       LCALL     ?DEALLOC_XSTACK8
-    430              HalUARTWrite(0, buf, osal_strlen(buf));               //串口输出提示信息
+   \   0000F8   FC           MOV       R4,A
+   \   0000F9   A3           INC       DPTR
+   \   0000FA   E0           MOVX      A,@DPTR
+   \   0000FB   FD           MOV       R5,A
+   \   0000FC   7417         MOV       A,#0x17
+   \   0000FE   12....       LCALL     ?XSTACK_DISP101_8
+   \   000101   12....       LCALL     `??osal_memcpy::?relay`; Banked call to: osal_memcpy
+   \   000104   7403         MOV       A,#0x3
+   \   000106   12....       LCALL     ?DEALLOC_XSTACK8
+    433              HalUARTWrite(0, buf, osal_strlen(buf));               //串口输出提示信息
                                      ^
 Warning[Pe167]: argument of type "char *" is incompatible with parameter of
           type "uint8 *"
-   \   000106                ; Setup parameters for call to function osal_strlen
-   \   000106   7414         MOV       A,#0x14
-   \   000108   12....       LCALL     ?XSTACK_DISP101_8
-   \   00010B   12....       LCALL     `??osal_strlen::?relay`; Banked call to: osal_strlen
-   \   00010E   8A..         MOV       ?V0,R2
-   \   000110   8B..         MOV       ?V1,R3
-   \   000112   AC..         MOV       R4,?V0
-   \   000114   AD..         MOV       R5,?V1
-   \   000116                ; Setup parameters for call to function HalUARTWrite
-   \   000116   7414         MOV       A,#0x14
-   \   000118   12....       LCALL     ?XSTACK_DISP101_8
-   \   00011B   7900         MOV       R1,#0x0
-   \   00011D   12....       LCALL     `??HalUARTWrite::?relay`; Banked call to: HalUARTWrite
-    431              HalUARTWrite(0, "\r\n", 2);                           //串口输出提示信息
-   \   000120                ; Setup parameters for call to function HalUARTWrite
-   \   000120   7C02         MOV       R4,#0x2
-   \   000122   7D00         MOV       R5,#0x0
-   \   000124   7A..         MOV       R2,#`?<Constant "\\r\\n">` & 0xff
-   \   000126   7B..         MOV       R3,#(`?<Constant "\\r\\n">` >> 8) & 0xff
-   \   000128   7900         MOV       R1,#0x0
-   \   00012A   12....       LCALL     `??HalUARTWrite::?relay`; Banked call to: HalUARTWrite
-    432          
-    433              if (strstr(buf, "D2:0"))
-   \   00012D                ; Setup parameters for call to function strstr
-   \   00012D   7C..         MOV       R4,#`?<Constant "D2:0">` & 0xff
-   \   00012F   7D..         MOV       R5,#(`?<Constant "D2:0">` >> 8) & 0xff
-   \   000131   7414         MOV       A,#0x14
-   \   000133   12....       LCALL     ?XSTACK_DISP101_8
-   \   000136   12....       LCALL     ?Subroutine6 & 0xFFFF
-   \                     ??CrossCallReturnLabel_7:
-   \   000139   6004         JZ        ??SampleApp_ProcessMSGCmd_3
-    434                HalLedSet(HAL_LED_2, HAL_LED_MODE_OFF); //LED2
-   \   00013B                ; Setup parameters for call to function HalLedSet
-   \   00013B   7A00         MOV       R2,#0x0
-   \   00013D   8010         SJMP      ??SampleApp_ProcessMSGCmd_4
-    435              else if (strstr(buf, "D2:1"))
+   \   000109                ; Setup parameters for call to function osal_strlen
+   \   000109   7414         MOV       A,#0x14
+   \   00010B   12....       LCALL     ?XSTACK_DISP101_8
+   \   00010E   12....       LCALL     `??osal_strlen::?relay`; Banked call to: osal_strlen
+   \   000111   8A..         MOV       ?V0,R2
+   \   000113   8B..         MOV       ?V1,R3
+   \   000115   AC..         MOV       R4,?V0
+   \   000117   AD..         MOV       R5,?V1
+   \   000119                ; Setup parameters for call to function HalUARTWrite
+   \   000119   7414         MOV       A,#0x14
+   \   00011B   12....       LCALL     ?XSTACK_DISP101_8
+   \   00011E   7900         MOV       R1,#0x0
+   \   000120   12....       LCALL     `??HalUARTWrite::?relay`; Banked call to: HalUARTWrite
+    434              HalUARTWrite(0, "\r\n", 2);                           //串口输出提示信息
+   \   000123                ; Setup parameters for call to function HalUARTWrite
+   \   000123   7C02         MOV       R4,#0x2
+   \   000125   7D00         MOV       R5,#0x0
+   \   000127   7A..         MOV       R2,#`?<Constant "\\r\\n">` & 0xff
+   \   000129   7B..         MOV       R3,#(`?<Constant "\\r\\n">` >> 8) & 0xff
+   \   00012B   7900         MOV       R1,#0x0
+   \   00012D   12....       LCALL     `??HalUARTWrite::?relay`; Banked call to: HalUARTWrite
+    435          
+    436              if (strstr(buf, "D2:0"))
+   \   000130                ; Setup parameters for call to function strstr
+   \   000130   7C..         MOV       R4,#`?<Constant "D2:0">` & 0xff
+   \   000132   7D..         MOV       R5,#(`?<Constant "D2:0">` >> 8) & 0xff
+   \   000134   7414         MOV       A,#0x14
+   \   000136   12....       LCALL     ?XSTACK_DISP101_8
+   \   000139   12....       LCALL     `??strstr::?relay`; Banked call to: strstr
+   \   00013C   EA           MOV       A,R2
+   \   00013D   4B           ORL       A,R3
+   \   00013E   6004         JZ        ??SampleApp_ProcessMSGCmd_3
+    437                HalLedSet(HAL_LED_2, HAL_LED_MODE_OFF); //LED2
+   \   000140                ; Setup parameters for call to function HalLedSet
+   \   000140   7A00         MOV       R2,#0x0
+   \   000142   8012         SJMP      ??SampleApp_ProcessMSGCmd_4
+    438              else if (strstr(buf, "D2:1"))
    \                     ??SampleApp_ProcessMSGCmd_3:
-   \   00013F                ; Setup parameters for call to function strstr
-   \   00013F   7C..         MOV       R4,#`?<Constant "D2:1">` & 0xff
-   \   000141   7D..         MOV       R5,#(`?<Constant "D2:1">` >> 8) & 0xff
-   \   000143   7414         MOV       A,#0x14
-   \   000145   12....       LCALL     ?XSTACK_DISP101_8
-   \   000148   12....       LCALL     ?Subroutine6 & 0xFFFF
-   \                     ??CrossCallReturnLabel_8:
-   \   00014B   6007         JZ        ??SampleApp_ProcessMSGCmd_5
-    436                HalLedSet(HAL_LED_2, HAL_LED_MODE_ON); //LED2
-   \   00014D                ; Setup parameters for call to function HalLedSet
-   \   00014D   7A01         MOV       R2,#0x1
+   \   000144                ; Setup parameters for call to function strstr
+   \   000144   7C..         MOV       R4,#`?<Constant "D2:1">` & 0xff
+   \   000146   7D..         MOV       R5,#(`?<Constant "D2:1">` >> 8) & 0xff
+   \   000148   7414         MOV       A,#0x14
+   \   00014A   12....       LCALL     ?XSTACK_DISP101_8
+   \   00014D   12....       LCALL     `??strstr::?relay`; Banked call to: strstr
+   \   000150   EA           MOV       A,R2
+   \   000151   4B           ORL       A,R3
+   \   000152   6007         JZ        ??SampleApp_ProcessMSGCmd_5
+    439                HalLedSet(HAL_LED_2, HAL_LED_MODE_ON); //LED2
+   \   000154                ; Setup parameters for call to function HalLedSet
+   \   000154   7A01         MOV       R2,#0x1
    \                     ??SampleApp_ProcessMSGCmd_4:
-   \   00014F   7902         MOV       R1,#0x2
-   \   000151   12....       LCALL     `??HalLedSet::?relay`; Banked call to: HalLedSet
-    437          
-    438              if (strstr(buf, "B:1"))
+   \   000156   7902         MOV       R1,#0x2
+   \   000158   12....       LCALL     `??HalLedSet::?relay`; Banked call to: HalLedSet
+    440          
+    441              // 蜂鸣器改为烟雾检测 P0_4
+    442              // if (strstr(buf, "B:1"))
+    443              //   P0_4 = 0;
+    444              // else if (strstr(buf, "B:0"))
+    445              //   P0_4 = 1;
+    446          
+    447              osal_memset(buf, '\0', 128);
    \                     ??SampleApp_ProcessMSGCmd_5:
-   \   000154                ; Setup parameters for call to function strstr
-   \   000154   7C..         MOV       R4,#`?<Constant "B:1">` & 0xff
-   \   000156   7D..         MOV       R5,#(`?<Constant "B:1">` >> 8) & 0xff
-   \   000158   7414         MOV       A,#0x14
-   \   00015A   12....       LCALL     ?XSTACK_DISP101_8
-   \   00015D   12....       LCALL     ?Subroutine6 & 0xFFFF
-   \                     ??CrossCallReturnLabel_9:
-   \   000160   6004         JZ        ??SampleApp_ProcessMSGCmd_6
-    439                P0_4 = 0;
-   \   000162   C284         CLR       0x80.4
-   \   000164   8010         SJMP      ??SampleApp_ProcessMSGCmd_7
-    440              else if (strstr(buf, "B:0"))
-   \                     ??SampleApp_ProcessMSGCmd_6:
-   \   000166                ; Setup parameters for call to function strstr
-   \   000166   7C..         MOV       R4,#`?<Constant "B:0">` & 0xff
-   \   000168   7D..         MOV       R5,#(`?<Constant "B:0">` >> 8) & 0xff
-   \   00016A   7414         MOV       A,#0x14
-   \   00016C   12....       LCALL     ?XSTACK_DISP101_8
-   \   00016F   12....       LCALL     ?Subroutine6 & 0xFFFF
-   \                     ??CrossCallReturnLabel_10:
-   \   000172   6002         JZ        ??SampleApp_ProcessMSGCmd_7
-    441                P0_4 = 1;
-   \   000174   D284         SETB      0x80.4
-    442          
-    443              osal_memset(buf, '\0', 128);
-   \                     ??SampleApp_ProcessMSGCmd_7:
-   \   000176                ; Setup parameters for call to function osal_memset
-   \   000176   7C80         MOV       R4,#-0x80
-   \   000178   7D00         MOV       R5,#0x0
-   \   00017A   7900         MOV       R1,#0x0
-   \   00017C   7414         MOV       A,#0x14
-   \   00017E   12....       LCALL     ?XSTACK_DISP101_8
-   \   000181   12....       LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
-    444              break;
-    445            default:
-    446              break;
-    447            }
-    448          }
+   \   00015B                ; Setup parameters for call to function osal_memset
+   \   00015B   7C80         MOV       R4,#-0x80
+   \   00015D   7D00         MOV       R5,#0x0
+   \   00015F   7900         MOV       R1,#0x0
+   \   000161   7414         MOV       A,#0x14
+   \   000163   12....       LCALL     ?XSTACK_DISP101_8
+   \   000166   12....       LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
+    448              break;
+    449            default:
+    450              break;
+    451            }
+    452          }
    \                     ??SampleApp_ProcessMSGCmd_0:
-   \   000184   7494         MOV       A,#-0x6c
-   \   000186   12....       LCALL     ?DEALLOC_XSTACK8
-   \   000189   7F03         MOV       R7,#0x3
-   \   00018B   02....       LJMP      ?BANKED_LEAVE_XDATA
-   \   00018E                REQUIRE _A_P0
+   \   000169   7494         MOV       A,#-0x6c
+   \   00016B   12....       LCALL     ?DEALLOC_XSTACK8
+   \   00016E   7F03         MOV       R7,#0x3
+   \   000170   02....       LJMP      ?BANKED_LEAVE_XDATA
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-   \                     ?Subroutine7:
-   \   000000   12....       LCALL     ?Subroutine10 & 0xFFFF
-   \                     ??CrossCallReturnLabel_19:
+   \                     ?Subroutine3:
+   \   000000   12....       LCALL     ?Subroutine8 & 0xFFFF
+   \                     ??CrossCallReturnLabel_11:
    \   000003   22           RET
+
+   \                                 In  segment BANKED_CODE, align 1, keep-with-next
+   \                     ?Subroutine8:
+   \   000000   F0           MOVX      @DPTR,A
+   \   000001   8882         MOV       DPL,R0
+   \   000003   8983         MOV       DPH,R1
+   \   000005   12....       LCALL     ?Subroutine10 & 0xFFFF
+   \                     ??CrossCallReturnLabel_17:
+   \   000008   A3           INC       DPTR
+   \   000009   22           RET
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
    \                     ?Subroutine10:
@@ -1355,62 +1355,52 @@ Warning[Pe167]: argument of type "char *" is incompatible with parameter of
    \   000008   22           RET
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-   \                     ?Subroutine6:
-   \   000000   12....       LCALL     `??strstr::?relay`; Banked call to: strstr
-   \   000003   EA           MOV       A,R2
-   \   000004   4B           ORL       A,R3
-   \   000005   22           RET
-
-   \                                 In  segment BANKED_CODE, align 1, keep-with-next
    \                     ?Subroutine2:
-   \   000000   F0           MOVX      @DPTR,A
-   \   000001   8882         MOV       DPL,R0
-   \   000003   8983         MOV       DPH,R1
-   \   000005   12....       LCALL     ?Subroutine10 & 0xFFFF
-   \                     ??CrossCallReturnLabel_18:
-   \   000008   A3           INC       DPTR
-   \   000009   A3           INC       DPTR
-   \   00000A   22           RET
-    449          
-    450          #ifdef ZDO_COORDINATOR
-    451          
-    452          //发送MQTT数据
+   \   000000   12....       LCALL     ?Subroutine8 & 0xFFFF
+   \                     ??CrossCallReturnLabel_12:
+   \   000003   A3           INC       DPTR
+   \   000004   A3           INC       DPTR
+   \   000005   22           RET
+    453          
+    454          #ifdef ZDO_COORDINATOR
+    455          
+    456          //发送MQTT数据
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-    453          void ESP8266_SendData(char *buff, int len)
+    457          void ESP8266_SendData(char *buff, int len)
    \                     ESP8266_SendData:
-    454          {
+    458          {
    \   000000   C082         PUSH      DPL
    \   000002   C083         PUSH      DPH
    \   000004                ; Saved register size: 2
    \   000004                ; Auto size: 0
-    455            if (len == 0)
+    459            if (len == 0)
    \   000004   EC           MOV       A,R4
    \   000005   4D           ORL       A,R5
    \   000006   6005         JZ        ??ESP8266_SendData_0
-    456              return;
-    457          
-    458            HalUARTWrite(0, buff, len);
+    460              return;
+    461          
+    462            HalUARTWrite(0, buff, len);
                                    ^
 Warning[Pe167]: argument of type "char *" is incompatible with parameter of
           type "uint8 *"
    \   000008                ; Setup parameters for call to function HalUARTWrite
    \   000008   7900         MOV       R1,#0x0
    \   00000A   12....       LCALL     `??HalUARTWrite::?relay`; Banked call to: HalUARTWrite
-    459          }
+    463          }
    \                     ??ESP8266_SendData_0:
    \   00000D   D083         POP       DPH
    \   00000F   D082         POP       DPL
    \   000011   02....       LJMP      ?BRET
-    460          
-    461          //接收到下发命令，或者接收到订阅的消息
-    462          //topic:收到的主题
-    463          //cmd::主题对应的内容
+    464          
+    465          //接收到下发命令，或者接收到订阅的消息
+    466          //topic:收到的主题
+    467          //cmd::主题对应的内容
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-    464          void mqtt_rx(uint8 *topic, uint8 *cmd)
+    468          void mqtt_rx(uint8 *topic, uint8 *cmd)
    \                     mqtt_rx:
-    465          {
+    469          {
    \   000000                REQUIRE ?V0
    \   000000                REQUIRE ?V1
    \   000000                REQUIRE ?V2
@@ -1425,35 +1415,35 @@ Warning[Pe167]: argument of type "char *" is incompatible with parameter of
    \   00000B   FE           MOV       R6,A
    \   00000C   ED           MOV       A,R5
    \   00000D   FF           MOV       R7,A
-    466            char *ptr_led3_on = NULL;
-    467            char *ptr_led3_off = NULL;
-    468          
-    469            char *this_topic = NULL;
-    470            //控制命令格式
-    471            char uartbuf[] = {'D', '2', ':', ' ',
-    472                              'B', ':', ' ','\0'};
+    470            char *ptr_led3_on = NULL;
+    471            char *ptr_led3_off = NULL;
+    472          
+    473            char *this_topic = NULL;
+    474            //控制命令格式
+    475            char uartbuf[] = {'D', '2', ':', ' ',
+    476                              'B', ':', ' ', '\0'};
    \   00000E   90....       MOV       DPTR,#`?<Constant {68, 50, 58, 32, 66, 58, 32, 0}>`
    \   000011   AC..         MOV       R4,?XSP + 0
    \   000013   AD..         MOV       R5,?XSP + 1
    \   000015   7408         MOV       A,#0x8
    \   000017   12....       LCALL     ?MOVE_LONG8_XDATA_XDATA
-    473            //协调器收到数据后
-    474            //根据设计决定数据如何处理
-    475          
-    476            if (topic == NULL || cmd == NULL)
+    477            //协调器收到数据后
+    478            //根据设计决定数据如何处理
+    479          
+    480            if (topic == NULL || cmd == NULL)
    \   00001A   EA           MOV       A,R2
    \   00001B   4B           ORL       A,R3
    \   00001C   6004         JZ        ??mqtt_rx_0
    \   00001E   EE           MOV       A,R6
    \   00001F   4F           ORL       A,R7
    \   000020   7003         JNZ       ??mqtt_rx_1
-    477              return;
+    481              return;
    \                     ??mqtt_rx_0:
    \   000022   02....       LJMP      ??mqtt_rx_2 & 0xFFFF
-    478          
-    479            //我们只关心内容，即只关心CMD，不处理主题
-    480          
-    481            ptr_led3_on = strstr((char *)cmd, "\"led\":1");
+    482          
+    483            //我们只关心内容，即只关心CMD，不处理主题
+    484          
+    485            ptr_led3_on = strstr((char *)cmd, "\"led\":1");
    \                     ??mqtt_rx_1:
    \   000025                ; Setup parameters for call to function strstr
    \   000025   7C..         MOV       R4,#`?<Constant "\\"led\\":1">` & 0xff
@@ -1465,7 +1455,7 @@ Warning[Pe167]: argument of type "char *" is incompatible with parameter of
    \   00002D   12....       LCALL     `??strstr::?relay`; Banked call to: strstr
    \   000030   8A..         MOV       ?V0,R2
    \   000032   8B..         MOV       ?V1,R3
-    482            ptr_led3_off = strstr((char *)cmd, "\"led\":0");
+    486            ptr_led3_off = strstr((char *)cmd, "\"led\":0");
    \   000034                ; Setup parameters for call to function strstr
    \   000034   7C..         MOV       R4,#`?<Constant "\\"led\\":0">` & 0xff
    \   000036   7D..         MOV       R5,#(`?<Constant "\\"led\\":0">` >> 8) & 0xff
@@ -1476,48 +1466,48 @@ Warning[Pe167]: argument of type "char *" is incompatible with parameter of
    \   00003C   12....       LCALL     `??strstr::?relay`; Banked call to: strstr
    \   00003F   8B..         MOV       ?V3,R3
    \   000041   A9..         MOV       R1,?V3
-    483          
-    484            if (ptr_led3_on != NULL)
+    487          
+    488            if (ptr_led3_on != NULL)
    \   000043   E5..         MOV       A,?V0
    \   000045   45..         ORL       A,?V1
    \   000047   6011         JZ        ??mqtt_rx_3
-    485            {
-    486              // coor led3
-    487              //P1_4 = 0; //D3亮
-    488              //cor_led3 = 1;
-    489              uartbuf[3] = '1';
+    489            {
+    490              // coor led3
+    491              //P1_4 = 0; //D3亮
+    492              //cor_led3 = 1;
+    493              uartbuf[3] = '1';
    \   000049   7403         MOV       A,#0x3
    \   00004B   12....       LCALL     ?XSTACK_DISP0_8
    \   00004E   7431         MOV       A,#0x31
    \   000050   F0           MOVX      @DPTR,A
-    490              uartbuf[6] = '1';
+    494              uartbuf[6] = '1';
    \   000051   7406         MOV       A,#0x6
    \   000053   12....       LCALL     ?XSTACK_DISP0_8
    \   000056   7431         MOV       A,#0x31
    \   000058   8013         SJMP      ??mqtt_rx_4
-    491            }
-    492            else if (ptr_led3_off != NULL)
+    495            }
+    496            else if (ptr_led3_off != NULL)
    \                     ??mqtt_rx_3:
    \   00005A   EA           MOV       A,R2
    \   00005B   49           ORL       A,R1
    \   00005C   6010         JZ        ??mqtt_rx_5
-    493            {
-    494              // coor led3
-    495              //P1_4 = 1; //D3灭
-    496              //cor_led3 = 0;
-    497              uartbuf[3] = '0';
+    497            {
+    498              // coor led3
+    499              //P1_4 = 1; //D3灭
+    500              //cor_led3 = 0;
+    501              uartbuf[3] = '0';
    \   00005E   7403         MOV       A,#0x3
    \   000060   12....       LCALL     ?XSTACK_DISP0_8
    \   000063   7430         MOV       A,#0x30
    \   000065   F0           MOVX      @DPTR,A
-    498              uartbuf[6] = '0';
+    502              uartbuf[6] = '0';
    \   000066   7406         MOV       A,#0x6
    \   000068   12....       LCALL     ?XSTACK_DISP0_8
    \   00006B   7430         MOV       A,#0x30
    \                     ??mqtt_rx_4:
    \   00006D   F0           MOVX      @DPTR,A
-    499            }
-    500            HalLedBlink(HAL_LED_1, 5, 50, 500);
+    503            }
+    504            HalLedBlink(HAL_LED_1, 5, 50, 500);
    \                     ??mqtt_rx_5:
    \   00006E                ; Setup parameters for call to function HalLedBlink
    \   00006E   7CF4         MOV       R4,#-0xc
@@ -1526,23 +1516,23 @@ Warning[Pe167]: argument of type "char *" is incompatible with parameter of
    \   000074   7A05         MOV       R2,#0x5
    \   000076   7901         MOV       R1,#0x1
    \   000078   12....       LCALL     `??HalLedBlink::?relay`; Banked call to: HalLedBlink
-    501          
-    502            AF_DataRequest(&SampleApp_P2P_DstAddr,  //&Endevice_Add,  //目的节点网络地址和发送格式
-    503                           &SampleApp_epDesc,       //目的地址端口号
-    504                           SAMPLEAPP_CTE_CLUSTERID, //命令号，用于区别命令 coor to end
-    505                           7,//osal_strlen(uartbuf),    //发送数据的长度
-    506                           uartbuf,                 //发送数据的缓冲区
+    505          
+    506            AF_DataRequest(&SampleApp_P2P_DstAddr,  //&Endevice_Add,  //目的节点网络地址和发送格式
+    507                           &SampleApp_epDesc,       //目的地址端口号
+    508                           SAMPLEAPP_CTE_CLUSTERID, //命令号，用于区别命令 coor to end
+    509                           7,                       //osal_strlen(uartbuf),    //发送数据的长度
+    510                           uartbuf,                 //发送数据的缓冲区
                                   ^
 Warning[Pe167]: argument of type "char *" is incompatible with parameter of
           type "uint8 *"
 
     char *this_topic = NULL;
           ^
-"C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c",469  Warning[Pe177]: 
+"C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c",473  Warning[Pe177]: 
           variable "this_topic" was declared but never referenced
-    507                           &SampleApp_MsgID,        //发送序号,发完+1
-    508                           AF_DISCV_ROUTE,
-    509                           AF_DEFAULT_RADIUS);
+    511                           &SampleApp_MsgID,        //发送序号,发完+1
+    512                           AF_DISCV_ROUTE,
+    513                           AF_DEFAULT_RADIUS);
    \   00007B                ; Setup parameters for call to function AF_DataRequest
    \   00007B   75..1E       MOV       ?V0,#0x1e
    \   00007E   78..         MOV       R0,#?V0
@@ -1572,52 +1562,52 @@ Warning[Pe167]: argument of type "char *" is incompatible with parameter of
    \   0000B9   12....       LCALL     `??AF_DataRequest::?relay`; Banked call to: AF_DataRequest
    \   0000BC   7409         MOV       A,#0x9
    \   0000BE   12....       LCALL     ?DEALLOC_XSTACK8
-    510          }
+    514          }
    \                     ??mqtt_rx_2:
    \   0000C1   7408         MOV       A,#0x8
    \   0000C3   12....       LCALL     ?DEALLOC_XSTACK8
    \   0000C6   02....       LJMP      ?Subroutine1 & 0xFFFF
-    511          
-    512          void OneNet_publish_topic()
-    513          {
-    514            uint8 buff[20] = {0};
     515          
-    516            sprintf(buff, "t:%d,h:%d", end_temp, end_hum);
+    516          void OneNet_publish_topic()
+    517          {
+    518            uint8 buff[20] = {0};
+    519          
+    520            sprintf(buff, "t:%d,h:%d", end_temp, end_hum);
                            ^
 Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
           type "char *"
-    517          
-    518            /*  发布主题为"hello_topic_public"，消息为温度和湿度 */
-    519            if (0 == mqtt_publish_topic("hello_topic_public", buff))
+    521          
+    522            /*  发布主题为"hello_topic_public"，消息为温度和湿度 */
+    523            if (0 == mqtt_publish_topic("hello_topic_public", buff))
                                                                      ^
 Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
           type "char const *"
-    520            {
-    521              ;
-    522            }
-    523          }
-    524          
-    525          /*********************************************************************
-    526           * @fn      SampleApp_CallBack
-    527           *
-    528           * @brief   Send data OTA.
-    529           *
-    530           * @param   port - UART port.
-    531           * @param   event - the UART port event flag.
-    532           *
-    533           * @return  none
-    534           */
+    524            {
+    525              ;
+    526            }
+    527          }
+    528          
+    529          /*********************************************************************
+    530           * @fn      SampleApp_CallBack
+    531           *
+    532           * @brief   Send data OTA.
+    533           *
+    534           * @param   port - UART port.
+    535           * @param   event - the UART port event flag.
+    536           *
+    537           * @return  none
+    538           */
 
    \                                 In  segment XDATA_Z, align 1, keep-with-next
-    535          uint32 lastReadMs = 0;
+    539          uint32 lastReadMs = 0;
    \                     lastReadMs:
    \   000000                DS 4
    \   000004                REQUIRE __INIT_XDATA_Z
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-    536          void SampleApp_CallBack(uint8 port, uint8 event)
+    540          void SampleApp_CallBack(uint8 port, uint8 event)
    \                     SampleApp_CallBack:
-    537          {
+    541          {
    \   000000                REQUIRE ?V0
    \   000000                REQUIRE ?V1
    \   000000                REQUIRE ?V2
@@ -1630,14 +1620,14 @@ Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
    \   000002   12....       LCALL     ?BANKED_ENTER_XDATA
    \   000005                ; Saved register size: 16
    \   000005                ; Auto size: 0
-    538            (void)port;
-    539          
-    540            if (0 == onenet_login_ok)
+    542            (void)port;
+    543          
+    544            if (0 == onenet_login_ok)
    \   000005   90....       MOV       DPTR,#onenet_login_ok
    \   000008   E0           MOVX      A,@DPTR
    \   000009   7019         JNZ       ??SampleApp_CallBack_0
-    541            {
-    542              HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX);
+    545            {
+    546              HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX);
    \   00000B                ; Setup parameters for call to function HalUARTRead
    \   00000B   7CC8         MOV       R4,#-0x38
    \   00000D   7D00         MOV       R5,#0x0
@@ -1645,24 +1635,24 @@ Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
    \   000011   7B..         MOV       R3,#(SampleApp_RxBuf >> 8) & 0xff
    \   000013   7900         MOV       R1,#0x0
    \   000015   12....       LCALL     `??HalUARTRead::?relay`; Banked call to: HalUARTRead
-    543              SampleApp_RxLen = 0;
+    547              SampleApp_RxLen = 0;
    \   000018   90....       MOV       DPTR,#SampleApp_RxLen
    \   00001B   E4           CLR       A
    \   00001C   F0           MOVX      @DPTR,A
    \   00001D   A3           INC       DPTR
    \   00001E   F0           MOVX      @DPTR,A
-    544              osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX);
+    548              osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX);
    \   00001F                ; Setup parameters for call to function osal_memset
    \   00001F   7CC8         MOV       R4,#-0x38
    \   000021   02....       LJMP      ??SampleApp_CallBack_1 & 0xFFFF
-    545            }
-    546            else if (1 == onenet_login_ok) //onenet注册成功 0:未注册，1：注册中　2：注册成功
+    549            }
+    550            else if (1 == onenet_login_ok) //onenet注册成功 0:未注册，1：注册中　2：注册成功
    \                     ??SampleApp_CallBack_0:
    \   000024   6401         XRL       A,#0x1
    \   000026   7075         JNZ       ??SampleApp_CallBack_2
-    547            {
-    548              //一个一个字节读
-    549              SampleApp_RxLen += HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf + SampleApp_RxLen, 4);
+    551            {
+    552              //一个一个字节读
+    553              SampleApp_RxLen += HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf + SampleApp_RxLen, 4);
    \   000028                ; Setup parameters for call to function HalUARTRead
    \   000028   7C04         MOV       R4,#0x4
    \   00002A   7D00         MOV       R5,#0x0
@@ -1686,9 +1676,9 @@ Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
    \   000048   E0           MOVX      A,@DPTR
    \   000049   39           ADDC      A,R1
    \   00004A   F0           MOVX      @DPTR,A
-    550          
-    551              //判断是否是注册成功
-    552              if (SampleApp_RxLen >= 4)
+    554          
+    555              //判断是否是注册成功
+    556              if (SampleApp_RxLen >= 4)
    \   00004B   90....       MOV       DPTR,#SampleApp_RxLen
    \   00004E   C3           CLR       C
    \   00004F   E0           MOVX      A,@DPTR
@@ -1697,11 +1687,11 @@ Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
    \   000053   E0           MOVX      A,@DPTR
    \   000054   9400         SUBB      A,#0x0
    \   000056   402B         JC        ??SampleApp_CallBack_3
-    553              {
-    554                //        debug("rx len=%d(%x,%x,%x,%x)\r\n", SampleApp_RxLen,SampleApp_RxBuf[0],SampleApp_RxBuf[1],SampleApp_RxBuf[2],SampleApp_RxBuf[3]);
-    555          
-    556                //等待接入响应
-    557                if (MQTT_UnPacketRecv(SampleApp_RxBuf) == MQTT_PKT_CONNACK)
+    557              {
+    558                //        debug("rx len=%d(%x,%x,%x,%x)\r\n", SampleApp_RxLen,SampleApp_RxBuf[0],SampleApp_RxBuf[1],SampleApp_RxBuf[2],SampleApp_RxBuf[3]);
+    559          
+    560                //等待接入响应
+    561                if (MQTT_UnPacketRecv(SampleApp_RxBuf) == MQTT_PKT_CONNACK)
    \   000058                ; Setup parameters for call to function MQTT_UnPacketRecv
    \   000058   7A..         MOV       R2,#SampleApp_RxBuf & 0xff
    \   00005A   7B..         MOV       R3,#(SampleApp_RxBuf >> 8) & 0xff
@@ -1709,55 +1699,55 @@ Warning[Pe167]: argument of type "uint8 *" is incompatible with parameter of
    \   00005F   E9           MOV       A,R1
    \   000060   6402         XRL       A,#0x2
    \   000062   701F         JNZ       ??SampleApp_CallBack_3
-    558                {
-    559                  if (0 == MQTT_UnPacketConnectAck(SampleApp_RxBuf))
+    562                {
+    563                  if (0 == MQTT_UnPacketConnectAck(SampleApp_RxBuf))
    \   000064                ; Setup parameters for call to function MQTT_UnPacketConnectAck
    \   000064   7A..         MOV       R2,#SampleApp_RxBuf & 0xff
    \   000066   7B..         MOV       R3,#(SampleApp_RxBuf >> 8) & 0xff
    \   000068   12....       LCALL     `??MQTT_UnPacketConnectAck::?relay`; Banked call to: MQTT_UnPacketConnectAck
    \   00006B   E9           MOV       A,R1
    \   00006C   7015         JNZ       ??SampleApp_CallBack_3
-    560                  {
-    561                    onenet_login_ok = 2; //注册成功
+    564                  {
+    565                    onenet_login_ok = 2; //注册成功
    \   00006E   90....       MOV       DPTR,#onenet_login_ok
    \   000071   7402         MOV       A,#0x2
-   \   000073   12....       LCALL     ?Subroutine3 & 0xFFFF
-    562                    SampleApp_RxLen = 0;
-    563          
-    564                    //请求订阅主题
-    565                    if (mqtt_subscribe_topic(g_mqtt_topics_set, 1) == 0)
+   \   000073   12....       LCALL     ?Subroutine4 & 0xFFFF
+    566                    SampleApp_RxLen = 0;
+    567          
+    568                    //请求订阅主题
+    569                    if (mqtt_subscribe_topic(g_mqtt_topics_set, 1) == 0)
                                                     ^
 Warning[Pe167]: argument of type "signed char **" is incompatible with
           parameter of type "signed char const **"
 
   static void SampleApp_Send_P2P_Message(void);
               ^
-"C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c",130  Warning[Pe177]: 
+"C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c",131  Warning[Pe177]: 
           function "SampleApp_Send_P2P_Message" was declared but never
           referenced
 
   void OneNet_publish_topic()
        ^
-"C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c",512  Warning[Pe177]: 
+"C:\Users\OY\Desktop\ing\new\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c",516  Warning[Pe177]: 
           function "OneNet_publish_topic" was declared but never referenced
-   \                     ??CrossCallReturnLabel_3:
+   \                     ??CrossCallReturnLabel_5:
    \   000076                ; Setup parameters for call to function mqtt_subscribe_topic
    \   000076   7901         MOV       R1,#0x1
    \   000078   7A..         MOV       R2,#g_mqtt_topics_set & 0xff
    \   00007A   7B..         MOV       R3,#(g_mqtt_topics_set >> 8) & 0xff
    \   00007C   12....       LCALL     `??mqtt_subscribe_topic::?relay`; Banked call to: mqtt_subscribe_topic
    \   00007F   4002         JC        ??SampleApp_CallBack_3
-    566                    {
-    567                      //订阅成功P1_4  D3变为亮
-    568                      P1_4 = 0;
+    570                    {
+    571                      //订阅成功P1_4  D3变为亮
+    572                      P1_4 = 0;
    \   000081   C294         CLR       0x90.4
-    569                    }
-    570                  }
-    571                }
-    572              }
-    573          
-    574              //数组满，清0
-    575              if (SampleApp_RxLen >= SAMPLE_APP_RX_MAX)
+    573                    }
+    574                  }
+    575                }
+    576              }
+    577          
+    578              //数组满，清0
+    579              if (SampleApp_RxLen >= SAMPLE_APP_RX_MAX)
    \                     ??SampleApp_CallBack_3:
    \   000083   90....       MOV       DPTR,#SampleApp_RxLen
    \   000086   C3           CLR       C
@@ -1768,34 +1758,34 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
    \   00008C   9400         SUBB      A,#0x0
    \   00008E   5003         JNC       $+5
    \   000090   02....       LJMP      ??SampleApp_CallBack_4 & 0xFFFF
-    576              {
-    577                SampleApp_RxLen = 0;
+    580              {
+    581                SampleApp_RxLen = 0;
    \   000093   90....       MOV       DPTR,#SampleApp_RxLen
    \   000096   E4           CLR       A
    \   000097   F0           MOVX      @DPTR,A
    \   000098   A3           INC       DPTR
    \   000099   F0           MOVX      @DPTR,A
    \   00009A   02....       LJMP      ??SampleApp_CallBack_4 & 0xFFFF
-    578              }
-    579            }
-    580            else if (2 == onenet_login_ok)
+    582              }
+    583            }
+    584            else if (2 == onenet_login_ok)
    \                     ??SampleApp_CallBack_2:
    \   00009D   E0           MOVX      A,@DPTR
    \   00009E   6402         XRL       A,#0x2
    \   0000A0   6003         JZ        $+5
    \   0000A2   02....       LJMP      ??SampleApp_CallBack_4 & 0xFFFF
-    581            {
-    582              //如果是注册成功，读服务器的控制命令
-    583          
-    584              uint32 curMs = osal_GetSystemClock();
+    585            {
+    586              //如果是注册成功，读服务器的控制命令
+    587          
+    588              uint32 curMs = osal_GetSystemClock();
    \   0000A5                ; Setup parameters for call to function osal_GetSystemClock
    \   0000A5   12....       LCALL     `??osal_GetSystemClock::?relay`; Banked call to: osal_GetSystemClock
    \   0000A8   8A..         MOV       ?V4,R2
    \   0000AA   8B..         MOV       ?V5,R3
    \   0000AC   8C..         MOV       ?V6,R4
    \   0000AE   8D..         MOV       ?V7,R5
-    585          
-    586              if ((curMs - lastReadMs) < 1000)
+    589          
+    590              if ((curMs - lastReadMs) < 1000)
    \   0000B0   90....       MOV       DPTR,#__Constant_3e8
    \   0000B3   C082         PUSH      DPL
    \   0000B5   8A..         MOV       ?V0,R2
@@ -1810,19 +1800,19 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
    \   0000CA   78..         MOV       R0,#?V0
    \   0000CC   12....       LCALL     ?UL_GE_X
    \   0000CF   505F         JNC       ??SampleApp_CallBack_4
-    587                return;
-    588          
-    589              lastReadMs = curMs;
+    591                return;
+    592          
+    593              lastReadMs = curMs;
    \   0000D1   90....       MOV       DPTR,#lastReadMs
    \   0000D4   78..         MOV       R0,#?V4
    \   0000D6   12....       LCALL     ?L_MOV_TO_X
-    590              SampleApp_RxLen = 0;
+    594              SampleApp_RxLen = 0;
    \   0000D9   90....       MOV       DPTR,#SampleApp_RxLen
    \   0000DC   E4           CLR       A
    \   0000DD   F0           MOVX      @DPTR,A
    \   0000DE   A3           INC       DPTR
    \   0000DF   F0           MOVX      @DPTR,A
-    591              osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX + 1);
+    595              osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX + 1);
    \   0000E0                ; Setup parameters for call to function osal_memset
    \   0000E0   7CC9         MOV       R4,#-0x37
    \   0000E2   FD           MOV       R5,A
@@ -1830,7 +1820,7 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
    \   0000E4   7A..         MOV       R2,#SampleApp_RxBuf & 0xff
    \   0000E6   7B..         MOV       R3,#(SampleApp_RxBuf >> 8) & 0xff
    \   0000E8   12....       LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
-    592              SampleApp_RxLen = HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX); //读长200的数据
+    596              SampleApp_RxLen = HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX); //读长200的数据
    \   0000EB                ; Setup parameters for call to function HalUARTRead
    \   0000EB   7CC8         MOV       R4,#-0x38
    \   0000ED   7D00         MOV       R5,#0x0
@@ -1844,14 +1834,14 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
    \   0000FD   A3           INC       DPTR
    \   0000FE   EB           MOV       A,R3
    \   0000FF   F0           MOVX      @DPTR,A
-    593          
-    594              if (SampleApp_RxLen > 0)
+    597          
+    598              if (SampleApp_RxLen > 0)
    \   000100   F9           MOV       R1,A
    \   000101   EA           MOV       A,R2
    \   000102   49           ORL       A,R1
    \   000103   602B         JZ        ??SampleApp_CallBack_4
-    595              {
-    596                debug("rx len=%d.\r\n", SampleApp_RxLen);
+    599              {
+    600                debug("rx len=%d.\r\n", SampleApp_RxLen);
    \   000105                ; Setup parameters for call to function debug
    \   000105   90....       MOV       DPTR,#SampleApp_RxLen
    \   000108   12....       LCALL     ?PUSH_XSTACK8_X_TWO
@@ -1860,21 +1850,21 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
    \   00010F   12....       LCALL     `??debug::?relay`; Banked call to: debug
    \   000112   7402         MOV       A,#0x2
    \   000114   12....       LCALL     ?DEALLOC_XSTACK8
-    597                //接收消息
-    598                OneNet_RevPro(SampleApp_RxBuf);
+    601                //接收消息
+    602                OneNet_RevPro(SampleApp_RxBuf);
    \   000117                ; Setup parameters for call to function OneNet_RevPro
    \   000117   7A..         MOV       R2,#SampleApp_RxBuf & 0xff
    \   000119   7B..         MOV       R3,#(SampleApp_RxBuf >> 8) & 0xff
    \   00011B   12....       LCALL     `??OneNet_RevPro::?relay`; Banked call to: OneNet_RevPro
-    599                //debug LED3
-    600                //        HalLedBlink (HAL_LED_3, 5, 50, 500); //HalLedSet
-    601                SampleApp_RxLen = 0;
+    603                //debug LED3
+    604                //        HalLedBlink (HAL_LED_3, 5, 50, 500); //HalLedSet
+    605                SampleApp_RxLen = 0;
    \   00011E   90....       MOV       DPTR,#SampleApp_RxLen
    \   000121   E4           CLR       A
    \   000122   F0           MOVX      @DPTR,A
    \   000123   A3           INC       DPTR
    \   000124   F0           MOVX      @DPTR,A
-    602                osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX + 1);
+    606                osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX + 1);
    \   000125                ; Setup parameters for call to function osal_memset
    \   000125   7CC9         MOV       R4,#-0x37
    \                     ??SampleApp_CallBack_1:
@@ -1883,124 +1873,125 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
    \   000129   7A..         MOV       R2,#SampleApp_RxBuf & 0xff
    \   00012B   7B..         MOV       R3,#(SampleApp_RxBuf >> 8) & 0xff
    \   00012D   12....       LCALL     `??osal_memset::?relay`; Banked call to: osal_memset
-    603              }
-    604            }
-    605          }
+    607              }
+    608            }
+    609          }
    \                     ??SampleApp_CallBack_4:
    \   000130   7F08         MOV       R7,#0x8
    \   000132   02....       LJMP      ?BANKED_LEAVE_XDATA
    \   000135                REQUIRE _A_P1
-    606          
-    607          #else
-    608          #include "hal_ADC.h"
-    609          /*********************************************************************
-    610           * @fn      SampleApp_Send_P2P_Message
-    611           *
-    612           * @brief   point to point.
-    613           *
-    614           * @param   none
+    610          
+    611          #else
+    612          #include "hal_ADC.h"
+    613          /*********************************************************************
+    614           * @fn      SampleApp_Send_P2P_Message
     615           *
-    616           * @return  none
-    617           */
-    618          void SampleApp_Send_P2P_Message(void)
-    619          {
-    620            uint8 str[6] = {0};
-    621            uint8 strTemp[20] = {0};
-    622            uint8 end_obstacles_temp = 0;
-    623            uint8 end_buzzer_temp = 0;
-    624            int len = 0;
-    625          
-    626            osal_memset(str, '\0', 5);
-    627            osal_memset(strTemp, '\0', 20);
-    628          
-    629            DHT11(); //获取温湿度
-    630          
-    631            HalAdcInit();
-    632            uint8 end_light_temp = HalAdcRead(HAL_ADC_CHANNEL_6, HAL_ADC_RESOLUTION_8);
-    633            uint8 end_led2_temp = 0;
+    616           * @brief   point to point.
+    617           *
+    618           * @param   none
+    619           *
+    620           * @return  none
+    621           */
+    622          void SampleApp_Send_P2P_Message(void)
+    623          {
+    624            uint8 str[10] = {0};
+    625            uint8 strTemp[20] = {0};
+    626            uint8 end_obstacles_temp = 0;
+    627            uint8 end_buzzer_temp = 0;
+    628            int len = 0;
+    629          
+    630            osal_memset(str, '\0', 10);
+    631            osal_memset(strTemp, '\0', 20);
+    632          
+    633            DHT11(); //获取温湿度
     634          
-    635            if (P1_1 == 1)
-    636              end_led2_temp = 0;
-    637            else
-    638              end_led2_temp = 1;
+    635            HalAdcInit();
+    636            uint8 end_light_temp = HalAdcRead(HAL_ADC_CHANNEL_6, HAL_ADC_RESOLUTION_8); //P0_6
+    637            uint8 end_smoke_temp = HalAdcRead(HAL_ADC_CHANNEL_4, HAL_ADC_RESOLUTION_8); //P0_4
+    638            uint8 end_led2_temp = 0;
     639          
-    640            //障碍物检查
-    641            if (P0_5 == 1) //拉高
-    642            {
-    643              end_obstacles_temp = 0;
-    644            }
-    645            else   
-    646              end_obstacles_temp = 1;
-    647            str[0] = wendu; //温度
-    648            str[1] = shidu; //湿度
-    649          
-    650            str[2] = end_light_temp;     //亮度
-    651            str[3] = end_led2_temp;      //led3状态
-    652            str[4] = end_obstacles_temp; //障碍物情况
-    653            //str[5] = end_buzzer_temp;    //buzzer情况
-    654            len = 5;
-    655            str[5] = '\0';
-    656            sprintf(strTemp, "T&H:%d %d", str[0], str[1]);
-    657            HalLcdWriteString(strTemp, HAL_LCD_LINE_3); //LCD显示
-    658          
-    659            HalUARTWrite(0, strTemp, osal_strlen(strTemp)); //串口输出提示信息
-    660            HalUARTWrite(0, "\r\n", 2);
-    661          
-    662            //无线发送到协调器
-    663            if (AF_DataRequest(&SampleApp_P2P_DstAddr, &SampleApp_epDesc,
-    664                               SAMPLEAPP_P2P_CLUSTERID,
-    665                               6,//osal_strlen(str),//这个有bugosal得出33
-    666                               str,
-    667                               &SampleApp_MsgID,
-    668                               AF_DISCV_ROUTE,
-    669                               AF_DEFAULT_RADIUS) == afStatus_SUCCESS)
-    670            {
-    671            }
-    672            else
-    673            {
-    674              // Error occurred in request to send.
-    675            }
-    676          }
-    677          
-    678          void SampleApp_CallBack(uint8 port, uint8 event)
-    679          {
-    680            (void)port;
-    681          
-    682            HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, 1);
-    683          }
-    684          
-    685          #endif
+    640            if (P1_1 == 1)
+    641              end_led2_temp = 0;
+    642            else
+    643              end_led2_temp = 1;
+    644          
+    645            //障碍物检查
+    646            if (P0_5 == 1) //拉高
+    647            {
+    648              end_obstacles_temp = 0;
+    649            }
+    650            else
+    651              end_obstacles_temp = 1;
+    652            str[0] = wendu; //温度
+    653            str[1] = shidu; //湿度
+    654          
+    655            str[2] = end_light_temp;     //亮度
+    656            str[3] = end_led2_temp;      //led3状态
+    657            str[4] = end_obstacles_temp; //障碍物情况
+    658            str[5] = end_smoke_temp;     //烟雾数值
+    659            //str[5] = end_buzzer_temp;    //buzzer情况
+    660            len = 6;
+    661            sprintf(strTemp, "T&H:%d %d", str[0], str[1]);
+    662            HalLcdWriteString(strTemp, HAL_LCD_LINE_3); //LCD显示
+    663          
+    664            HalUARTWrite(0, strTemp, osal_strlen(strTemp)); //串口输出提示信息
+    665            HalUARTWrite(0, "\r\n", 2);
+    666          
+    667            //无线发送到协调器
+    668            if (AF_DataRequest(&SampleApp_P2P_DstAddr, &SampleApp_epDesc,
+    669                               SAMPLEAPP_P2P_CLUSTERID,
+    670                               osal_strlen(str), //这个有bugosal得出33
+    671                               str,
+    672                               &SampleApp_MsgID,
+    673                               AF_DISCV_ROUTE,
+    674                               AF_DEFAULT_RADIUS) == afStatus_SUCCESS)
+    675            {
+    676            }
+    677            else
+    678            {
+    679              // Error occurred in request to send.
+    680            }
+    681          }
+    682          
+    683          void SampleApp_CallBack(uint8 port, uint8 event)
+    684          {
+    685            (void)port;
     686          
-    687          //调试信息输出
+    687            HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, 1);
+    688          }
+    689          
+    690          #endif
+    691          
+    692          //调试信息输出
 
    \                                 In  segment BANKED_CODE, align 1, keep-with-next
-    688          void debug(uint8 *msg, ...)
+    693          void debug(uint8 *msg, ...)
    \                     debug:
-    689          {
+    694          {
    \   000000                ; Saved register size: 0
    \   000000                ; Auto size: 0
-    690          #if 0
-    691              uint8 len=0;
-    692              char info[200] = {0};
-    693              va_list args;
-    694          
-    695              if(msg==NULL) return;
-    696          
-    697              va_start(args, msg);
-    698              vsprintf(info, (const char*)msg, args);//从头插入到info中
-    699              va_end(args);
-    700              
-    701              
-    702              len=osal_strlen((char *)info);
-    703              if(len==0) return;
-    704              
+    695          #if 0
+    696              uint8 len=0;
+    697              char info[200] = {0};
+    698              va_list args;
+    699          
+    700              if(msg==NULL) return;
+    701          
+    702              va_start(args, msg);
+    703              vsprintf(info, (const char*)msg, args);//从头插入到info中
+    704              va_end(args);
     705              
-    706          
-    707              HalUARTWrite(1,info, len);//串口1发送
-    708              osal_memset(info,'\0',200);
-    709          //    HAL_UART_PORT_0
-    710          #endif
-    711          }
+    706              
+    707              len=osal_strlen((char *)info);
+    708              if(len==0) return;
+    709              
+    710              
+    711          
+    712              HalUARTWrite(1,info, len);//串口1发送
+    713              osal_memset(info,'\0',200);
+    714          //    HAL_UART_PORT_0
+    715          #endif
+    716          }
    \   000000   02....       LJMP      ?BRET
 
    \                                 In  segment XDATA_ID, align 1, keep-with-next
@@ -2076,11 +2067,17 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
    \            22656E64
    \   0000B0   5F6F6273     DB 5FH, 6FH, 62H, 73H, 74H, 61H, 63H, 6CH
    \            7461636C
-   \   0000B8   6573223A     DB 65H, 73H, 22H, 3AH, 25H, 64H, 20H, 7DH
-   \            2564207D
+   \   0000B8   6573223A     DB 65H, 73H, 22H, 3AH, 25H, 64H, 2CH, 20H
+   \            25642C20
    \   0000C0   20202020     DB 20H, 20H, 20H, 20H, 20H, 20H, 20H, 20H
    \            20202020
-   \   0000C8   7D00         DB 7DH, 0
+   \   0000C8   2022656E     DB 20H, 22H, 65H, 6EH, 64H, 5FH, 73H, 6DH
+   \            645F736D
+   \   0000D0   6F6B6522     DB 6FH, 6BH, 65H, 22H, 3AH, 25H, 64H, 20H
+   \            3A256420
+   \   0000D8   7D202020     DB 7DH, 20H, 20H, 20H, 20H, 20H, 20H, 20H
+   \            20202020
+   \   0000E0   207D00       DB 20H, 7DH, 0
 
    \                                 In  segment XDATA_ROM_C, align 1
    \                     `?<Constant {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0`:
@@ -2128,14 +2125,6 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
    \                     `?<Constant "D2:1">`:
    \   000000   44323A31     DB "D2:1"
    \            00      
-
-   \                                 In  segment XDATA_ROM_C, align 1
-   \                     `?<Constant "B:1">`:
-   \   000000   423A3100     DB "B:1"
-
-   \                                 In  segment XDATA_ROM_C, align 1
-   \                     `?<Constant "B:0">`:
-   \   000000   423A3000     DB "B:0"
 
    \                                 In  segment XDATA_ROM_C, align 1
    \                     `?<Constant {68, 50, 58, 32, 66, 58, 32, 0}>`:
@@ -2192,7 +2181,7 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
         0     15   -> RegisterForKeys
         0     15   -> afRegister
         0     15   -> sprintf
-      0     22   SampleApp_ProcessEvent
+      0     24   SampleApp_ProcessEvent
         0     12   -> HalLedBlink
         0     12   -> OneNet_DevLink
         0     12   -> SampleApp_HandleKeys
@@ -2202,7 +2191,7 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
         0     12   -> osal_msg_deallocate
         0     12   -> osal_msg_receive
         0     12   -> osal_start_timerEx
-        0     22   -> sprintf
+        0     24   -> sprintf
       0    174   SampleApp_ProcessMSGCmd
         0    159   -> HalLcdWriteString
         0    159   -> HalLedSet
@@ -2225,8 +2214,6 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
    -----  --------------
        6  ?<Constant "/post">
        5  ?<Constant "/set">
-       4  ?<Constant "B:0">
-       4  ?<Constant "B:1">
        5  ?<Constant "D2:0">
        5  ?<Constant "D2:1">
        5  ?<Constant "H:%d">
@@ -2236,7 +2223,7 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
        3  ?<Constant "\r\n">
       17  ?<Constant "mqtt_topic_test1">
       13  ?<Constant "rx len=%d.\r\n">
-     202  ?<Constant "{\"method\":\"thing.serv...">
+     227  ?<Constant "{\"method\":\"thing.serv...">
        2  ?<Constant {&"mqtt_topic_test1"}>
       20  ?<Constant {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
        8  ?<Constant {68, 50, 58, 32, 66, 58, 32, 0}>
@@ -2245,13 +2232,13 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
        8  ?Subroutine0
        5  ?Subroutine1
        9  ?Subroutine10
-      11  ?Subroutine2
-       9  ?Subroutine3
-       3  ?Subroutine4
-       5  ?Subroutine5
-       6  ?Subroutine6
-       4  ?Subroutine7
-       9  ?Subroutine8
+       6  ?Subroutine2
+       4  ?Subroutine3
+       9  ?Subroutine4
+       3  ?Subroutine5
+       5  ?Subroutine6
+       9  ?Subroutine7
+      10  ?Subroutine8
       11  ?Subroutine9
       20  ESP8266_SendData
      309  SampleApp_CallBack
@@ -2261,14 +2248,13 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
        1  SampleApp_MsgID
        1  SampleApp_NwkState
       12  SampleApp_P2P_DstAddr
-     316  SampleApp_ProcessEvent
-     398  SampleApp_ProcessMSGCmd
+     326  SampleApp_ProcessEvent
+     371  SampleApp_ProcessMSGCmd
      201  SampleApp_RxBuf
        2  SampleApp_RxLen
       12  SampleApp_SimpleDesc
        1  SampleApp_TaskID
        6  SampleApp_epDesc
-       1  _A_P0
        1  _A_P1
        4  __Constant_3e8
        1  cor_led3
@@ -2278,6 +2264,7 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
        1  end_led2
        1  end_light
        1  end_obstacles
+       1  end_smoke
        1  end_temp
       10  g_mqtt_topics_set
        4  lastReadMs
@@ -2289,19 +2276,19 @@ Warning[Pe167]: argument of type "signed char **" is incompatible with
       48  -- Other
 
  
- 1 516 bytes in segment BANKED_CODE
+ 1 498 bytes in segment BANKED_CODE
     48 bytes in segment BANK_RELAYS
-     2 bytes in segment SFR_AN
+     1 byte  in segment SFR_AN
      6 bytes in segment XDATA_I
      6 bytes in segment XDATA_ID
-   344 bytes in segment XDATA_ROM_C
-   600 bytes in segment XDATA_Z
+   361 bytes in segment XDATA_ROM_C
+   601 bytes in segment XDATA_Z
  
     54 bytes of CODE     memory
-   340 bytes of CONST    memory (+ 4 bytes shared)
-     0 bytes of DATA     memory (+ 2 bytes shared)
- 1 516 bytes of HUGECODE memory
-   606 bytes of XDATA    memory
+   357 bytes of CONST    memory (+ 4 bytes shared)
+     0 bytes of DATA     memory (+ 1 byte  shared)
+ 1 498 bytes of HUGECODE memory
+   607 bytes of XDATA    memory
 
 Errors: none
 Warnings: 22
