@@ -475,7 +475,7 @@ st( \
 
 #ifndef HAL_UART_ISR
 #if HAL_UART_DMA           // Default preference for DMA over ISR.
-#define HAL_UART_ISR  2 //原本为0
+#define HAL_UART_ISR  0 //原本为0
 #elif (defined ZAPP_P2) || (defined ZTOOL_P2)
 #define HAL_UART_ISR  2
 #else

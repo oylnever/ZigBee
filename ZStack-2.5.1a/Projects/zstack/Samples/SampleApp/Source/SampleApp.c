@@ -109,9 +109,11 @@ uint8 onenet_login_ok = 0; //onenet注册成功 0:未注册，1：注册中　2：注册成功
 uint8 end_temp;            //终端的温度
 uint8 end_hum;             //终端的湿度
 
-uint8 end_light = 0; //开发板区域亮度     亮0-127灭
-uint8 end_led2 = 0;  //终端节点开发板led3状态     0灭 1亮
-uint8 cor_led3 = 0;  //协调器led3 0灭 1亮
+uint8 end_light = 0;     //开发板区域亮度     亮0-127灭
+uint8 end_led2 = 0;      //终端节点开发板led3状态     0灭 1亮
+uint8 cor_led3 = 0;      //协调器led3 0灭 1亮
+uint8 end_obstacles = 0; //终端障碍物 0无障碍(输出高电平） 1有障碍(低电平)
+uint8 end_buzzer = 0;    //buzzer 0不响 1响起
 #ifdef ZDO_COORDINATOR
 signed char *g_mqtt_topics_set[5] = {NULL};
 u8 topics_buff[60] = {0};
@@ -186,6 +188,9 @@ void SampleApp_Init(uint8 task_id)
   SampleApp_P2P_DstAddr.addrMode = (afAddrMode_t)Addr16Bit; //点播
   SampleApp_P2P_DstAddr.endPoint = SAMPLEAPP_ENDPOINT;
   SampleApp_P2P_DstAddr.addr.shortAddr = 0x0000; //发给协调器
+                                                 //初始化相关的模块连接的引脚 P0_4_5 通用io 输出 检查拉低与否
+  P0SEL &= 0xCF;                                 //    11001111
+  P0DIR |= 0x00;                                 //0_5输入，无障碍物时被拉高      1输出    00010000
 
 #endif
 }
@@ -332,12 +337,14 @@ UINT16 SampleApp_ProcessEvent(uint8 task_id, UINT16 events)
             \"temp\":%d,\
             \"hum\":%d,\
                \"end_light\":%d,\
-              \"end_led2\":%d}\
+              \"end_led2\":%d,\
+			  \"end_obstacles\":%d }\
         }",
               end_temp,
               end_hum,
               end_light,
-              end_led2);
+              end_led2,
+              end_obstacles);
 
       //发布主题
       mqtt_publish_topic(topics_post, mqtt_message);
@@ -401,7 +408,7 @@ void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
 
     end_light = pkt->cmd.Data[2]; //终端亮度
     end_led2 = pkt->cmd.Data[3];
-    //cor_led3 = P1_4;              //终端LED3状态
+    end_obstacles = pkt->cmd.Data[4];
 
     //cor_led3 = !cor_led3;
     sprintf(buff, "T:%d", end_temp);
@@ -462,7 +469,7 @@ void mqtt_rx(uint8 *topic, uint8 *cmd)
   char *this_topic = NULL;
   //控制命令格式
   char uartbuf[] = {'D', '2', ':', ' ',
-                    'B', ':', ' '};
+                    'B', ':', ' ','\0'};
   //协调器收到数据后
   //根据设计决定数据如何处理
 
@@ -476,15 +483,17 @@ void mqtt_rx(uint8 *topic, uint8 *cmd)
 
   if (ptr_led3_on != NULL)
   {
-    P1_4 = 0; //D3亮
-    cor_led3 = 1;
+    // coor led3
+    //P1_4 = 0; //D3亮
+    //cor_led3 = 1;
     uartbuf[3] = '1';
     uartbuf[6] = '1';
   }
   else if (ptr_led3_off != NULL)
   {
-    P1_4 = 1; //D3灭
-    cor_led3 = 0;
+    // coor led3
+    //P1_4 = 1; //D3灭
+    //cor_led3 = 0;
     uartbuf[3] = '0';
     uartbuf[6] = '0';
   }
@@ -493,7 +502,7 @@ void mqtt_rx(uint8 *topic, uint8 *cmd)
   AF_DataRequest(&SampleApp_P2P_DstAddr,  //&Endevice_Add,  //目的节点网络地址和发送格式
                  &SampleApp_epDesc,       //目的地址端口号
                  SAMPLEAPP_CTE_CLUSTERID, //命令号，用于区别命令 coor to end
-                 osal_strlen(uartbuf),    //发送数据的长度
+                 7,//osal_strlen(uartbuf),    //发送数据的长度
                  uartbuf,                 //发送数据的缓冲区
                  &SampleApp_MsgID,        //发送序号,发完+1
                  AF_DISCV_ROUTE,
@@ -608,8 +617,10 @@ void SampleApp_CallBack(uint8 port, uint8 event)
  */
 void SampleApp_Send_P2P_Message(void)
 {
-  uint8 str[5] = {0};
+  uint8 str[6] = {0};
   uint8 strTemp[20] = {0};
+  uint8 end_obstacles_temp = 0;
+  uint8 end_buzzer_temp = 0;
   int len = 0;
 
   osal_memset(str, '\0', 5);
@@ -626,13 +637,22 @@ void SampleApp_Send_P2P_Message(void)
   else
     end_led2_temp = 1;
 
+  //障碍物检查
+  if (P0_5 == 1) //拉高
+  {
+    end_obstacles_temp = 0;
+  }
+  else   
+    end_obstacles_temp = 1;
   str[0] = wendu; //温度
   str[1] = shidu; //湿度
 
-  str[2] = end_light_temp; //亮度
-  str[3] = end_led2_temp;  //led3状态
-  len = 4;
-
+  str[2] = end_light_temp;     //亮度
+  str[3] = end_led2_temp;      //led3状态
+  str[4] = end_obstacles_temp; //障碍物情况
+  //str[5] = end_buzzer_temp;    //buzzer情况
+  len = 5;
+  str[5] = '\0';
   sprintf(strTemp, "T&H:%d %d", str[0], str[1]);
   HalLcdWriteString(strTemp, HAL_LCD_LINE_3); //LCD显示
 
@@ -642,7 +662,7 @@ void SampleApp_Send_P2P_Message(void)
   //无线发送到协调器
   if (AF_DataRequest(&SampleApp_P2P_DstAddr, &SampleApp_epDesc,
                      SAMPLEAPP_P2P_CLUSTERID,
-                     len,
+                     6,//osal_strlen(str),//这个有bugosal得出33
                      str,
                      &SampleApp_MsgID,
                      AF_DISCV_ROUTE,

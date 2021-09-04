@@ -126,7 +126,7 @@ void MT_UartInit ()
   HalUARTOpen (MT_UART_DEFAULT_PORT, &uartConfig);
 
   //初始始化串口1
-  HalUARTOpen (HAL_UART_PORT_1, &uartConfig); //原本注释
+//  HalUARTOpen (HAL_UART_PORT_1, &uartConfig); //原本注释
 #else
   /* Silence IAR compiler warning */
   (void)uartConfig;
