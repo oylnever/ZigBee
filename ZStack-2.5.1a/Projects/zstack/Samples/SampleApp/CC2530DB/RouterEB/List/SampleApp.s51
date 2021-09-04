@@ -1,0 +1,1961 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                            /
+// IAR C/C++ Compiler V8.10.3.10338/W32 for 8051        27/May/2020  18:08:48 /
+// Copyright 2004-2011 IAR Systems AB.                                        /
+//                                                                            /
+//    Core               =  plain                                             /
+//    Code model         =  banked                                            /
+//    Data model         =  large                                             /
+//    Calling convention =  xdata reentrant                                   /
+//    Constant location  =  data_rom                                          /
+//    Dptr setup         =  1,16                                              /
+//    Source file        =  I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢ /
+//                          »·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Òé /
+//                          )\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp /
+//                          \Source\SampleApp.c                               /
+//    Command line       =  -f "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼° /
+//                          ¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTT /
+//                          Ð­Òé)\ZStack-2.5.1a\Projects\zstack\Samples\Sampl /
+//                          eApp\CC2530DB\..\..\..\Tools\CC2530DB\f8wRouter.c /
+//                          fg" (-DCPU32MHZ -DROOT=__near_func                /
+//                          -DMAC_CFG_APP_PENDING_QUEUE=TRUE                  /
+//                          -DMAC_CFG_TX_DATA_MAX=5 -DMAC_CFG_TX_MAX=8        /
+//                          -DMAC_CFG_RX_MAX=5 -DRTR_NWK) -f                  /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\..\..\..\Tools\CC2530DB\f8wConfig.cfg" /
+//                           (-DZIGBEEPRO -DSECURE=0 -DZG_SECURE_DYNAMIC=0    /
+//                          -DREFLECTOR -DDEFAULT_CHANLIST=0x00000800         /
+//                          -DZDAPP_CONFIG_PAN_ID=0xFFF1                      /
+//                          -DNWK_START_DELAY=100 -DEXTENDED_JOINING_RANDOM_M /
+//                          ASK=0x007F -DBEACON_REQUEST_DELAY=100             /
+//                          -DBEACON_REQ_DELAY_MASK=0x00FF                    /
+//                          -DLINK_STATUS_JITTER_MASK=0x007F                  /
+//                          -DROUTE_EXPIRY_TIME=30 -DAPSC_ACK_WAIT_DURATION_P /
+//                          OLLED=3000 -DNWK_INDIRECT_MSG_TIMEOUT=7           /
+//                          -DMAX_RREQ_ENTRIES=8 -DAPSC_MAX_FRAME_RETRIES=3   /
+//                          -DNWK_MAX_DATA_RETRIES=2                          /
+//                          -DMAX_POLL_FAILURE_RETRIES=2 -DMAX_BCAST=9        /
+//                          -DAPS_MAX_GROUPS=16 -DMAX_RTG_ENTRIES=40          /
+//                          -DNWK_MAX_BINDING_ENTRIES=4                       /
+//                          -DMAX_BINDING_CLUSTER_IDS=4                       /
+//                          "-DDEFAULT_KEY={0x01, 0x03, 0x05, 0x07, 0x09,     /
+//                          0x0B, 0x0D, 0x0F, 0x00, 0x02, 0x04, 0x06, 0x08,   /
+//                          0x0A, 0x0C, 0x0D}" -DMAC_MAX_FRAME_SIZE=116       /
+//                          -DZDNWKMGR_MIN_TRANSMISSIONS=20 "-DCONST=const    /
+//                          __code" -DGENERIC=__generic                       /
+//                          -DRFD_RCVC_ALWAYS_ON=FALSE -DPOLL_RATE=1000       /
+//                          -DQUEUED_POLL_RATE=100 -DRESPONSE_POLL_RATE=100)  /
+//                          -DREJOIN_POLL_RATE=440 "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×Ê /
+//                          ÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ /
+//                          ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\ /
+//                          zstack\Samples\SampleApp\Source\SampleApp.c" -D   /
+//                          ZTOOL_P1 -D xMT_TASK -D xMT_SYS_FUNC -D           /
+//                          xMT_ZDO_FUNC -D LCD_SUPPORTED=DEBUG -lC           /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\RouterEB\List\" -lA                    /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\RouterEB\List\" --diag_suppress        /
+//                          Pe001,Pa010 -o "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\ /
+//                          Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ /
+//                          ÀïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\S /
+//                          amples\SampleApp\CC2530DB\RouterEB\Obj\" -e       /
+//                          --no_code_motion --debug --core=plain             /
+//                          --dptr=16,1 --data_model=large                    /
+//                          --code_model=banked --calling_convention=xdata_re /
+//                          entrant --place_constants=data_rom                /
+//                          --nr_virtual_regs 16 -I                           /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3 /
+//                          \Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.° /
+//                          ¢ÀïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\ /
+//                          Samples\SampleApp\CC2530DB\..\Source\" -I         /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\..\..\..\ZMain\TI2530DB\" -I           /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\..\..\..\..\..\Components\hal\include\ /
+//                          " -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ /
+//                          ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQ /
+//                          TTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\Samples\Sam /
+//                          pleApp\CC2530DB\..\..\..\..\..\Components\hal\tar /
+//                          get\CC2530EB\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4 /
+//                          .3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7 /
+//                          .°¢ÀïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstac /
+//                          k\Samples\SampleApp\CC2530DB\..\..\..\..\..\Compo /
+//                          nents\mac\include\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×Ê /
+//                          ÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ /
+//                          ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\ /
+//                          zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\ /
+//                          Components\mac\high_level\" -I                    /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\..\..\..\..\..\Components\mac\low_leve /
+//                          l\srf04\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§ /
+//                          Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢Àï /
+//                          ÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\Sam /
+//                          ples\SampleApp\CC2530DB\..\..\..\..\..\Components /
+//                          \mac\low_level\srf04\single_chip\" -I             /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\..\..\..\..\..\Components\mt\" -I      /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\..\..\..\..\..\Components\osal\include /
+//                          \" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒ /
+//                          Ô¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(M /
+//                          QTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\Samples\Sa /
+//                          mpleApp\CC2530DB\..\..\..\..\..\Components\servic /
+//                          es\saddr\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ /
+//                          §Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢À /
+//                          ïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\Sa /
+//                          mples\SampleApp\CC2530DB\..\..\..\..\..\Component /
+//                          s\services\sdata\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁ /
+//                          Ï-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\Ê /
+//                          µÑé7.°¢ÀïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\z /
+//                          stack\Samples\SampleApp\CC2530DB\..\..\..\..\..\C /
+//                          omponents\stack\af\" -I                           /
+//                          "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª· /
+//                          ¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Ò /
+//                          é)\ZStack-2.5.1a\Projects\zstack\Samples\SampleAp /
+//                          p\CC2530DB\..\..\..\..\..\Components\stack\nwk\"  /
+//                          -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼° /
+//                          ¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTT /
+//                          Ð­Òé)\ZStack-2.5.1a\Projects\zstack\Samples\Sampl /
+//                          eApp\CC2530DB\..\..\..\..\..\Components\stack\sap /
+//                          i\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³Ì /
+//                          ÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT( /
+//                          MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\Samples\S /
+//                          ampleApp\CC2530DB\..\..\..\..\..\Components\stack /
+//                          \sec\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°À /
+//                          ý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆI /
+//                          OT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\Sample /
+//                          s\SampleApp\CC2530DB\..\..\..\..\..\Components\st /
+//                          ack\sys\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§ /
+//                          Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢Àï /
+//                          ÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\Sam /
+//                          ples\SampleApp\CC2530DB\..\..\..\..\..\Components /
+//                          \stack\zdo\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3 /
+//                          \Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.° /
+//                          ¢ÀïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\ /
+//                          Samples\SampleApp\CC2530DB\..\..\..\..\..\Compone /
+//                          nts\zmac\" -I "I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ /
+//                          §Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢À /
+//                          ïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\Sa /
+//                          mples\SampleApp\CC2530DB\..\..\..\..\..\Component /
+//                          s\zmac\f8w\" -Ohz                                 /
+//    List file          =  I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢ /
+//                          »·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Òé /
+//                          )\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp /
+//                          \CC2530DB\RouterEB\List\SampleApp.s51             /
+//                                                                            /
+//                                                                            /
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME SampleApp
+
+        RTMODEL "__SystemLibrary", "CLib"
+        RTMODEL "__calling_convention", "xdata_reentrant"
+        RTMODEL "__code_model", "banked"
+        RTMODEL "__core", "plain"
+        RTMODEL "__data_model", "large"
+        RTMODEL "__dptr_size", "16"
+        RTMODEL "__extended_stack", "disabled"
+        RTMODEL "__location_for_constants", "data"
+        RTMODEL "__number_of_dptrs", "1"
+        RTMODEL "__rt_version", "1"
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+        EXTERN ?ALLOC_XSTACK8
+        EXTERN ?BANKED_ENTER_XDATA
+        EXTERN ?BANKED_LEAVE_XDATA
+        EXTERN ?BDISPATCH
+        EXTERN ?BRET
+        EXTERN ?DEALLOC_XSTACK8
+        EXTERN ?MOVE_LONG8_XDATA_XDATA
+        EXTERN ?PUSH_XSTACK_I_ONE
+        EXTERN ?PUSH_XSTACK_I_TWO
+        EXTERN ?V0
+        EXTERN ?XSP
+        EXTERN ?XSTACK_DISP0_8
+        EXTERN __INIT_XDATA_I
+        EXTERN __INIT_XDATA_Z
+
+        PUBLIC ??SampleApp_CallBack?relay
+        FUNCTION ??SampleApp_CallBack?relay,0203H
+        PUBLIC ??SampleApp_HandleKeys?relay
+        FUNCTION ??SampleApp_HandleKeys?relay,0203H
+        PUBLIC ??SampleApp_Init?relay
+        FUNCTION ??SampleApp_Init?relay,0203H
+        PUBLIC ??SampleApp_ProcessEvent?relay
+        FUNCTION ??SampleApp_ProcessEvent?relay,0203H
+        FUNCTION ??SampleApp_ProcessMSGCmd?relay,0203H
+        FUNCTION ??SampleApp_Send_P2P_Message?relay,0203H
+        PUBLIC ??debug?relay
+        FUNCTION ??debug?relay,0203H
+        PUBLIC SampleApp_CallBack
+        FUNCTION SampleApp_CallBack,021203H
+        ARGFRAME XSTACK, 0, STACK
+        LOCFRAME ISTACK, 2, STACK
+        PUBLIC SampleApp_ClusterList
+        PUBLIC SampleApp_HandleKeys
+        FUNCTION SampleApp_HandleKeys,0203H
+        ARGFRAME XSTACK, 0, STACK
+        PUBLIC SampleApp_Init
+        FUNCTION SampleApp_Init,021203H
+        ARGFRAME XSTACK, 0, STACK
+        LOCFRAME XSTACK, 10, STACK
+        PUBLIC SampleApp_NwkState
+        PUBLIC SampleApp_P2P_DstAddr
+        PUBLIC SampleApp_ProcessEvent
+        FUNCTION SampleApp_ProcessEvent,021203H
+        ARGFRAME XSTACK, 0, STACK
+        LOCFRAME XSTACK, 12, STACK
+        FUNCTION SampleApp_ProcessMSGCmd,0203H
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCTION SampleApp_Send_P2P_Message,021203H
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        LOCFRAME ISTACK, 2, STACK
+        LOCFRAME XSTACK, 44, STACK
+        PUBLIC SampleApp_SimpleDesc
+        PUBLIC SampleApp_TaskID
+        PUBLIC SampleApp_epDesc
+        PUBLIC debug
+        FUNCTION debug,0203H
+        ARGFRAME XSTACK, 0, STACK
+        PUBLIC end_hum
+        PUBLIC end_temp
+        PUBLIC onenet_login_ok
+        
+        CFI Names cfiNames0
+        CFI StackFrame CFA_SP SP IDATA
+        CFI StackFrame CFA_PSP16 PSP16 XDATA
+        CFI StackFrame CFA_XSP16 XSP16 XDATA
+        CFI StaticOverlayFrame CFA_IOVERLAY IOVERLAY
+        CFI StaticOverlayFrame CFA_DOVERLAY DOVERLAY
+        CFI Resource `PSW.CY`:1, `B.BR0`:1, `B.BR1`:1, `B.BR2`:1, `B.BR3`:1
+        CFI Resource `B.BR4`:1, `B.BR5`:1, `B.BR6`:1, `B.BR7`:1, `VB.BR8`:1
+        CFI Resource `VB.BR9`:1, `VB.BR10`:1, `VB.BR11`:1, `VB.BR12`:1
+        CFI Resource `VB.BR13`:1, `VB.BR14`:1, `VB.BR15`:1, VB:8, B:8, A:8
+        CFI Resource PSW:8, DPL0:8, DPH0:8, R0:8, R1:8, R2:8, R3:8, R4:8, R5:8
+        CFI Resource R6:8, R7:8, V0:8, V1:8, V2:8, V3:8, V4:8, V5:8, V6:8, V7:8
+        CFI Resource V8:8, V9:8, V10:8, V11:8, V12:8, V13:8, V14:8, V15:8, SP:8
+        CFI Resource PSPH:8, PSPL:8, PSP16:16, XSPH:8, XSPL:8, XSP16:16
+        CFI VirtualResource ?RET:24
+        CFI Resource ?BRET_EXT:8
+        CFI VirtualResource ?RET_HIGH:8, ?RET_LOW:8
+        CFI ResourceParts PSP16 PSPH, PSPL
+        CFI ResourceParts XSP16 XSPH, XSPL
+        CFI ResourceParts ?RET ?BRET_EXT, ?RET_HIGH, ?RET_LOW
+        CFI EndNames cfiNames0
+        
+        CFI Common cfiCommon0 Using cfiNames0
+        CFI CodeAlign 1
+        CFI DataAlign -1
+        CFI ReturnAddress ?RET CODE
+        CFI CFA_DOVERLAY Used
+        CFI CFA_IOVERLAY Used
+        CFI CFA_SP SP+-3
+        CFI CFA_PSP16 PSP16+0
+        CFI CFA_XSP16 XSP16+0
+        CFI `PSW.CY` SameValue
+        CFI `B.BR0` SameValue
+        CFI `B.BR1` SameValue
+        CFI `B.BR2` SameValue
+        CFI `B.BR3` SameValue
+        CFI `B.BR4` SameValue
+        CFI `B.BR5` SameValue
+        CFI `B.BR6` SameValue
+        CFI `B.BR7` SameValue
+        CFI `VB.BR8` SameValue
+        CFI `VB.BR9` SameValue
+        CFI `VB.BR10` SameValue
+        CFI `VB.BR11` SameValue
+        CFI `VB.BR12` SameValue
+        CFI `VB.BR13` SameValue
+        CFI `VB.BR14` SameValue
+        CFI `VB.BR15` SameValue
+        CFI VB SameValue
+        CFI B Undefined
+        CFI A Undefined
+        CFI PSW SameValue
+        CFI DPL0 SameValue
+        CFI DPH0 SameValue
+        CFI R0 Undefined
+        CFI R1 Undefined
+        CFI R2 Undefined
+        CFI R3 Undefined
+        CFI R4 Undefined
+        CFI R5 Undefined
+        CFI R6 SameValue
+        CFI R7 SameValue
+        CFI V0 SameValue
+        CFI V1 SameValue
+        CFI V2 SameValue
+        CFI V3 SameValue
+        CFI V4 SameValue
+        CFI V5 SameValue
+        CFI V6 SameValue
+        CFI V7 SameValue
+        CFI V8 SameValue
+        CFI V9 SameValue
+        CFI V10 SameValue
+        CFI V11 SameValue
+        CFI V12 SameValue
+        CFI V13 SameValue
+        CFI V14 SameValue
+        CFI V15 SameValue
+        CFI PSPH Undefined
+        CFI PSPL Undefined
+        CFI XSPH Undefined
+        CFI XSPL Undefined
+        CFI ?RET Concat
+        CFI ?BRET_EXT Frame(CFA_SP, 3)
+        CFI ?RET_HIGH Frame(CFA_SP, 2)
+        CFI ?RET_LOW Frame(CFA_SP, 1)
+        CFI EndCommon cfiCommon0
+        
+MT_UartInit         SYMBOL "MT_UartInit"
+MT_UartRegisterTaskID SYMBOL "MT_UartRegisterTaskID"
+afRegister          SYMBOL "afRegister"
+RegisterForKeys     SYMBOL "RegisterForKeys"
+osal_rand           SYMBOL "osal_rand"
+osal_start_timerEx  SYMBOL "osal_start_timerEx"
+osal_msg_deallocate SYMBOL "osal_msg_deallocate"
+osal_msg_receive    SYMBOL "osal_msg_receive"
+DHT11               SYMBOL "DHT11"
+sprintf             SYMBOL "sprintf"
+HalLcdWriteString   SYMBOL "HalLcdWriteString"
+osal_strlen         SYMBOL "osal_strlen"
+HalUARTWrite        SYMBOL "HalUARTWrite"
+AF_DataRequest      SYMBOL "AF_DataRequest"
+HalUARTRead         SYMBOL "HalUARTRead"
+??AF_DataRequest?relay SYMBOL "?relay", AF_DataRequest
+??DHT11?relay       SYMBOL "?relay", DHT11
+??HalLcdWriteString?relay SYMBOL "?relay", HalLcdWriteString
+??HalUARTRead?relay SYMBOL "?relay", HalUARTRead
+??HalUARTWrite?relay SYMBOL "?relay", HalUARTWrite
+??MT_UartInit?relay SYMBOL "?relay", MT_UartInit
+??MT_UartRegisterTaskID?relay SYMBOL "?relay", MT_UartRegisterTaskID
+??RegisterForKeys?relay SYMBOL "?relay", RegisterForKeys
+??afRegister?relay  SYMBOL "?relay", afRegister
+??osal_msg_deallocate?relay SYMBOL "?relay", osal_msg_deallocate
+??osal_msg_receive?relay SYMBOL "?relay", osal_msg_receive
+??osal_rand?relay   SYMBOL "?relay", osal_rand
+??osal_start_timerEx?relay SYMBOL "?relay", osal_start_timerEx
+??osal_strlen?relay SYMBOL "?relay", osal_strlen
+??sprintf?relay     SYMBOL "?relay", sprintf
+SampleApp_CallBack  SYMBOL "SampleApp_CallBack"
+??SampleApp_CallBack?relay SYMBOL "?relay", SampleApp_CallBack
+SampleApp_HandleKeys SYMBOL "SampleApp_HandleKeys"
+??SampleApp_HandleKeys?relay SYMBOL "?relay", SampleApp_HandleKeys
+SampleApp_Init      SYMBOL "SampleApp_Init"
+??SampleApp_Init?relay SYMBOL "?relay", SampleApp_Init
+SampleApp_ProcessEvent SYMBOL "SampleApp_ProcessEvent"
+??SampleApp_ProcessEvent?relay SYMBOL "?relay", SampleApp_ProcessEvent
+debug               SYMBOL "debug"
+??debug?relay       SYMBOL "?relay", debug
+
+        EXTERN MT_UartInit
+        FUNCTION MT_UartInit,0200H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 10, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN MT_UartRegisterTaskID
+        FUNCTION MT_UartRegisterTaskID,0200H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 10, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN afRegister
+        FUNCTION afRegister,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 10, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN RegisterForKeys
+        FUNCTION RegisterForKeys,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 10, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN osal_rand
+        FUNCTION osal_rand,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN osal_start_timerEx
+        FUNCTION osal_start_timerEx,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN osal_msg_deallocate
+        FUNCTION osal_msg_deallocate,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN osal_msg_receive
+        FUNCTION osal_msg_receive,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN DHT11
+        FUNCTION DHT11,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 35, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN sprintf
+        FUNCTION sprintf,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 39, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN HalLcdWriteString
+        FUNCTION HalLcdWriteString,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 35, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN osal_strlen
+        FUNCTION osal_strlen,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 35, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN HalUARTWrite
+        FUNCTION HalUARTWrite,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 35, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN AF_DataRequest
+        FUNCTION AF_DataRequest,0202H
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 44, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN HalUARTRead
+        FUNCTION HalUARTRead,0202H
+        ARGFRAME ISTACK, 2, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 0, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        EXTERN ??AF_DataRequest?relay
+        FUNCTION ??AF_DataRequest?relay,00H
+        EXTERN ??DHT11?relay
+        FUNCTION ??DHT11?relay,00H
+        EXTERN ??HalLcdWriteString?relay
+        FUNCTION ??HalLcdWriteString?relay,00H
+        EXTERN ??HalUARTRead?relay
+        FUNCTION ??HalUARTRead?relay,00H
+        EXTERN ??HalUARTWrite?relay
+        FUNCTION ??HalUARTWrite?relay,00H
+        EXTERN ??MT_UartInit?relay
+        FUNCTION ??MT_UartInit?relay,00H
+        EXTERN ??MT_UartRegisterTaskID?relay
+        FUNCTION ??MT_UartRegisterTaskID?relay,00H
+        EXTERN ??RegisterForKeys?relay
+        FUNCTION ??RegisterForKeys?relay,00H
+        EXTERN ??afRegister?relay
+        FUNCTION ??afRegister?relay,00H
+        EXTERN ??osal_msg_deallocate?relay
+        FUNCTION ??osal_msg_deallocate?relay,00H
+        EXTERN ??osal_msg_receive?relay
+        FUNCTION ??osal_msg_receive?relay,00H
+        EXTERN ??osal_rand?relay
+        FUNCTION ??osal_rand?relay,00H
+        EXTERN ??osal_start_timerEx?relay
+        FUNCTION ??osal_start_timerEx?relay,00H
+        EXTERN ??osal_strlen?relay
+        FUNCTION ??osal_strlen?relay,00H
+        EXTERN ??sprintf?relay
+        FUNCTION ??sprintf?relay,00H
+        EXTERN shidu
+        EXTERN wendu
+
+// I:\zigbee\×ÊÁÏ\ÌÔ±¦ËùÓÃ×ÊÁÏ-V4.3\Ñ§Ï°Àý³ÌÒÔ¼°¿ª·¢»·¾³°²×°\µÚÆßÕÂ.×ÛºÏÊµÑé\ÊµÑé7.°¢ÀïÔÆIOT(MQTTÐ­Òé)\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\SampleApp.c
+//    1 /*********************************************************************
+//    2  * INCLUDES
+//    3  */
+//    4 
+//    5 #include <stdio.h>
+//    6 #include <string.h>
+//    7 #include "AF.h"
+//    8 #include "OnBoard.h"
+//    9 #include "OSAL_Tasks.h"
+//   10 #include "SampleApp.h"
+//   11 #include "ZDApp.h"
+//   12 #include "ZDObject.h"
+//   13 #include "ZDProfile.h"
+//   14 
+//   15 #include "hal_drivers.h"
+//   16 #include "hal_key.h"
+//   17 #if defined ( LCD_SUPPORTED )
+//   18   #include "hal_lcd.h"
+//   19 #endif
+//   20 #include "hal_led.h"
+//   21 #include "hal_uart.h"
+//   22 
+//   23 #ifdef ZDO_COORDINATOR
+//   24 //Ð­ÒéÎÄ¼þ
+//   25 #include "mqtt.h"
+//   26 #include "mqttkit.h"
+//   27 
+//   28 #else
+//   29 
+//   30 #include "dht11.h"
+//   31 
+//   32 #endif
+//   33 
+//   34 
+//   35 /*********************************************************************
+//   36  * MACROS
+//   37  */
+//   38 
+//   39 /*********************************************************************
+//   40  * CONSTANTS
+//   41  */
+//   42 
+//   43 #if !defined( SAMPLE_APP_PORT )
+//   44 #define SAMPLE_APP_PORT  0
+//   45 #endif
+//   46 
+//   47 #if !defined( SAMPLE_APP_RX_MAX )
+//   48 #define SAMPLE_APP_RX_MAX  200
+//   49 #endif
+//   50 
+//   51 
+//   52 // This list should be filled with Application specific Cluster IDs.
+
+        RSEG XDATA_ROM_C:CONST:REORDER:NOROOT(0)
+        DATA8
+//   53 const cId_t SampleApp_ClusterList[SAMPLE_MAX_CLUSTERS] =
+SampleApp_ClusterList:
+        DATA16
+        DW 1
+        DW 2
+        DW 3
+//   54 {
+//   55   SAMPLEAPP_P2P_CLUSTERID,
+//   56   SAMPLEAPP_PERIODIC_CLUSTERID,
+//   57   SERIALAPP_CONNECTREQ_CLUSTER
+//   58 };
+//   59 
+
+        RSEG XDATA_ROM_C:CONST:REORDER:NOROOT(0)
+        DATA8
+//   60 const SimpleDescriptionFormat_t SampleApp_SimpleDesc =
+SampleApp_SimpleDesc:
+        DB 11
+        DATA16
+        DW 3845
+        DW 1
+        DATA8
+        DB 0
+        DB 3
+        DATA16
+        DW SampleApp_ClusterList
+        DATA8
+        DB 3
+        DATA16
+        DW SampleApp_ClusterList
+//   61 {
+//   62   SAMPLEAPP_ENDPOINT,              //  int   Endpoint;
+//   63   SAMPLEAPP_PROFID,                //  uint16 AppProfId[2];
+//   64   SAMPLEAPP_DEVICEID,              //  uint16 AppDeviceId[2];
+//   65   SAMPLEAPP_DEVICE_VERSION,        //  int   AppDevVer:4;
+//   66   SAMPLEAPP_FLAGS,                 //  int   AppFlags:4;
+//   67   SAMPLE_MAX_CLUSTERS,          //  byte  AppNumInClusters;
+//   68   (cId_t *)SampleApp_ClusterList,  //  byte *pAppInClusterList;
+//   69   SAMPLE_MAX_CLUSTERS,          //  byte  AppNumOutClusters;
+//   70   (cId_t *)SampleApp_ClusterList   //  byte *pAppOutClusterList;
+//   71 };
+//   72 
+
+        RSEG XDATA_I:XDATA:NOROOT(0)
+//   73 endPointDesc_t SampleApp_epDesc =
+SampleApp_epDesc:
+        DATA8
+        DS 6
+        REQUIRE `?<Initializer for SampleApp_epDesc>`
+        REQUIRE __INIT_XDATA_I
+//   74 {
+//   75   SAMPLEAPP_ENDPOINT,
+//   76  &SampleApp_TaskID,
+//   77   (SimpleDescriptionFormat_t *)&SampleApp_SimpleDesc,
+//   78   noLatencyReqs
+//   79 };
+//   80 
+//   81 /*********************************************************************
+//   82  * TYPEDEFS
+//   83  */
+//   84 
+//   85 /*********************************************************************
+//   86  * GLOBAL VARIABLES
+//   87  */
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+        DATA8
+//   88 devStates_t SampleApp_NwkState;   
+SampleApp_NwkState:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+        DATA8
+//   89 uint8 SampleApp_TaskID;           // Task ID for internal task/event processing.
+SampleApp_TaskID:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+//   90 
+//   91 /*********************************************************************
+//   92  * EXTERNAL VARIABLES
+//   93  */
+//   94 
+//   95 /*********************************************************************
+//   96  * EXTERNAL FUNCTIONS
+//   97  */
+//   98 
+//   99 /*********************************************************************
+//  100  * LOCAL VARIABLES
+//  101  */
+//  102 
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+        DATA8
+//  103 static uint8 SampleApp_MsgID;
+SampleApp_MsgID:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+//  104 
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+        DATA8
+//  105 afAddrType_t SampleApp_P2P_DstAddr;      //µã²¥
+SampleApp_P2P_DstAddr:
+        DS 12
+        REQUIRE __INIT_XDATA_Z
+//  106 
+//  107 
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+        DATA8
+//  108 static uint8 SampleApp_RxBuf[SAMPLE_APP_RX_MAX+1]={0};
+SampleApp_RxBuf:
+        DS 201
+        REQUIRE __INIT_XDATA_Z
+//  109 static uint16 SampleApp_RxLen=0;
+//  110 
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+        DATA8
+//  111 uint8 onenet_login_ok=0;//onenet×¢²á³É¹¦ 0:Î´×¢²á£¬1£º×¢²áÖÐ¡¡2£º×¢²á³É¹¦
+onenet_login_ok:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+        DATA8
+//  112 uint8 end_temp;//ÖÕ¶ËµÄÎÂ¶È
+end_temp:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+
+        RSEG XDATA_Z:XDATA:NOROOT(0)
+        DATA8
+//  113 uint8 end_hum;//ÖÕ¶ËµÄÊª¶È
+end_hum:
+        DS 1
+        REQUIRE __INIT_XDATA_Z
+//  114 
+//  115 
+//  116 #ifdef ZDO_COORDINATOR
+//  117 signed char *g_mqtt_topics_set[5] = {NULL};
+//  118 u8 topics_buff[60]={0};
+//  119 u8 topics_post[100]={0}; //·¢²¼µÄÖ÷Ìâ
+//  120 u8 mqtt_message[200]={0};//·¢²¼µÄÏûÏ¢
+//  121 #endif
+//  122 
+//  123 /*********************************************************************
+//  124  * LOCAL FUNCTIONS
+//  125  */
+//  126 
+//  127 static void SampleApp_ProcessMSGCmd( afIncomingMSGPacket_t *pkt );
+//  128 void SampleApp_CallBack(uint8 port, uint8 event); 
+//  129 static void SampleApp_Send_P2P_Message( void );
+//  130 static void OneNet_publish_topic();
+//  131 void debug(uint8 * msg, ...);
+//  132 
+//  133 /*********************************************************************
+//  134  * @fn      SampleApp_Init
+//  135  *
+//  136  * @brief   This is called during OSAL tasks' initialization.
+//  137  *
+//  138  * @param   task_id - the Task ID assigned by OSAL.
+//  139  *
+//  140  * @return  none
+//  141  */
+
+        RSEG BANKED_CODE:CODE:NOROOT(0)
+//  142 void SampleApp_Init( uint8 task_id )
+SampleApp_Init:
+        CFI Block cfiBlock0 Using cfiCommon0
+        CFI Function SampleApp_Init
+        CODE
+//  143 {
+        FUNCALL SampleApp_Init, MT_UartInit
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 10, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 10, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Init, MT_UartRegisterTaskID
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 10, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 10, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Init, afRegister
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 10, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 10, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Init, RegisterForKeys
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 10, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 10, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        MOV     A,#-0xa
+        LCALL   ?BANKED_ENTER_XDATA
+        CFI DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
+        CFI DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
+        CFI ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
+        CFI ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
+        CFI ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
+        CFI R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
+        CFI V1 load(1, XDATA, add(CFA_XSP16, literal(-7)))
+        CFI V0 load(1, XDATA, add(CFA_XSP16, literal(-8)))
+        CFI VB load(1, XDATA, add(CFA_XSP16, literal(-9)))
+        CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-10)))
+        CFI CFA_SP SP+0
+        CFI CFA_XSP16 add(XSP16, 10)
+        ; Saved register size: 10
+        ; Auto size: 0
+        MOV     A,R1
+        MOV     R6,A
+//  144   halUARTCfg_t uartConfig;
+//  145 
+//  146   SampleApp_TaskID = task_id;
+        MOV     DPTR,#SampleApp_TaskID
+        MOVX    @DPTR,A
+//  147   SampleApp_NwkState = DEV_INIT;       
+        MOV     DPTR,#SampleApp_NwkState
+        MOV     A,#0x1
+        MOVX    @DPTR,A
+//  148 
+//  149   MT_UartInit();                  //´®¿Ú³õÊ¼»¯
+        ; Setup parameters for call to function MT_UartInit
+        LCALL   ??MT_UartInit?relay
+//  150   MT_UartRegisterTaskID(task_id); //×¢²á´®¿ÚÈÎÎñ
+        ; Setup parameters for call to function MT_UartRegisterTaskID
+        MOV     ?V0 + 0,R6
+        MOV     R2,?V0 + 0
+        MOV     R3,#0x0
+        LCALL   ??MT_UartRegisterTaskID?relay
+//  151   afRegister( (endPointDesc_t *)&SampleApp_epDesc );
+        ; Setup parameters for call to function afRegister
+        MOV     R2,#SampleApp_epDesc & 0xff
+        MOV     R3,#(SampleApp_epDesc >> 8) & 0xff
+        LCALL   ??afRegister?relay
+//  152   RegisterForKeys( task_id );
+        ; Setup parameters for call to function RegisterForKeys
+        MOV     A,R6
+        MOV     R1,A
+        LCALL   ??RegisterForKeys?relay
+//  153 
+//  154 #ifdef ZDO_COORDINATOR
+//  155   //Ð­µ÷Æ÷³õÊ¼»¯
+//  156   
+//  157   //·ê·äÃùÆ÷³õÊ¼»¯
+//  158 
+//  159   P0SEL &= ~0x80;                 //ÉèÖÃP07ÎªÆÕÍ¨IO¿Ú
+//  160   P0DIR |= 0x80;                 //P07¶¨ÒåÎªÊä³ö¿Ú
+//  161 
+//  162   //Ä¬ÈÏ·äÃùÆ÷²»Ïì
+//  163   P0_7=1;  
+//  164   
+//  165   //³õÊ¼»¯·¢²¼µÄÖ÷Ìâ
+//  166   sprintf(topics_post, "/sys/%s/%s/thing/event/property/post",ProductKey,DeviceName);
+//  167   
+//  168   //³õÊ¼»¯¶©ÔÄµÄÖ÷Ìâ
+//  169   sprintf(topics_buff, "/sys/%s/%s/thing/service/property/set",ProductKey,DeviceName);
+//  170   g_mqtt_topics_set[0]=topics_buff;  
+//  171   
+//  172 #endif
+//  173   
+//  174   SampleApp_P2P_DstAddr.addrMode = (afAddrMode_t)Addr16Bit; //µã²¥ 
+        MOV     DPTR,#SampleApp_P2P_DstAddr + 8
+        MOV     A,#0x2
+        MOVX    @DPTR,A
+//  175   SampleApp_P2P_DstAddr.endPoint = SAMPLEAPP_ENDPOINT; 
+        INC     DPTR
+        MOV     A,#0xb
+        MOVX    @DPTR,A
+//  176   SampleApp_P2P_DstAddr.addr.shortAddr = 0x0000;            //·¢¸øÐ­µ÷Æ÷
+        MOV     DPTR,#SampleApp_P2P_DstAddr
+        CLR     A
+        MOVX    @DPTR,A
+        INC     DPTR
+        MOVX    @DPTR,A
+        CFI EndBlock cfiBlock0
+//  177 
+//  178 
+//  179 }
+        REQUIRE ?Subroutine0
+        ; // Fall through to label ?Subroutine0
+
+        RSEG BANKED_CODE:CODE:NOROOT(0)
+?Subroutine0:
+        CFI Block cfiBlock1 Using cfiCommon0
+        CFI NoFunction
+        CFI CFA_SP SP+0
+        CFI CFA_XSP16 add(XSP16, 10)
+        CFI VB load(1, XDATA, add(CFA_XSP16, literal(-9)))
+        CFI DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
+        CFI DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
+        CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-10)))
+        CFI R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
+        CFI V0 load(1, XDATA, add(CFA_XSP16, literal(-8)))
+        CFI V1 load(1, XDATA, add(CFA_XSP16, literal(-7)))
+        CFI ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
+        CFI ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
+        CFI ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
+        MOV     R7,#0x2
+        LJMP    ?BANKED_LEAVE_XDATA
+        CFI EndBlock cfiBlock1
+//  180 
+
+        RSEG BANKED_CODE:CODE:NOROOT(0)
+//  181 void SampleApp_HandleKeys( uint8 shift, uint8 keys )
+SampleApp_HandleKeys:
+        CFI Block cfiBlock2 Using cfiCommon0
+        CFI Function SampleApp_HandleKeys
+        CODE
+//  182 {
+        ; Saved register size: 0
+        ; Auto size: 0
+//  183   (void)shift;  // Intentionally unreferenced parameter
+//  184 
+//  185 #if defined(ZDO_COORDINATOR)
+//  186 
+//  187   if ( keys & HAL_KEY_SW_6 )//key1
+//  188   {
+//  189     const signed char *g_mqtt_topics[] = {"mqtt_topic_test1"};
+//  190     if(0 == mqtt_subscribe_topic(g_mqtt_topics, 1))
+//  191     {
+//  192 
+//  193     }
+//  194   }
+//  195 
+//  196   if ( keys & HAL_KEY_SW_1 )//key2
+//  197   {
+//  198 
+//  199   }
+//  200 
+//  201 #endif
+//  202 }
+        LJMP    ?BRET
+        CFI EndBlock cfiBlock2
+//  203 
+//  204 
+//  205 /*********************************************************************
+//  206  * @fn      SampleApp_ProcessEvent
+//  207  *
+//  208  * @brief   Generic Application Task event processor.
+//  209  *
+//  210  * @param   task_id  - The OSAL assigned task ID.
+//  211  * @param   events   - Bit map of events to process.
+//  212  *
+//  213  * @return  Event flags of all unprocessed events.
+//  214  */
+
+        RSEG BANKED_CODE:CODE:NOROOT(0)
+//  215 UINT16 SampleApp_ProcessEvent( uint8 task_id, UINT16 events )
+SampleApp_ProcessEvent:
+        CFI Block cfiBlock3 Using cfiCommon0
+        CFI Function SampleApp_ProcessEvent
+        CODE
+//  216 {
+        FUNCALL SampleApp_ProcessEvent, SampleApp_Send_P2P_Message
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 12, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_ProcessEvent, osal_rand
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 12, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_ProcessEvent, osal_start_timerEx
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 12, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_ProcessEvent, osal_start_timerEx
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 12, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_ProcessEvent, osal_msg_deallocate
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 12, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_ProcessEvent, osal_msg_receive
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 12, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_ProcessEvent, SampleApp_ProcessMSGCmd
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 12, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 12, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        MOV     A,#-0xc
+        LCALL   ?BANKED_ENTER_XDATA
+        CFI DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
+        CFI DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
+        CFI ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
+        CFI ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
+        CFI ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
+        CFI R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
+        CFI V3 load(1, XDATA, add(CFA_XSP16, literal(-7)))
+        CFI V2 load(1, XDATA, add(CFA_XSP16, literal(-8)))
+        CFI V1 load(1, XDATA, add(CFA_XSP16, literal(-9)))
+        CFI V0 load(1, XDATA, add(CFA_XSP16, literal(-10)))
+        CFI VB load(1, XDATA, add(CFA_XSP16, literal(-11)))
+        CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-12)))
+        CFI CFA_SP SP+0
+        CFI CFA_XSP16 add(XSP16, 12)
+        ; Saved register size: 12
+        ; Auto size: 0
+        MOV     A,R2
+        MOV     R6,A
+        MOV     A,R3
+        MOV     R7,A
+//  217   (void)task_id;  // Intentionally unreferenced parameter
+//  218   
+//  219   if ( events & SYS_EVENT_MSG )
+        ANL     A,#0x80
+        JNZ     ??SampleApp_ProcessEvent_0
+//  220   {
+//  221     afIncomingMSGPacket_t *MSGpkt;
+//  222 
+//  223     while ( (MSGpkt = (afIncomingMSGPacket_t *)osal_msg_receive( SampleApp_TaskID )) )
+//  224     {
+//  225       switch ( MSGpkt->hdr.event )
+//  226       {
+//  227       case KEY_CHANGE:
+//  228         SampleApp_HandleKeys( ((keyChange_t *)MSGpkt)->state, ((keyChange_t *)MSGpkt)->keys );
+//  229         break;
+//  230       
+//  231       case AF_INCOMING_MSG_CMD:
+//  232         SampleApp_ProcessMSGCmd( MSGpkt );
+//  233         break;
+//  234         
+//  235       case ZDO_STATE_CHANGE:
+//  236         SampleApp_NwkState = (devStates_t)(MSGpkt->hdr.status);
+//  237         if ( (SampleApp_NwkState == DEV_ZB_COORD)||
+//  238             (SampleApp_NwkState == DEV_ROUTER)
+//  239             || (SampleApp_NwkState == DEV_END_DEVICE) )
+//  240         {
+//  241             //Á¬Íø³É¹¦ºó£¬Æô¶¯Ò»¸ö¶¨Ê±Æ÷
+//  242             osal_start_timerEx( SampleApp_TaskID,
+//  243                               SAMPLEAPP_SEND_PERIODIC_MSG_EVT,
+//  244                               SAMPLEAPP_SEND_PERIODIC_MSG_TIMEOUT );
+//  245         }
+//  246         else
+//  247         {
+//  248           // Device is no longer in the network
+//  249         }
+//  250         break;
+//  251 
+//  252       default:
+//  253         break;
+//  254       }
+//  255 
+//  256       osal_msg_deallocate( (uint8 *)MSGpkt );
+//  257     }
+//  258 
+//  259     return ( events ^ SYS_EVENT_MSG );
+//  260   }
+//  261 
+//  262 #ifdef ZDO_COORDINATOR
+//  263 
+//  264   //¶¨Ê±Æ÷Ê±¼äµ½
+//  265   if ( events & SAMPLEAPP_SEND_PERIODIC_MSG_EVT )
+//  266   {  
+//  267     if(onenet_login_ok==2)
+//  268     {
+//  269         //Èç¹û½ÓÈëonenet³É¹¦£¬Æô¶¯ÐÄÌøºÍ·¢ËÍÊý¾Ý¶¨•AÆ÷
+//  270 
+//  271         P1_1=0;//µãÁÁD2
+//  272 
+//  273       
+//  274         // Æô¶¯ÐÄÌø¶¨Ê±Æ÷£¬15ÃëÒ»´Î
+//  275         osal_start_timerEx( SampleApp_TaskID, SAMPLEAPP_ONENET_HEART_BEAT_EVT,15000 );
+//  276         
+//  277         // Æô¶¯·¢ËÍÊý¾Ý¶¨Ê±Æ÷£¬5ÃëÒ»´Î
+//  278         osal_start_timerEx( SampleApp_TaskID, SAMPLEAPP_ONENET_SEND_DATA_EVT,5000 );
+//  279     }
+//  280     else
+//  281     {        
+//  282         onenet_login_ok=1;//onenet×¢²á³É¹¦ 0:Î´×¢²á£¬1£º×¢²áÖÐ¡¡2£º×¢²á³É¹¦
+//  283         SampleApp_RxLen=0;
+//  284 
+//  285         //Èç¹ûÃ»ÓÐ½ÓÈëonenet³É¹¦£¬ÖØÐÂ·¢Æð½ÓÈë
+//  286         OneNet_DevLink();//½ÓÈëonenet·þÎñÆ÷
+//  287 
+//  288         //LED2ÉÁ£¬±íÊ¾ÕýÔÚ½ÓÈëonenet
+//  289         HalLedBlink (HAL_LED_2, 5, 50, 500);
+//  290 
+//  291         // Ã¿5Ãë³¢ÊÔ½ÓÈëÒ»´Î
+//  292         osal_start_timerEx( SampleApp_TaskID, SAMPLEAPP_SEND_PERIODIC_MSG_EVT,5000 );
+//  293     }
+//  294 
+//  295 
+//  296     // return unprocessed events
+//  297     return (events ^ SAMPLEAPP_SEND_PERIODIC_MSG_EVT);
+//  298   }
+//  299 
+//  300 
+//  301   //ÐÄÌø¶¨Ê±Æ÷Ê±¼äµ½
+//  302   if ( events & SAMPLEAPP_ONENET_HEART_BEAT_EVT )
+//  303   {
+//  304     if(onenet_login_ok==2)
+//  305     {
+//  306         //·¢ËÍÐÄÌø
+//  307         onenet_mqtt_send_heart();        
+//  308     }
+//  309     
+//  310     // Æô¶¯ÐÄÌø¶¨Ê±Æ÷£¬15ÃëÒ»´Î
+//  311     osal_start_timerEx( SampleApp_TaskID, SAMPLEAPP_ONENET_HEART_BEAT_EVT,15000 );
+//  312 
+//  313 
+//  314     // return unprocessed events
+//  315     return (events ^ SAMPLEAPP_ONENET_HEART_BEAT_EVT);
+//  316   }
+//  317 
+//  318 
+//  319   //·¢ËÍÊý¾Ý¶¨Ê±Æ÷Ê±¼äµ½
+//  320   if ( events & SAMPLEAPP_ONENET_SEND_DATA_EVT )
+//  321   {
+//  322     if(onenet_login_ok==2)
+//  323     {
+//  324         //·¢ËÍÎÂÊª¶ÈÊý¾Ýµ½onenet
+//  325     //    OneNet_SendData(end_temp, end_hum);
+//  326 
+//  327         sprintf(mqtt_message,
+//  328         "{\"method\":\"thing.service.property.set\",\"id\":\"630262306\",\"params\":{\ 
+//  329             \"CurrentTemperature_1\":%d,\ 
+//  330             \"Humidified\":%d\ 
+//  331         },\"version\":\"1.0.0\"}",
+//  332         end_temp,
+//  333         end_hum
+//  334         );
+//  335               
+//  336         //·¢²¼Ö÷Ìâ
+//  337         mqtt_publish_topic(topics_post, mqtt_message);
+//  338 
+//  339      //  OneNet_publish_topic();
+//  340     }
+//  341     
+//  342     // Æô¶¯·¢ËÍÊý¾Ý¶¨Ê±Æ÷£¬5ÃëÒ»´Î
+//  343     osal_start_timerEx( SampleApp_TaskID, SAMPLEAPP_ONENET_SEND_DATA_EVT,5000 );
+//  344 
+//  345 
+//  346     // return unprocessed events
+//  347     return (events ^ SAMPLEAPP_ONENET_SEND_DATA_EVT);
+//  348   }
+//  349 
+//  350   
+//  351 #else 
+//  352 
+//  353   //¶¨Ê±Æ÷Ê±¼äµ½
+//  354   if ( events & SAMPLEAPP_SEND_PERIODIC_MSG_EVT )
+        MOV     A,R6
+        MOV     C,0xE0 /* A   */.0
+        JNC     ??SampleApp_ProcessEvent_1
+//  355   {
+//  356  
+//  357     // DHT11²É¼¯
+//  358     SampleApp_Send_P2P_Message();
+        ; Setup parameters for call to function SampleApp_Send_P2P_Message
+        LCALL   ??SampleApp_Send_P2P_Message?relay
+//  359 
+//  360     // Setup to send message again in normal period (+ a little jitter)
+//  361     osal_start_timerEx( SampleApp_TaskID, SAMPLEAPP_SEND_PERIODIC_MSG_EVT,
+//  362         (SAMPLEAPP_SEND_PERIODIC_MSG_TIMEOUT + (osal_rand() & 0x00FF)) );
+        ; Setup parameters for call to function osal_rand
+        LCALL   ??osal_rand?relay
+        ; Setup parameters for call to function osal_start_timerEx
+        MOV     A,R2
+        ADD     A,#-0x48
+        MOV     R4,A
+        CLR     A
+        ADDC    A,#0xb
+        MOV     R5,A
+        MOV     R2,#0x1
+        MOV     R3,#0x0
+        MOV     DPTR,#SampleApp_TaskID
+        MOVX    A,@DPTR
+        MOV     R1,A
+        LCALL   ??osal_start_timerEx?relay
+//  363 
+//  364     // return unprocessed events
+//  365     return (events ^ SAMPLEAPP_SEND_PERIODIC_MSG_EVT);
+        MOV     A,R6
+        XRL     A,#0x1
+        MOV     R2,A
+        MOV     A,R7
+??SampleApp_ProcessEvent_2:
+        MOV     R3,A
+        SJMP    ??SampleApp_ProcessEvent_3
+//  366   }
+??SampleApp_ProcessEvent_4:
+        INC     DPTR
+        MOVX    A,@DPTR
+        MOV     DPTR,#SampleApp_NwkState
+        MOVX    @DPTR,A
+        XRL     A,#0x9
+        JZ      ??SampleApp_ProcessEvent_5
+        MOVX    A,@DPTR
+        XRL     A,#0x7
+        JZ      ??SampleApp_ProcessEvent_5
+        MOVX    A,@DPTR
+        XRL     A,#0x6
+        JNZ     ??SampleApp_ProcessEvent_6
+??SampleApp_ProcessEvent_5:
+        ; Setup parameters for call to function osal_start_timerEx
+        MOV     R4,#-0x48
+        MOV     R5,#0xb
+        MOV     R2,#0x1
+        MOV     R3,#0x0
+        MOV     DPTR,#SampleApp_TaskID
+        MOVX    A,@DPTR
+        MOV     R1,A
+        LCALL   ??osal_start_timerEx?relay
+??SampleApp_ProcessEvent_6:
+        ; Setup parameters for call to function osal_msg_deallocate
+        MOV     R2,?V0 + 0
+        MOV     R3,?V0 + 1
+        LCALL   ??osal_msg_deallocate?relay
+??SampleApp_ProcessEvent_0:
+        ; Setup parameters for call to function osal_msg_receive
+        MOV     DPTR,#SampleApp_TaskID
+        MOVX    A,@DPTR
+        MOV     R1,A
+        LCALL   ??osal_msg_receive?relay
+        MOV     ?V0 + 0,R2
+        MOV     ?V0 + 1,R3
+        MOV     A,R2
+        ORL     A,?V0 + 1
+        JZ      ??SampleApp_ProcessEvent_7
+        MOV     DPL,R2
+        MOV     DPH,R3
+        MOVX    A,@DPTR
+        ADD     A,#-0x1a
+        JZ      ??SampleApp_ProcessEvent_8
+        ADD     A,#0x49
+        JZ      ??SampleApp_ProcessEvent_4
+        SJMP    ??SampleApp_ProcessEvent_6
+??SampleApp_ProcessEvent_8:
+        ; Setup parameters for call to function SampleApp_ProcessMSGCmd
+        LCALL   ??SampleApp_ProcessMSGCmd?relay
+        SJMP    ??SampleApp_ProcessEvent_6
+??SampleApp_ProcessEvent_7:
+        MOV     A,R6
+        MOV     R2,A
+        MOV     A,R7
+        XRL     A,#0x80
+        SJMP    ??SampleApp_ProcessEvent_2
+//  367 
+//  368 #endif
+//  369 
+//  370   return ( 0 );  // Discard unknown events.
+??SampleApp_ProcessEvent_1:
+        MOV     R2,#0x0
+        MOV     R3,#0x0
+??SampleApp_ProcessEvent_3:
+        MOV     R7,#0x4
+        LJMP    ?BANKED_LEAVE_XDATA
+        CFI EndBlock cfiBlock3
+//  371 }
+//  372 
+//  373 /*********************************************************************
+//  374  * @fn      SerialApp_ProcessMSGCmd
+//  375  *
+//  376  * @brief   Data message processor callback. This function processes
+//  377  *          any incoming data - probably from other devices. Based
+//  378  *          on the cluster ID, perform the intended action.
+//  379  *
+//  380  * @param   pkt - pointer to the incoming message packet
+//  381  *
+//  382  * @return  TRUE if the 'pkt' parameter is being used and will be freed later,
+//  383  *          FALSE otherwise.
+//  384  */
+
+        RSEG BANKED_CODE:CODE:NOROOT(0)
+//  385 void SampleApp_ProcessMSGCmd( afIncomingMSGPacket_t *pkt )
+SampleApp_ProcessMSGCmd:
+        CFI Block cfiBlock4 Using cfiCommon0
+        CFI Function SampleApp_ProcessMSGCmd
+        CODE
+//  386 {
+        ; Saved register size: 0
+        ; Auto size: 0
+//  387   uint8 buff[20]={0};
+//  388 
+//  389   switch ( pkt->clusterId )
+//  390   {
+//  391   // ½ÓÊÕÖÕ¶ËÉÏ´«µÄÎÂ¶ÈÊý¾Ý
+//  392   case SAMPLEAPP_P2P_CLUSTERID: 
+//  393 #ifdef ZDO_COORDINATOR
+//  394     {
+//  395         end_temp=pkt->cmd.Data[0]; //ÖÕ¶ËÎÂ¶È
+//  396         end_hum=pkt->cmd.Data[1]; //ÖÕ¶ËÊª¶È 
+//  397 
+//  398 
+//  399         sprintf(buff, "T:%d", end_temp);
+//  400         HalLcdWriteString(buff, HAL_LCD_LINE_3); //LCDÏÔÊ¾
+//  401 
+//  402         sprintf(buff, "H:%d", end_hum);
+//  403         HalLcdWriteString(buff, HAL_LCD_LINE_4); //LCDÏÔÊ¾
+//  404     }
+//  405 #endif
+//  406     break;
+//  407 
+//  408   case SAMPLEAPP_PERIODIC_CLUSTERID:
+//  409 
+//  410     break;
+//  411 
+//  412     default:
+//  413       break;
+//  414   }
+//  415 }
+        LJMP    ?BRET
+        CFI EndBlock cfiBlock4
+//  416 
+//  417 #ifdef ZDO_COORDINATOR
+//  418 
+//  419 //·¢ËÍMQTTÊý¾Ý
+//  420 void ESP8266_SendData(char* buff, int len)
+//  421 {
+//  422     if(len==0) return;
+//  423     
+//  424     HalUARTWrite(0,buff, len);
+//  425 }
+//  426 
+//  427 
+//  428 //½ÓÊÕµ½ÏÂ·¢ÃüÁî£¬»òÕß½ÓÊÕµ½¶©ÔÄµÄÏûÏ¢
+//  429 //topic:ÊÕµ½µÄÖ÷Ìâ
+//  430 //cmd::Ö÷Ìâ¶ÔÓ¦µÄÄÚÈÝ
+//  431 void mqtt_rx(uint8* topic, uint8* cmd)
+//  432 {
+//  433     //Ð­µ÷Æ÷ÊÕµ½Êý¾Ýºó
+//  434     //¸ù¾ÝÉè¼Æ¾ö¶¨Êý¾ÝÈçºÎ´¦Àí
+//  435 
+//  436     if(topic == NULL || cmd==NULL) return;
+//  437 
+//  438 
+//  439 
+//  440     //ÎÒÃÇÖ»¹ØÐÄÄÚÈÝ£¬¼´Ö»¹ØÐÄCMD£¬²»´¦ÀíÖ÷Ìâ
+//  441 
+//  442     //ÎÒÃÇ´¦Àí3¸ö×Ö½Ú£¬»òÕß3¸ö×Ö½ÚÒÔÉÏµÄ
+//  443     if(osal_strlen(cmd)>=3)
+//  444     {
+//  445         //D31 D30
+//  446       
+//  447         if(cmd[0]=='D'||cmd[0]=='d')
+//  448         {
+//  449             //¿ØÖÆD2
+//  450             if(cmd[1]=='2')
+//  451             {
+//  452                 if(cmd[2]=='1')
+//  453                 {
+//  454                     P1_1=0;//D2ÁÁ
+//  455                 }
+//  456                 else
+//  457                 {
+//  458                     P1_1=1;//D2Ãð
+//  459                 }
+//  460             }
+//  461 
+//  462             //¿ØÖÆD3
+//  463             if(cmd[1]=='3')
+//  464             {
+//  465                 if(cmd[2]=='1')
+//  466                 {
+//  467                     P1_4=0;//D3ÁÁ
+//  468                 }
+//  469                 else
+//  470                 {
+//  471                     P1_4=1;//D3Ãð
+//  472                 }
+//  473             }
+//  474             
+//  475         }
+//  476     }
+//  477   
+//  478 }
+//  479 
+//  480 
+//  481 
+//  482 void OneNet_publish_topic()
+//  483 {
+//  484     uint8 buff[20]={0};
+//  485 
+//  486     sprintf(buff, "t:%d,h:%d", end_temp, end_hum);
+//  487 
+//  488     /*  ·¢²¼Ö÷ÌâÎª"hello_topic_public"£¬ÏûÏ¢ÎªÎÂ¶ÈºÍÊª¶È */
+//  489     if(0 == mqtt_publish_topic("hello_topic_public", buff))
+//  490     {;}
+//  491 }
+//  492 
+//  493 
+//  494 
+//  495 /*********************************************************************
+//  496  * @fn      SampleApp_CallBack
+//  497  *
+//  498  * @brief   Send data OTA.
+//  499  *
+//  500  * @param   port - UART port.
+//  501  * @param   event - the UART port event flag.
+//  502  *
+//  503  * @return  none
+//  504  */
+//  505 uint32 lastReadMs=0;
+//  506 void SampleApp_CallBack(uint8 port, uint8 event)
+//  507 {
+//  508   (void)port;
+//  509 
+//  510   if(0==onenet_login_ok)
+//  511   {
+//  512     HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX);
+//  513     SampleApp_RxLen=0;
+//  514     osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX);    
+//  515   }
+//  516   else if(1==onenet_login_ok)//onenet×¢²á³É¹¦ 0:Î´×¢²á£¬1£º×¢²áÖÐ¡¡2£º×¢²á³É¹¦
+//  517   {
+//  518     //Ò»¸öÒ»¸ö×Ö½Ú¶Á
+//  519     SampleApp_RxLen += HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf+SampleApp_RxLen, 4);
+//  520 
+//  521     //ÅÐ¶ÏÊÇ·ñÊÇ×¢²á³É¹¦
+//  522     if(SampleApp_RxLen>=4)
+//  523     {
+//  524         debug("rx len=%d(%x,%x,%x,%x)\r\n", SampleApp_RxLen,SampleApp_RxBuf[0],SampleApp_RxBuf[1],SampleApp_RxBuf[2],SampleApp_RxBuf[3]);
+//  525 
+//  526         //µÈ´ý½ÓÈëÏìÓ¦
+//  527         if(MQTT_UnPacketRecv(SampleApp_RxBuf) == MQTT_PKT_CONNACK)
+//  528         {
+//  529             if(0==MQTT_UnPacketConnectAck(SampleApp_RxBuf))
+//  530             {
+//  531                 onenet_login_ok=2;//×¢²á³É¹¦
+//  532                 SampleApp_RxLen=0;
+//  533 
+//  534                 //ÇëÇó¶©ÔÄÖ÷Ìâ
+//  535                 mqtt_subscribe_topic(g_mqtt_topics_set, 1);
+//  536             }
+//  537         }
+//  538     }
+//  539 
+//  540     //Êý×éÂú£¬Çå0                              
+//  541     if(SampleApp_RxLen>=SAMPLE_APP_RX_MAX)
+//  542     {
+//  543         SampleApp_RxLen=0;
+//  544     }
+//  545   }
+//  546   else if(2==onenet_login_ok)
+//  547   {
+//  548       //Èç¹ûÊÇ×¢²á³É¹¦£¬¶Á·þÎñÆ÷µÄ¿ØÖÆÃüÁî
+//  549 
+//  550       uint32 curMs=osal_GetSystemClock(); 
+//  551 
+//  552       if((curMs-lastReadMs)<1000) return;
+//  553 
+//  554       lastReadMs=curMs;
+//  555       SampleApp_RxLen=0;
+//  556       osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX+1);
+//  557       SampleApp_RxLen = HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, SAMPLE_APP_RX_MAX);
+//  558       
+//  559 
+//  560 
+//  561       if(SampleApp_RxLen>0)
+//  562       {        
+//  563         debug("rx len=%d.\r\n", SampleApp_RxLen);
+//  564         
+//  565         OneNet_RevPro(SampleApp_RxBuf);
+//  566         SampleApp_RxLen=0;
+//  567         osal_memset(SampleApp_RxBuf, 0, SAMPLE_APP_RX_MAX+1);
+//  568       }
+//  569   }
+//  570 
+//  571 }
+//  572 
+//  573 #else
+//  574 
+//  575 /*********************************************************************
+//  576  * @fn      SampleApp_Send_P2P_Message
+//  577  *
+//  578  * @brief   point to point.
+//  579  *
+//  580  * @param   none
+//  581  *
+//  582  * @return  none
+//  583  */
+
+        RSEG BANKED_CODE:CODE:NOROOT(0)
+//  584 void SampleApp_Send_P2P_Message( void )
+SampleApp_Send_P2P_Message:
+        CFI Block cfiBlock5 Using cfiCommon0
+        CFI Function SampleApp_Send_P2P_Message
+        CODE
+//  585 {
+        FUNCALL SampleApp_Send_P2P_Message, DHT11
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 35, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 35, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Send_P2P_Message, sprintf
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 39, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 39, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Send_P2P_Message, HalLcdWriteString
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 35, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 35, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Send_P2P_Message, osal_strlen
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 35, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 35, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Send_P2P_Message, HalUARTWrite
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 35, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 35, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Send_P2P_Message, HalUARTWrite
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 35, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 35, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        FUNCALL SampleApp_Send_P2P_Message, AF_DataRequest
+        LOCFRAME ISTACK, 0, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 44, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 0, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 44, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        MOV     A,#-0xa
+        LCALL   ?BANKED_ENTER_XDATA
+        CFI DPH0 load(1, XDATA, add(CFA_XSP16, literal(-1)))
+        CFI DPL0 load(1, XDATA, add(CFA_XSP16, literal(-2)))
+        CFI ?BRET_EXT load(1, XDATA, add(CFA_XSP16, literal(-3)))
+        CFI ?RET_HIGH load(1, XDATA, add(CFA_XSP16, literal(-4)))
+        CFI ?RET_LOW load(1, XDATA, add(CFA_XSP16, literal(-5)))
+        CFI R7 load(1, XDATA, add(CFA_XSP16, literal(-6)))
+        CFI V1 load(1, XDATA, add(CFA_XSP16, literal(-7)))
+        CFI V0 load(1, XDATA, add(CFA_XSP16, literal(-8)))
+        CFI VB load(1, XDATA, add(CFA_XSP16, literal(-9)))
+        CFI R6 load(1, XDATA, add(CFA_XSP16, literal(-10)))
+        CFI CFA_SP SP+0
+        CFI CFA_XSP16 add(XSP16, 10)
+        ; Saved register size: 10
+        ; Auto size: 25
+        MOV     A,#-0x19
+        LCALL   ?ALLOC_XSTACK8
+        CFI CFA_XSP16 add(XSP16, 35)
+//  586   uint8 str[5]={0};
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOV     R4,DPL
+        MOV     R5,DPH
+        MOV     DPH,#(`?<Constant {0}>` >> 8) & 0xff
+        MOV     DPL,#`?<Constant {0}>` & 0xff
+        MOV     A,#0x5
+        LCALL   ?MOVE_LONG8_XDATA_XDATA
+//  587   uint8 strTemp[20]={0};
+        MOV     A,#0x5
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R4,DPL
+        MOV     R5,DPH
+        MOV     DPH,#(`?<Constant {0}>_1` >> 8) & 0xff
+        MOV     DPL,#`?<Constant {0}>_1` & 0xff
+        MOV     A,#0x14
+        LCALL   ?MOVE_LONG8_XDATA_XDATA
+//  588   int len=0;
+//  589 
+//  590   DHT11();             //»ñÈ¡ÎÂÊª¶È
+        ; Setup parameters for call to function DHT11
+        LCALL   ??DHT11?relay
+//  591 
+//  592   str[0] = wendu;//ÎÂ¶È
+        MOV     DPTR,#wendu
+        MOVX    A,@DPTR
+        MOV     DPL,?XSP + 0
+        MOV     DPH,?XSP + 1
+        MOVX    @DPTR,A
+//  593   str[1] = shidu;//Êª¶È
+        MOV     DPTR,#shidu
+        MOVX    A,@DPTR
+        PUSH    A
+        CFI CFA_SP SP+-1
+        MOV     A,#0x1
+        LCALL   ?XSTACK_DISP0_8
+        POP     A
+        CFI CFA_SP SP+0
+        MOVX    @DPTR,A
+//  594   len=2;
+//  595 
+//  596   sprintf(strTemp, "T&H:%d %d", str[0],str[1]);
+        ; Setup parameters for call to function sprintf
+        MOV     ?V0 + 0,A
+        MOV     ?V0 + 1,#0x0
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        CFI CFA_XSP16 add(XSP16, 37)
+        MOV     A,#0x2
+        LCALL   ?XSTACK_DISP0_8
+        MOVX    A,@DPTR
+        MOV     ?V0 + 0,A
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        CFI CFA_XSP16 add(XSP16, 39)
+        MOV     R4,#`?<Constant "T&H:%d %d">` & 0xff
+        MOV     R5,#(`?<Constant "T&H:%d %d">` >> 8) & 0xff
+        MOV     A,#0x9
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R2,DPL
+        MOV     R3,DPH
+        LCALL   ??sprintf?relay
+        MOV     A,#0x4
+        LCALL   ?DEALLOC_XSTACK8
+        CFI CFA_XSP16 add(XSP16, 35)
+//  597   HalLcdWriteString(strTemp, HAL_LCD_LINE_3); //LCDÏÔÊ¾
+        ; Setup parameters for call to function HalLcdWriteString
+        MOV     R1,#0x3
+        MOV     A,#0x5
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R2,DPL
+        MOV     R3,DPH
+        LCALL   ??HalLcdWriteString?relay
+//  598 
+//  599   HalUARTWrite(0, strTemp, osal_strlen(strTemp));           //´®¿ÚÊä³öÌáÊ¾ÐÅÏ¢
+        ; Setup parameters for call to function HalUARTWrite
+        ; Setup parameters for call to function osal_strlen
+        MOV     A,#0x5
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R2,DPL
+        MOV     R3,DPH
+        LCALL   ??osal_strlen?relay
+        MOV     A,R2
+        MOV     R4,A
+        MOV     A,R3
+        MOV     R5,A
+        MOV     A,#0x5
+        LCALL   ?XSTACK_DISP0_8
+        MOV     R2,DPL
+        MOV     R3,DPH
+        MOV     R1,#0x0
+        LCALL   ??HalUARTWrite?relay
+//  600   HalUARTWrite(0, "\r\n",2);
+        ; Setup parameters for call to function HalUARTWrite
+        MOV     R4,#0x2
+        MOV     R5,#0x0
+        MOV     R2,#`?<Constant "\\r\\n">` & 0xff
+        MOV     R3,#(`?<Constant "\\r\\n">` >> 8) & 0xff
+        MOV     R1,#0x0
+        LCALL   ??HalUARTWrite?relay
+//  601 
+//  602   //ÎÞÏß·¢ËÍµ½Ð­µ÷Æ÷
+//  603   if ( AF_DataRequest( &SampleApp_P2P_DstAddr, &SampleApp_epDesc,
+//  604                        SAMPLEAPP_P2P_CLUSTERID,
+//  605                        len,
+//  606                        str,
+//  607                        &SampleApp_MsgID,
+//  608                        AF_DISCV_ROUTE,
+//  609                        AF_DEFAULT_RADIUS ) == afStatus_SUCCESS )
+        ; Setup parameters for call to function AF_DataRequest
+        MOV     ?V0 + 0,#0x1e
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_ONE
+        CFI CFA_XSP16 add(XSP16, 36)
+        MOV     ?V0 + 0,#SampleApp_MsgID & 0xff
+        MOV     ?V0 + 1,#(SampleApp_MsgID >> 8) & 0xff
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        CFI CFA_XSP16 add(XSP16, 38)
+        MOV     A,#0x3
+        LCALL   ?XSTACK_DISP0_8
+        MOV     ?V0 + 0,DPL
+        MOV     ?V0 + 1,DPH
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        CFI CFA_XSP16 add(XSP16, 40)
+        MOV     ?V0 + 0,#0x2
+        MOV     ?V0 + 1,#0x0
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        CFI CFA_XSP16 add(XSP16, 42)
+        MOV     ?V0 + 0,#0x1
+        MOV     R0,#?V0 + 0
+        LCALL   ?PUSH_XSTACK_I_TWO
+        CFI CFA_XSP16 add(XSP16, 44)
+        MOV     R1,#0x20
+        MOV     R4,#SampleApp_epDesc & 0xff
+        MOV     R5,#(SampleApp_epDesc >> 8) & 0xff
+        MOV     R2,#SampleApp_P2P_DstAddr & 0xff
+        MOV     R3,#(SampleApp_P2P_DstAddr >> 8) & 0xff
+        LCALL   ??AF_DataRequest?relay
+        MOV     A,#0x9
+        LCALL   ?DEALLOC_XSTACK8
+        CFI CFA_XSP16 add(XSP16, 35)
+//  610   {
+//  611   }
+//  612   else
+//  613   {
+//  614     // Error occurred in request to send.
+//  615   }
+//  616 }
+        MOV     A,#0x19
+        LCALL   ?DEALLOC_XSTACK8
+        CFI CFA_XSP16 add(XSP16, 10)
+        LJMP    ?Subroutine0 & 0xFFFF
+        CFI EndBlock cfiBlock5
+//  617 
+
+        RSEG BANKED_CODE:CODE:NOROOT(0)
+//  618 void SampleApp_CallBack(uint8 port, uint8 event)
+SampleApp_CallBack:
+        CFI Block cfiBlock6 Using cfiCommon0
+        CFI Function SampleApp_CallBack
+        CODE
+//  619 {
+        FUNCALL SampleApp_CallBack, HalUARTRead
+        LOCFRAME ISTACK, 2, STACK
+        LOCFRAME PSTACK, 0, STACK
+        LOCFRAME XSTACK, 0, STACK
+        LOCFRAME IOVERLAY, 0, STATIC
+        LOCFRAME DOVERLAY, 0, STATIC
+        ARGFRAME ISTACK, 2, STACK
+        ARGFRAME PSTACK, 0, STACK
+        ARGFRAME XSTACK, 0, STACK
+        ARGFRAME IOVERLAY, 0, STATIC
+        ARGFRAME DOVERLAY, 0, STATIC
+        PUSH    DPL
+        CFI DPL0 Frame(CFA_SP, 4)
+        CFI CFA_SP SP+-4
+        PUSH    DPH
+        CFI DPH0 Frame(CFA_SP, 5)
+        CFI CFA_SP SP+-5
+        ; Saved register size: 2
+        ; Auto size: 0
+//  620   (void)port;
+//  621 
+//  622   HalUARTRead(SAMPLE_APP_PORT, SampleApp_RxBuf, 1);
+        ; Setup parameters for call to function HalUARTRead
+        MOV     R4,#0x1
+        MOV     R5,#0x0
+        MOV     R2,#SampleApp_RxBuf & 0xff
+        MOV     R3,#(SampleApp_RxBuf >> 8) & 0xff
+        MOV     R1,#0x0
+        LCALL   ??HalUARTRead?relay
+//  623 
+//  624 }
+        POP     DPH
+        CFI DPH0 SameValue
+        CFI CFA_SP SP+-4
+        POP     DPL
+        CFI DPL0 SameValue
+        CFI CFA_SP SP+-3
+        LJMP    ?BRET
+        CFI EndBlock cfiBlock6
+//  625 
+//  626 
+//  627 #endif
+//  628 
+//  629 
+//  630 //µ÷ÊÔÐÅÏ¢Êä³ö
+
+        RSEG BANKED_CODE:CODE:NOROOT(0)
+//  631 void debug(uint8 * msg, ...)
+debug:
+        CFI Block cfiBlock7 Using cfiCommon0
+        CFI Function debug
+        CODE
+//  632 {
+        ; Saved register size: 0
+        ; Auto size: 0
+//  633 #if 0
+//  634     uint8 len=0;
+//  635     char info[100] = {0};
+//  636     va_list args;
+//  637 
+//  638     if(msg==NULL) return;
+//  639 
+//  640     va_start(args, msg);
+//  641     vsprintf(info, (const char*)msg, args);
+//  642     va_end(args);
+//  643 
+//  644     len=osal_strlen((char *)info);
+//  645     if(len==0) return;
+//  646 
+//  647     
+//  648     HalUARTWrite(1,info, len);//´®¿Ú0·¢ËÍ    
+//  649 #endif    
+//  650 }
+        LJMP    ?BRET
+        CFI EndBlock cfiBlock7
+
+        RSEG XDATA_ID:CODE:NOROOT(0)
+`?<Initializer for SampleApp_epDesc>`:
+        DATA8
+        DB 11
+        DATA16
+        DW SampleApp_TaskID
+        DW SampleApp_SimpleDesc
+        DATA8
+        DB 0
+
+        RSEG BANK_RELAYS:CODE:REORDER:NOROOT(0)
+??SampleApp_Init?relay:
+        LCALL   ?BDISPATCH
+        DATA
+        DC24    SampleApp_Init
+
+        RSEG BANK_RELAYS:CODE:REORDER:NOROOT(0)
+??SampleApp_HandleKeys?relay:
+        LCALL   ?BDISPATCH
+        DATA
+        DC24    SampleApp_HandleKeys
+
+        RSEG BANK_RELAYS:CODE:REORDER:NOROOT(0)
+??SampleApp_ProcessEvent?relay:
+        LCALL   ?BDISPATCH
+        DATA
+        DC24    SampleApp_ProcessEvent
+
+        RSEG BANK_RELAYS:CODE:REORDER:NOROOT(0)
+??SampleApp_ProcessMSGCmd?relay:
+        LCALL   ?BDISPATCH
+        DATA
+        DC24    SampleApp_ProcessMSGCmd
+
+        RSEG BANK_RELAYS:CODE:REORDER:NOROOT(0)
+??SampleApp_Send_P2P_Message?relay:
+        LCALL   ?BDISPATCH
+        DATA
+        DC24    SampleApp_Send_P2P_Message
+
+        RSEG BANK_RELAYS:CODE:REORDER:NOROOT(0)
+??SampleApp_CallBack?relay:
+        LCALL   ?BDISPATCH
+        DATA
+        DC24    SampleApp_CallBack
+
+        RSEG BANK_RELAYS:CODE:REORDER:NOROOT(0)
+??debug?relay:
+        LCALL   ?BDISPATCH
+        DATA
+        DC24    debug
+
+        RSEG XDATA_ROM_C:CONST:REORDER:NOROOT(0)
+        DATA8
+`?<Constant {0}>`:
+        DB 0
+        DB 0, 0, 0, 0
+
+        RSEG XDATA_ROM_C:CONST:REORDER:NOROOT(0)
+        DATA8
+`?<Constant {0}>_1`:
+        DB 0
+        DB 0, 0, 0, 0, 0, 0, 0, 0
+        DB 0, 0, 0, 0, 0, 0, 0, 0
+        DB 0, 0, 0
+
+        RSEG XDATA_ROM_C:CONST:REORDER:NOROOT(0)
+        DATA8
+`?<Constant "T&H:%d %d">`:
+        DB "T&H:%d %d"
+
+        RSEG XDATA_ROM_C:CONST:REORDER:NOROOT(0)
+        DATA8
+`?<Constant "\\r\\n">`:
+        DB "\015\012"
+
+        END
+//  651 
+//  652 
+// 
+// 504 bytes in segment BANKED_CODE
+//  42 bytes in segment BANK_RELAYS
+//   6 bytes in segment XDATA_I
+//   6 bytes in segment XDATA_ID
+//  56 bytes in segment XDATA_ROM_C
+// 219 bytes in segment XDATA_Z
+// 
+// 552 bytes of CODE  memory
+//  56 bytes of CONST memory
+// 225 bytes of XDATA memory
+//
+//Errors: none
+//Warnings: 8

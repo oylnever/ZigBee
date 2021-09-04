@@ -1,0 +1,246 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// IAR C/C++ Compiler V10.30.1.6000 for 8051              02/Sep/2021  17:50:32
+// Copyright 2004-2018 IAR Systems AB.
+// PC-locked license - IAR Embedded Workbench for 8051
+//
+//    Core               =  plain
+//    Code model         =  banked
+//    Data model         =  large
+//    Calling convention =  xdata reentrant
+//    Constant location  =  data_rom
+//    Dptr setup         =  1,16
+//                          
+//    Source file        =  
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\DHT11.c
+//    Command line       =  
+//        -f C:\Users\OY\AppData\Local\Temp\EW37F6.tmp
+//        (C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\DHT11.c
+//        -D ZTOOL_P1 -D xMT_TASK -D xMT_SYS_FUNC -D xMT_ZDO_FUNC -D
+//        LCD_SUPPORTED=DEBUG -lC
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\CoordinatorEB\List
+//        -lA
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\CoordinatorEB\List
+//        --diag_suppress Pe001,Pa010 -o
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\CoordinatorEB\Obj
+//        -e --debug --core=plain --dptr=16,1 --data_model=large
+//        --code_model=banked --calling_convention=xdata_reentrant
+//        --place_constants=data_rom --nr_virtual_regs 8 -f
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\Tools\CC2530DB\f8wCoord.cfg
+//        (-DCPU32MHZ -DROOT=__near_func -DMAC_CFG_APP_PENDING_QUEUE=TRUE
+//        -DMAC_CFG_TX_DATA_MAX=5 -DMAC_CFG_TX_MAX=8 -DMAC_CFG_RX_MAX=5
+//        -DZDO_COORDINATOR -DRTR_NWK) -f
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\Tools\CC2530DB\f8wConfig.cfg
+//        (-DZIGBEEPRO -DSECURE=0 -DZG_SECURE_DYNAMIC=0 -DREFLECTOR
+//        -DDEFAULT_CHANLIST=0x00000800 -DZDAPP_CONFIG_PAN_ID=0xFFF1
+//        -DNWK_START_DELAY=100 -DEXTENDED_JOINING_RANDOM_MASK=0x007F
+//        -DBEACON_REQUEST_DELAY=100 -DBEACON_REQ_DELAY_MASK=0x00FF
+//        -DLINK_STATUS_JITTER_MASK=0x007F -DROUTE_EXPIRY_TIME=30
+//        -DAPSC_ACK_WAIT_DURATION_POLLED=3000 -DNWK_INDIRECT_MSG_TIMEOUT=7
+//        -DMAX_RREQ_ENTRIES=8 -DAPSC_MAX_FRAME_RETRIES=3
+//        -DNWK_MAX_DATA_RETRIES=2 -DMAX_POLL_FAILURE_RETRIES=2 -DMAX_BCAST=9
+//        -DAPS_MAX_GROUPS=16 -DMAX_RTG_ENTRIES=40 -DNWK_MAX_BINDING_ENTRIES=4
+//        -DMAX_BINDING_CLUSTER_IDS=4 "-DDEFAULT_KEY={0x01, 0x03, 0x05, 0x07,
+//        0x09, 0x0B, 0x0D, 0x0F, 0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C,
+//        0x0D}" -DMAC_MAX_FRAME_SIZE=116 -DZDNWKMGR_MIN_TRANSMISSIONS=20
+//        "-DCONST=const __code" -DGENERIC=__generic -DRFD_RCVC_ALWAYS_ON=FALSE
+//        -DPOLL_RATE=1000 -DQUEUED_POLL_RATE=100 -DRESPONSE_POLL_RATE=100
+//        -DREJOIN_POLL_RATE=440) -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\Source\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\ZMain\TI2530DB\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\hal\include\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\hal\target\CC2530EB\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\mac\include\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\mac\high_level\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\mac\low_level\srf04\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\mac\low_level\srf04\single_chip\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\mt\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\osal\include\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\services\saddr\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\services\sdata\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\stack\af\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\stack\nwk\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\stack\sapi\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\stack\sec\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\stack\sys\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\stack\zdo\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\zmac\
+//        -I
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\..\..\..\..\..\Components\zmac\f8w\
+//        -Ohz --no_code_motion)
+//    Locale             =  Chinese (Simplified)_CHN.936
+//    List file          =  
+//        C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\CC2530DB\CoordinatorEB\List\DHT11.s51
+//
+///////////////////////////////////////////////////////////////////////////////
+
+        NAME DHT11
+
+        RTMODEL "__SystemLibrary", "CLib"
+        RTMODEL "__calling_convention", "xdata_reentrant"
+        RTMODEL "__code_model", "banked"
+        RTMODEL "__core", "plain"
+        RTMODEL "__data_model", "large"
+        RTMODEL "__dptr_size", "16"
+        RTMODEL "__extended_stack", "disabled"
+        RTMODEL "__location_for_constants", "data"
+        RTMODEL "__number_of_dptrs", "1"
+        RTMODEL "__register_banks", "*"
+        RTMODEL "__rt_version", "1"
+
+        RSEG DOVERLAY:DATA:NOROOT(0)
+        RSEG IOVERLAY:IDATA:NOROOT(0)
+        RSEG ISTACK:IDATA:NOROOT(0)
+        RSEG PSTACK:XDATA:NOROOT(0)
+        RSEG XSTACK:XDATA:NOROOT(0)
+
+
+        END
+// C:\Users\OY\Desktop\ZStack-2.5.1a\Projects\zstack\Samples\SampleApp\Source\DHT11.c
+//    1 #include <ioCC2530.h>
+//    2 #include "OnBoard.h"
+//    3 
+//    4 #ifndef ZDO_COORDINATOR
+//    5 
+//    6 typedef unsigned char uchar;
+//    7 typedef unsigned int  uint;
+//    8 
+//    9 //要修改的地方
+//   10 #define DATA_PIN P0_7
+//   11 #define DATA_PIN_INPUT  (P0DIR &= ~0x80)
+//   12 #define DATA_PIN_OUTPUT (P0DIR |= 0x80)
+//   13 
+//   14 
+//   15 
+//   16 void Delay_us(void);
+//   17 void Delay_10us(void);
+//   18 void Delay_ms(uint Time);
+//   19 void COM(void);
+//   20 void DHT11(void);
+//   21 
+//   22 //温湿度定义
+//   23 uchar ucharFLAG,uchartemp;
+//   24 uchar shidu,wendu;
+//   25 uchar ucharT_data_H,ucharT_data_L,ucharRH_data_H,ucharRH_data_L,ucharcheckdata;
+//   26 uchar ucharT_data_H_temp,ucharT_data_L_temp,ucharRH_data_H_temp,ucharRH_data_L_temp,ucharcheckdata_temp;
+//   27 uchar ucharcomdata;
+//   28 
+//   29 //延时函数
+//   30 void Delay_us(void) //1 us延时
+//   31 {
+//   32     MicroWait(1);   
+//   33 }
+//   34 
+//   35 void Delay_10us(void) //10 us延时
+//   36 {
+//   37    MicroWait(10);
+//   38 }
+//   39 
+//   40 void Delay_ms(uint Time)//n ms延时
+//   41 {
+//   42   unsigned char i;
+//   43   while(Time--)
+//   44   {
+//   45     for(i=0;i<100;i++)
+//   46      Delay_10us();
+//   47   }
+//   48 }
+//   49 
+//   50 //温湿度传感
+//   51 void COM(void)    // 温湿写入
+//   52 {     
+//   53     uchar i;         
+//   54     for(i=0;i<8;i++)    
+//   55     {
+//   56         ucharFLAG=2; 
+//   57         while((!DATA_PIN)&&ucharFLAG++);
+//   58         Delay_10us();
+//   59         Delay_10us();
+//   60         Delay_10us();
+//   61         uchartemp=0;
+//   62         if(DATA_PIN)uchartemp=1;
+//   63         ucharFLAG=2;
+//   64         while((DATA_PIN)&&ucharFLAG++);   
+//   65         if(ucharFLAG==1)break;    
+//   66         ucharcomdata<<=1;
+//   67         ucharcomdata|=uchartemp; 
+//   68     }    
+//   69 }
+//   70 
+//   71 void DHT11(void)   //温湿传感启动
+//   72 {
+//   73     DATA_PIN=0;
+//   74     Delay_ms(19);  //>18MS
+//   75     DATA_PIN=1; 
+//   76     DATA_PIN_INPUT; //输入
+//   77     Delay_10us();
+//   78     Delay_10us();                        
+//   79     Delay_10us();
+//   80     Delay_10us();  
+//   81     if(!DATA_PIN) 
+//   82     {
+//   83         ucharFLAG=2; 
+//   84         while((!DATA_PIN)&&ucharFLAG++);
+//   85         ucharFLAG=2;
+//   86         while((DATA_PIN)&&ucharFLAG++); 
+//   87         COM();
+//   88         ucharRH_data_H_temp=ucharcomdata;
+//   89         COM();
+//   90         ucharRH_data_L_temp=ucharcomdata;
+//   91         COM();
+//   92         ucharT_data_H_temp=ucharcomdata;
+//   93         COM();
+//   94         ucharT_data_L_temp=ucharcomdata;
+//   95         COM();
+//   96         ucharcheckdata_temp=ucharcomdata;
+//   97         DATA_PIN=1; 
+//   98         uchartemp=(ucharT_data_H_temp+ucharT_data_L_temp+ucharRH_data_H_temp+ucharRH_data_L_temp);
+//   99         if(uchartemp==ucharcheckdata_temp)
+//  100         {
+//  101             ucharRH_data_H=ucharRH_data_H_temp;
+//  102             ucharRH_data_L=ucharRH_data_L_temp;
+//  103             ucharT_data_H=ucharT_data_H_temp;
+//  104             ucharT_data_L=ucharT_data_L_temp;
+//  105             ucharcheckdata=ucharcheckdata_temp;
+//  106         }
+//  107 
+//  108         wendu=ucharT_data_H;
+//  109         shidu=ucharRH_data_H;
+//  110     } 
+//  111     else //没用成功读取，返回0
+//  112     {
+//  113         shidu=0;
+//  114         wendu=0;
+//  115         
+//  116     } 
+//  117     
+//  118     DATA_PIN_OUTPUT; //输出
+//  119 }
+//  120 #endif
+// 
+//
+// 
+//
+//
+//Errors: none
+//Warnings: none
