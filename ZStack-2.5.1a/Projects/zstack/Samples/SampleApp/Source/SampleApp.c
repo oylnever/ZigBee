@@ -115,6 +115,7 @@ uint8 cor_led3 = 0;      //协调器led3 0灭 1亮
 uint8 end_obstacles = 0; //终端障碍物 0无障碍(输出高电平） 1有障碍(低电平)
 uint8 end_buzzer = 0;    //buzzer 0不响 1响起
 uint8 end_smoke = 0;     //烟雾浓度0-127 浓度越高电压越高5V
+uint8 end_man = 0;       //人体传感器，有人输出高电平，没人输出低电平
 #ifdef ZDO_COORDINATOR
 signed char *g_mqtt_topics_set[5] = {NULL};
 u8 topics_buff[60] = {0};
@@ -192,6 +193,10 @@ void SampleApp_Init(uint8 task_id)
   P0SEL &= 0xCF;                                 //    11001111
   P0DIR |= 0x00;                                 //0_5输入，无障碍物时被拉高      1输出    00010000
 
+  //P2_0
+  P2SEL &= ~1<<0; //通用io
+  P2DIR &= ~1<<0; // 2_0 输入
+  P2INP &= ~1<<0; //上拉/下拉
 #endif
 }
 
@@ -339,14 +344,16 @@ UINT16 SampleApp_ProcessEvent(uint8 task_id, UINT16 events)
                \"end_light\":%d,\
               \"end_led2\":%d,\
 			  \"end_obstacles\":%d,\
-          \"end_smoke\":%d }\
+          \"end_smoke\":%d,\
+          \"end_man\":%d }\
         }",
               end_temp,
               end_hum,
               end_light,
               end_led2,
               end_obstacles,
-              end_smoke);
+              end_smoke,
+              end_man);
 
       //发布主题
       mqtt_publish_topic(topics_post, mqtt_message);
@@ -412,7 +419,7 @@ void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
     end_led2 = pkt->cmd.Data[3];      //led2
     end_obstacles = pkt->cmd.Data[4]; //障碍物
     end_smoke = pkt->cmd.Data[5];     //烟雾
-
+    end_man = pkt->cmd.Data[6];       //人体
     //cor_led3 = !cor_led3;
     sprintf(buff, "T:%d", end_temp);
     HalLcdWriteString(buff, HAL_LCD_LINE_3); //LCD显示
@@ -625,6 +632,7 @@ void SampleApp_Send_P2P_Message(void)
   uint8 strTemp[20] = {0};
   uint8 end_obstacles_temp = 0;
   uint8 end_buzzer_temp = 0;
+  uint8 end_man_temp = 0;
   int len = 0;
 
   osal_memset(str, '\0', 10);
@@ -649,6 +657,10 @@ void SampleApp_Send_P2P_Message(void)
   }
   else
     end_obstacles_temp = 1;
+  if (P2_0 == 0) //
+    end_man_temp = 0;
+  else
+    end_man_temp = 1;
   str[0] = wendu; //温度
   str[1] = shidu; //湿度
 
@@ -656,6 +668,7 @@ void SampleApp_Send_P2P_Message(void)
   str[3] = end_led2_temp;      //led3状态
   str[4] = end_obstacles_temp; //障碍物情况
   str[5] = end_smoke_temp;     //烟雾数值
+  str[6] = end_man_temp;       //人体
   //str[5] = end_buzzer_temp;    //buzzer情况
   len = 6;
   sprintf(strTemp, "T&H:%d %d", str[0], str[1]);
@@ -667,7 +680,7 @@ void SampleApp_Send_P2P_Message(void)
   //无线发送到协调器
   if (AF_DataRequest(&SampleApp_P2P_DstAddr, &SampleApp_epDesc,
                      SAMPLEAPP_P2P_CLUSTERID,
-                     osal_strlen(str), //这个有bugosal得出33
+                     7,//osal_strlen(str), //这个有bugosal得出33 这个的长度得指定，不然bug不定期出现
                      str,
                      &SampleApp_MsgID,
                      AF_DISCV_ROUTE,
