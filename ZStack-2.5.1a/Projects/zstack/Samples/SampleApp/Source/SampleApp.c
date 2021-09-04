@@ -110,7 +110,7 @@ uint8 end_temp;            //终端的温度
 uint8 end_hum;             //终端的湿度
 
 uint8 end_light = 0; //开发板区域亮度     亮0-127灭
-uint8 end_led3 = 0;  //终端节点开发板led3状态     0灭 1亮
+uint8 end_led2 = 0;  //终端节点开发板led3状态     0灭 1亮
 uint8 cor_led3 = 0;  //协调器led3 0灭 1亮
 #ifdef ZDO_COORDINATOR
 signed char *g_mqtt_topics_set[5] = {NULL};
@@ -332,12 +332,12 @@ UINT16 SampleApp_ProcessEvent(uint8 task_id, UINT16 events)
             \"temp\":%d,\
             \"hum\":%d,\
                \"end_light\":%d,\
-              \"led3\":%d}\
+              \"end_led2\":%d}\
         }",
               end_temp,
               end_hum,
               end_light,
-              cor_led3);
+              end_led2);
 
       //发布主题
       mqtt_publish_topic(topics_post, mqtt_message);
@@ -400,8 +400,10 @@ void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
     end_hum = pkt->cmd.Data[1];  //终端湿度
 
     end_light = pkt->cmd.Data[2]; //终端亮度
-    cor_led3 = P1_4;              //终端LED3状态
-    cor_led3 = !cor_led3;
+    end_led2 = pkt->cmd.Data[3];
+    //cor_led3 = P1_4;              //终端LED3状态
+
+    //cor_led3 = !cor_led3;
     sprintf(buff, "T:%d", end_temp);
     HalLcdWriteString(buff, HAL_LCD_LINE_3); //LCD显示
 
@@ -419,9 +421,20 @@ void SampleApp_ProcessMSGCmd(afIncomingMSGPacket_t *pkt)
     osal_memset(buf, '\0', 128);
     osal_memcpy(buf, pkt->cmd.Data, pkt->cmd.DataLength); //复制到缓冲区
     HalUARTWrite(0, buf, osal_strlen(buf));               //串口输出提示信息
-    HalUARTWrite(0, "\r\n", osal_strlen("\r\n"));         //串口输出提示信息
+    HalUARTWrite(0, "\r\n", 2);                           //串口输出提示信息
+
+    if (strstr(buf, "D2:0"))
+      HalLedSet(HAL_LED_2, HAL_LED_MODE_OFF); //LED2
+    else if (strstr(buf, "D2:1"))
+      HalLedSet(HAL_LED_2, HAL_LED_MODE_ON); //LED2
+
+    if (strstr(buf, "B:1"))
+      P0_4 = 0;
+    else if (strstr(buf, "B:0"))
+      P0_4 = 1;
+
     osal_memset(buf, '\0', 128);
-	break;
+    break;
   default:
     break;
   }
@@ -606,18 +619,18 @@ void SampleApp_Send_P2P_Message(void)
 
   HalAdcInit();
   uint8 end_light_temp = HalAdcRead(HAL_ADC_CHANNEL_6, HAL_ADC_RESOLUTION_8);
-  uint8 end_led3_temp = 0;
+  uint8 end_led2_temp = 0;
 
-  if (P1_4 == 1)
-    end_led3_temp = 0;
+  if (P1_1 == 1)
+    end_led2_temp = 0;
   else
-    end_led3_temp = 1;
+    end_led2_temp = 1;
 
   str[0] = wendu; //温度
   str[1] = shidu; //湿度
 
   str[2] = end_light_temp; //亮度
-  str[3] = end_led3_temp;  //led3状态
+  str[3] = end_led2_temp;  //led3状态
   len = 4;
 
   sprintf(strTemp, "T&H:%d %d", str[0], str[1]);
